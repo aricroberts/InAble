@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>InAble Watch</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #080710;
+    --surface: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.1);
+    --purple: #7F77DD;
+    --purple-dim: #3C3489;
+    --teal: #5DCAA5;
+    --amber: #FAC775;
+    --coral: #F0997B;
+    --text: #EEEDFE;
+    --muted: #6b6a8e;
+    --dimmer: #2a2845;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    width: 198px;
+    height: 242px;
+    overflow: hidden;
+    border-radius: 36px;
+    position: relative;
+    user-select: none;
+  }
+
+  /* ── Screens ── */
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 10px 9px 8px; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; border-radius: 36px; overflow: hidden; }
+  .screen.active { opacity: 1; pointer-events: all; }
+
+  /* ── Home ── */
+  #home { background: radial-gradient(ellipse at 60% 30%, #1a1542 0%, #080710 70%); align-items: center; justify-content: center; gap: 6px; }
+  .logo { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #7F77DD, #5DCAA5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em; }
+  .tagline { font-size: 9px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .pulse-ring { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s ease infinite; margin-top: 2px; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(0.8)} }
+  .home-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 100%; margin-top: 8px; }
+  .home-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 7px 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: background 0.15s; }
+  .home-btn:active { background: rgba(127,119,221,0.2); }
+  .home-btn-icon { font-size: 15px; }
+  .home-btn-label { font-size: 8px; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; }
+
+  /* ── Coach ── */
+  #coach { background: #080710; }
+  #prep  { background: #080710; }
+  #debrief { background: #080710; }
+  #decoder { background: #080710; }
+  #flow-screen { background: #080710; }
+
+  /* ── Shared header ── */
+  .w-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+  .w-back { background: var(--surface); border: none; border-radius: 8px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 12px; flex-shrink: 0; }
+  .w-title { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.04em; text-transform: uppercase; }
+  .w-badge { font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 6px; }
+  .badge-coach { background: rgba(127,119,221,0.2); color: var(--purple); }
+  .badge-prep  { background: rgba(93,202,165,0.15); color: var(--teal); }
+  .badge-debrief { background: rgba(250,199,117,0.15); color: var(--amber); }
+
+  /* ── Suggestion card ── */
+  .sug-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 8px; margin-bottom: 5px; flex-shrink: 0; }
+  .sug-type { font-size: 7px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
+  .sug-text { font-size: 10px; color: var(--text); line-height: 1.4; }
+  .type-deepen { color: var(--teal); }
+  .type-opener { color: var(--purple); }
+  .type-rescue { color: var(--amber); }
+  .type-exit   { color: var(--coral); }
+
+  /* ── Scroll area ── */
+  .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .scroll-area::-webkit-scrollbar { display: none; }
+
+  /* ── Big tap buttons ── */
+  .tap-btn { border: none; border-radius: 12px; padding: 9px 8px; width: 100%; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.15s; margin-bottom: 5px; }
+  .tap-btn:active { transform: scale(0.97); }
+  .btn-purple { background: rgba(83,74,183,0.3); color: var(--purple); border: 1px solid rgba(83,74,183,0.5); }
+  .btn-teal   { background: rgba(29,158,117,0.2); color: var(--teal); border: 1px solid rgba(29,158,117,0.4); }
+  .btn-coral  { background: rgba(216,90,48,0.2); color: var(--coral); border: 1px solid rgba(216,90,48,0.4); }
+  .btn-amber  { background: rgba(239,159,39,0.15); color: var(--amber); border: 1px solid rgba(239,159,39,0.35); }
+
+  /* ── Energy bar ── */
+  .energy-wrap { margin-bottom: 6px; }
+  .energy-row { display: flex; align-items: center; gap: 5px; margin-bottom: 2px; }
+  .energy-lbl { font-size: 8px; color: var(--muted); width: 40px; flex-shrink: 0; }
+  .energy-track { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; }
+  .energy-fill  { height: 100%; border-radius: 2px; background: var(--teal); width: 65%; }
+  .energy-note  { font-size: 8px; color: var(--dimmer); padding-left: 45px; }
+
+  /* ── Flow screen ── */
+  .flow-dir-row { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 7px; }
+  .flow-dir-btn { border: none; border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.15s; }
+  .flow-dir-btn:active { transform: scale(0.96); }
+  .flow-plus  { background: rgba(29,158,117,0.18); border: 1px solid rgba(29,158,117,0.4); }
+  .flow-minus { background: rgba(83,74,183,0.18); border: 1px solid rgba(83,74,183,0.4); }
+  .flow-dir-symbol { font-size: 20px; font-weight: 700; line-height: 1; }
+  .flow-plus  .flow-dir-symbol { color: var(--teal); }
+  .flow-minus .flow-dir-symbol { color: var(--purple); }
+  .flow-dir-label { font-size: 8px; font-weight: 700; letter-spacing: 0.05em; }
+  .flow-plus  .flow-dir-label { color: var(--teal); }
+  .flow-minus .flow-dir-label { color: var(--purple); }
+  .flow-result { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 9px; display: none; }
+  .flow-result.visible { display: block; animation: fadeUp 0.3s ease; }
+  .flow-result-label { font-size: 8px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .flow-result-text  { font-size: 10px; color: var(--text); line-height: 1.45; }
+  .flow-tap-more { font-size: 8px; color: var(--dimmer); margin-top: 5px; cursor: pointer; }
+
+  /* ── Decoder screen ── */
+  .decoder-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 9px; color: var(--text); font-size: 10px; font-family: inherit; padding: 7px 8px; resize: none; outline: none; line-height: 1.45; height: 60px; }
+  .decoder-result { background: rgba(127,119,221,0.08); border-left: 2px solid var(--purple); border-radius: 0 8px 8px 0; padding: 7px 8px; margin-top: 5px; animation: fadeUp 0.3s ease; }
+  .decoder-result-lbl { font-size: 8px; font-weight: 700; color: var(--purple); letter-spacing: 0.08em; margin-bottom: 3px; }
+  .decoder-result-text { font-size: 10px; color: var(--text); line-height: 1.45; }
+  .signals { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+  .signal { font-size: 8px; font-weight: 600; padding: 2px 6px; border-radius: 8px; }
+  .sig-pos  { background: rgba(29,158,117,0.2); color: var(--teal); }
+  .sig-neu  { background: rgba(255,255,255,0.06); color: var(--muted); }
+  .sig-warn { background: rgba(239,159,39,0.15); color: var(--amber); }
+
+  /* ── Spinner dots ── */
+  .dots { display: flex; gap: 3px; justify-content: center; padding: 6px 0; }
+  .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--purple); animation: bounce 1s ease-in-out infinite; }
+  .dot:nth-child(2) { animation-delay: 0.15s; }
+  .dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── Prep fields ── */
+  .prep-field { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 6px 8px; margin-bottom: 5px; }
+  .prep-field-lbl { font-size: 8px; color: var(--muted); margin-bottom: 2px; }
+  .prep-field-val { font-size: 10px; color: var(--text); line-height: 1.35; }
+
+  /* ── Debrief ── */
+  .debrief-textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 9px; color: var(--text); font-size: 10px; font-family: inherit; padding: 7px 8px; resize: none; outline: none; line-height: 1.45; height: 68px; }
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .stat-box { background: var(--surface); border-radius: 8px; padding: 5px 3px; text-align: center; }
+  .stat-num { font-size: 15px; font-weight: 700; color: var(--text); }
+  .stat-lbl { font-size: 7px; color: var(--muted); }
+
+  /* ── Scrollable suggestion list for coach ── */
+  .coach-suggestions { flex: 1; overflow-y: auto; scrollbar-width: none; margin-bottom: 5px; }
+  .coach-suggestions::-webkit-scrollbar { display: none; }
+
+  /* ── Bottom bar hint ── */
+  .scroll-hint { font-size: 7px; color: var(--dimmer); text-align: center; padding: 2px 0; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="logo">InAble</div>
+  <div class="tagline">Introvert Able</div>
+  <div class="pulse-ring"></div>
+  <div class="home-btns">
+    <div class="home-btn" onclick="go('coach')">
+      <div class="home-btn-icon">💬</div>
+      <div class="home-btn-label">Coach</div>
+    </div>
+    <div class="home-btn" onclick="go('prep')">
+      <div class="home-btn-icon">📋</div>
+      <div class="home-btn-label">Prep</div>
+    </div>
+    <div class="home-btn" onclick="go('debrief')">
+      <div class="home-btn-icon">📈</div>
+      <div class="home-btn-label">Debrief</div>
+    </div>
+  </div>
+</div>
+
+<!-- COACH -->
+<div id="coach" class="screen">
+  <div class="w-header">
+    <button class="w-back" onclick="go('home')">←</button>
+    <span class="w-title">Coach</span>
+    <span class="w-badge badge-coach">Live</span>
+  </div>
+  <div class="energy-wrap">
+    <div class="energy-row">
+      <span class="energy-lbl">Energy</span>
+      <div class="energy-track"><div class="energy-fill" style="width:65%; background:var(--teal);"></div></div>
+      <span style="font-size:8px; color:var(--teal); font-weight:700; margin-left:3px;">65%</span>
+    </div>
+    <div class="energy-note">~40 min left</div>
+  </div>
+  <div class="coach-suggestions" id="coach-sugs">
+    <div class="sug-card">
+      <div class="sug-type type-deepen">deepen</div>
+      <div class="sug-text">"What's surprised you most about your work lately?"</div>
+    </div>
+    <div class="sug-card">
+      <div class="sug-type type-opener">opener</div>
+      <div class="sug-text">"How do you two know each other?"</div>
+    </div>
+    <div class="sug-card">
+      <div class="sug-type type-rescue">rescue</div>
+      <div class="sug-text">"Wait — say more about that last thing."</div>
+    </div>
+  </div>
+  <div class="scroll-hint">↕ scroll · tap for more</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; margin-top:4px; flex-shrink:0;">
+    <button class="tap-btn btn-teal" style="padding:7px 4px; font-size:9px;" onclick="go('flow-screen')">+ / −<br><span style="font-size:7px; font-weight:400;">flow</span></button>
+    <button class="tap-btn btn-purple" style="padding:7px 4px; font-size:9px;" onclick="go('decoder')">🔍<br><span style="font-size:7px; font-weight:400;">decode</span></button>
+    <button class="tap-btn btn-coral" style="padding:7px 4px; font-size:9px;">🚪<br><span style="font-size:7px; font-weight:400;">exit</span></button>
+  </div>
+</div>
+
+<!-- PREP -->
+<div id="prep" class="screen">
+  <div class="w-header">
+    <button class="w-back" onclick="go('home')">←</button>
+    <span class="w-title">Prep</span>
+    <span class="w-badge badge-prep">Before</span>
+  </div>
+  <div class="scroll-area">
+    <div class="prep-field">
+      <div class="prep-field-lbl">Event</div>
+      <div class="prep-field-val">Work holiday party · ~40 people</div>
+    </div>
+    <div class="prep-field">
+      <div class="prep-field-lbl">My goal</div>
+      <div class="prep-field-val">One real conversation.</div>
+    </div>
+    <div class="sug-card" style="margin-top:4px;">
+      <div class="sug-type" style="color:var(--teal);">starter</div>
+      <div class="sug-text">"What are you most excited about next year?"</div>
+    </div>
+    <div class="sug-card">
+      <div class="sug-type" style="color:#85B7EB;">starter</div>
+      <div class="sug-text">"What's a project nobody really saw that you're proud of?"</div>
+    </div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; flex-shrink:0; margin-top:5px;">
+    <button class="tap-btn btn-teal" style="font-size:9px; padding:7px 4px;" onclick="go('flow-screen')">+ / − Flow</button>
+    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="go('decoder')">🔍 Decode</button>
+  </div>
+</div>
+
+<!-- DEBRIEF -->
+<div id="debrief" class="screen">
+  <div class="w-header">
+    <button class="w-back" onclick="go('home')">←</button>
+    <span class="w-title">Debrief</span>
+    <span class="w-badge badge-debrief">After</span>
+  </div>
+  <div id="debrief-entry">
+    <textarea class="debrief-textarea" placeholder="How did it go? Any moments you're still thinking about…" id="debrief-input"></textarea>
+    <button class="tap-btn btn-purple" style="margin-top:4px;" onclick="runDebrief()">✦ Debrief with InAble</button>
+  </div>
+  <div id="debrief-result" style="display:none;">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="d-convos">3</div><div class="stat-lbl">convos</div></div>
+      <div class="stat-box"><div class="stat-num" id="d-goals">1</div><div class="stat-lbl">goal hit</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--purple);" id="d-conf">+12%</div><div class="stat-lbl">confidence</div></div>
+    </div>
+    <div class="scroll-area" id="debrief-wins"></div>
+    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px; margin-top:4px;" onclick="go('decoder')">🔍 Decode a moment</button>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; flex-shrink:0; margin-top:4px;">
+    <button class="tap-btn btn-amber" style="font-size:9px; padding:7px 4px;" onclick="go('flow-screen')">+ / − Flow</button>
+    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="go('decoder')">🔍 Decode</button>
+  </div>
+</div>
+
+<!-- FLOW SCREEN -->
+<div id="flow-screen" class="screen">
+  <div class="w-header">
+    <button class="w-back" onclick="goBack()">←</button>
+    <span class="w-title">Flow</span>
+    <span class="w-badge badge-coach" id="flow-phase-badge">Coach</span>
+  </div>
+  <div class="flow-dir-row">
+    <div class="flow-dir-btn flow-plus" onclick="getFlow('up')">
+      <div class="flow-dir-symbol">+</div>
+      <div class="flow-dir-label">Increase</div>
+    </div>
+    <div class="flow-dir-btn flow-minus" onclick="getFlow('down')">
+      <div class="flow-dir-symbol">−</div>
+      <div class="flow-dir-label">Decrease</div>
+    </div>
+  </div>
+  <div class="flow-result" id="flow-result">
+    <div class="flow-result-label" id="flow-result-label">↑ DEEPEN / WIDEN</div>
+    <div class="flow-result-text" id="flow-result-text"></div>
+    <div class="flow-tap-more" onclick="getFlow(currentFlowDir)">↻ tap for another</div>
+  </div>
+  <div class="dots" id="flow-dots" style="display:none;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<!-- DECODER -->
+<div id="decoder" class="screen">
+  <div class="w-header">
+    <button class="w-back" onclick="goBack()">←</button>
+    <span class="w-title">Decoder</span>
+    <span class="w-badge" style="background:rgba(127,119,221,0.2);color:var(--purple);">InAble</span>
+  </div>
+  <textarea class="decoder-input" id="decoder-input" placeholder="e.g. 'I told a story and she laughed then checked her phone…'"></textarea>
+  <button class="tap-btn btn-purple" style="margin-top:5px; font-size:10px; padding:8px;" onclick="runDecoder()">✦ Read this for me</button>
+  <div id="decoder-dots" class="dots" style="display:none;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div id="decoder-result" style="display:none;" class="scroll-area">
+    <div class="decoder-result">
+      <div class="decoder-result-lbl">InAble says</div>
+      <div class="decoder-result-text" id="decoder-text"></div>
+      <div class="signals" id="decoder-signals"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let prevScreen = 'home';
+let currentFlowDir = 'up';
+let currentPhase = 'coach';
+
+function go(id) {
+  if (id !== 'home') { prevScreen = document.querySelector('.screen.active')?.id || 'home'; }
+  if (id === 'flow-screen') { document.getElementById('flow-phase-badge').textContent = currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1); }
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (['coach','prep','debrief'].includes(id)) currentPhase = id;
+}
+function goBack() { go(prevScreen); }
+
+async function callClaude(system, user, onChunk) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 200,
+      stream: true,
+      system,
+      messages: [{ role: 'user', content: user }],
+    }),
+  });
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let full = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    for (const line of dec.decode(value).split('\n').filter(l => l.startsWith('data: '))) {
+      try {
+        const d = JSON.parse(line.slice(6));
+        if (d.type === 'content_block_delta' && d.delta?.text) { full += d.delta.text; onChunk(full); }
+      } catch {}
+    }
+  }
+  return full;
+}
+
+const FLOW_SYS = (dir, phase) => `You are InAble, a social coach for introverts. One specific, immediately usable suggestion (max 2 short sentences) for someone who wants to ${dir === 'up' ? 'deepen connection or bring more people in' : 'reduce their speaking load while staying present'}. Phase: ${phase}. ${dir === 'up' ? 'Give a phrase in quotes or a tactic.' : 'Give a redirect phrase or a step-back tactic.'}  No preamble. No labels.`;
+
+const DECODER_SYS = `You are InAble — a sharp, emotionally literate social interpreter for introverts. Interpret the conversational snippet honestly in 2-3 short sentences. Then end with: SIGNALS:["tag","tag","tag"] — 2-4 word lowercase tags, honest mix of positive/neutral/cautionary. Max 80 words total.`;
+
+const DEBRIEF_SYS = `You are InAble. Analyze this social event reflection. Return ONLY JSON: {"convos":N,"goals":N,"conf":"+X%","win":"one concrete win in ≤12 words","next":"one try-next in ≤12 words"}`;
+
+async function getFlow(dir) {
+  currentFlowDir = dir;
+  const dotsEl = document.getElementById('flow-dots');
+  const resultEl = document.getElementById('flow-result');
+  const textEl = document.getElementById('flow-result-text');
+  const labelEl = document.getElementById('flow-result-label');
+  resultEl.classList.remove('visible');
+  dotsEl.style.display = 'flex';
+  textEl.textContent = '';
+  labelEl.textContent = dir === 'up' ? '↑ DEEPEN / WIDEN' : '↓ HAND THE FLOOR';
+  labelEl.style.color = dir === 'up' ? 'var(--teal)' : 'var(--purple)';
+  try {
+    await callClaude(FLOW_SYS(dir, currentPhase), `Phase:${currentPhase} Direction:${dir}`, t => { textEl.textContent = t; });
+  } catch { textEl.textContent = 'Tap again to retry.'; }
+  dotsEl.style.display = 'none';
+  resultEl.classList.add('visible');
+}
+
+async function runDecoder() {
+  const input = document.getElementById('decoder-input').value.trim();
+  if (!input) return;
+  const dots = document.getElementById('decoder-dots');
+  const resultEl = document.getElementById('decoder-result');
+  const textEl = document.getElementById('decoder-text');
+  const sigsEl = document.getElementById('decoder-signals');
+  dots.style.display = 'flex';
+  resultEl.style.display = 'none';
+  textEl.textContent = '';
+  sigsEl.innerHTML = '';
+  let full = '';
+  try {
+    await callClaude(DECODER_SYS, input, t => {
+      full = t;
+      const sigIdx = t.indexOf('SIGNALS:');
+      textEl.textContent = sigIdx > -1 ? t.slice(0, sigIdx).trim() : t;
+    });
+    const m = full.match(/SIGNALS:\[([^\]]+)\]/);
+    if (m) {
+      try {
+        const tags = JSON.parse(`[${m[1]}]`);
+        const posWords = ['landed','engaged','interested','warm','genuine','real','authentic','processed','good'];
+        const warnWords = ['flat','overshare','misstep','cold','awkward','watch','careful'];
+        tags.forEach(t => {
+          const s = document.createElement('span');
+          s.className = 'signal ' + (posWords.some(p=>t.includes(p)) ? 'sig-pos' : warnWords.some(w=>t.includes(w)) ? 'sig-warn' : 'sig-neu');
+          s.textContent = t;
+          sigsEl.appendChild(s);
+        });
+      } catch {}
+    }
+  } catch { textEl.textContent = 'Tap again to retry.'; }
+  dots.style.display = 'none';
+  resultEl.style.display = 'block';
+}
+
+async function runDebrief() {
+  const input = document.getElementById('debrief-input').value.trim();
+  if (!input) return;
+  document.getElementById('debrief-entry').style.display = 'none';
+  const resultEl = document.getElementById('debrief-result');
+  resultEl.style.display = 'block';
+  document.getElementById('debrief-wins').innerHTML = '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  try {
+    let full = '';
+    await callClaude(DEBRIEF_SYS, input, t => { full = t; });
+    const m = full.match(/\{[\s\S]*\}/);
+    if (m) {
+      const d = JSON.parse(m[0]);
+      document.getElementById('d-convos').textContent = d.convos ?? '–';
+      document.getElementById('d-goals').textContent = d.goals ?? '–';
+      document.getElementById('d-conf').textContent = d.conf ?? '–';
+      document.getElementById('debrief-wins').innerHTML = `
+        <div class="sug-card"><div class="sug-type type-deepen">win</div><div class="sug-text">${d.win}</div></div>
+        <div class="sug-card"><div class="sug-type type-opener">try next</div><div class="sug-text">${d.next}</div></div>`;
+    }
+  } catch {
+    document.getElementById('debrief-wins').innerHTML = '<div class="sug-card"><div class="sug-text">Couldn\'t parse. Try again.</div></div>';
+  }
+}
+</script>
+</body>
+</html>

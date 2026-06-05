@@ -57,7 +57,7 @@ module.exports = async function handler(req, res) {
   }
 
   // Safe defaults
-  body.model = 'claude-sonnet-4-20250514';
+  body.model = 'claude-sonnet-4-5';
   body.max_tokens = Math.min(body.max_tokens || 300, 500);
 
   const bodyStr = JSON.stringify(body);

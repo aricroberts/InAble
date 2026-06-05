@@ -425,18 +425,18 @@ var usage = { coach: 0, decoder: 0, prep: 0 };
 var FREE_LIMITS = { coach: 3, decoder: 2, prep: 1 };
 
 // ── State ──
-var pwSource = 'home'; // which screen triggered the paywall
+var pwSource = 'home';
 
-// ── Access check ──
+// ── Access check (localStorage — shared with landing page) ──
 function isUnlocked() {
-  if (sessionStorage.getItem(MONTHLY_KEY) === '1') return true;
-  var expiry = sessionStorage.getItem(TRIAL_KEY);
+  if (localStorage.getItem(MONTHLY_KEY) === '1') return true;
+  var expiry = localStorage.getItem(TRIAL_KEY);
   if (expiry && Date.now() < parseInt(expiry, 10)) return true;
   return false;
 }
 
 function isTrialExpired() {
-  var expiry = sessionStorage.getItem(TRIAL_KEY);
+  var expiry = localStorage.getItem(TRIAL_KEY);
   return expiry && Date.now() >= parseInt(expiry, 10);
 }
 
@@ -447,15 +447,14 @@ function isTrialExpired() {
   if (unlockType) {
     if (unlockType === 'trial') {
       var expires = Date.now() + 7 * 24 * 60 * 60 * 1000;
-      sessionStorage.setItem(TRIAL_KEY, String(expires));
+      localStorage.setItem(TRIAL_KEY, String(expires));
     } else if (unlockType === 'monthly' || unlockType === 'annual') {
-      sessionStorage.setItem(MONTHLY_KEY, '1');
+      localStorage.setItem(MONTHLY_KEY, '1');
     }
     history.replaceState({}, '', window.location.pathname);
   }
 
-  // If trial just expired on a new open, go straight to upgrade screen
-  if (isTrialExpired() && !sessionStorage.getItem(MONTHLY_KEY)) {
+  if (isTrialExpired() && !localStorage.getItem(MONTHLY_KEY)) {
     document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById('upgrade').classList.add('active');
     return;
@@ -513,7 +512,7 @@ function guardedGo(id) {
 }
 
 function dropToFree() {
-  sessionStorage.removeItem(TRIAL_KEY);
+  localStorage.removeItem(TRIAL_KEY);
   go('home');
   updateHomeStatus();
   updateUsageBadges();
@@ -533,8 +532,8 @@ function handleCheckout(product) {
 function updateHomeStatus() {
   var el = document.getElementById('home-status');
   if (isUnlocked()) {
-    var expiry = sessionStorage.getItem(TRIAL_KEY);
-    if (sessionStorage.getItem(MONTHLY_KEY) === '1') {
+    var expiry = localStorage.getItem(TRIAL_KEY);
+    if (localStorage.getItem(MONTHLY_KEY) === '1') {
       el.innerHTML = '<span style="color:var(--purple);">✦ Monthly</span>';
     } else if (expiry) {
       var daysLeft = Math.ceil((parseInt(expiry,10) - Date.now()) / 86400000);

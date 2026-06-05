@@ -371,85 +371,49 @@
     .nav-links { display: none; }
   }
 
-  /* ── Early Access Modal ── */
-  .ea-overlay {
-    display: none;
-    position: fixed; inset: 0; z-index: 1000;
-    background: rgba(7,6,15,0.85);
-    backdrop-filter: blur(12px);
-    align-items: center; justify-content: center;
-    padding: 24px;
-  }
-  .ea-overlay.open { display: flex; }
+  /* ── Pricing section ── */
+  .pricing-section { padding: 120px 24px; text-align: center; position: relative; }
+  .pricing-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(127,119,221,0.1) 0%, transparent 60%); pointer-events: none; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 900px; margin: 56px auto 0; }
+  @media (max-width: 800px) { .pricing-grid { grid-template-columns: 1fr; max-width: 400px; } }
 
-  .ea-modal {
-    background: #13112a;
-    border: 1px solid rgba(127,119,221,0.3);
-    border-radius: 24px;
-    padding: 40px 36px;
-    width: 100%; max-width: 460px;
-    position: relative;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(127,119,221,0.1);
-    animation: modalIn 0.25s ease both;
+  .pricing-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 24px; padding: 32px 28px;
+    display: flex; flex-direction: column;
+    text-align: left; position: relative;
+    transition: border-color 0.3s, transform 0.3s;
   }
-  @keyframes modalIn { from { opacity:0; transform:translateY(16px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+  .pricing-card:hover { transform: translateY(-4px); }
+  .pricing-card.featured { background: linear-gradient(135deg, rgba(26,21,66,0.9), rgba(45,37,96,0.7)); border-color: rgba(127,119,221,0.5); }
+  .pricing-card.featured:hover { border-color: rgba(127,119,221,0.8); }
+  .pricing-featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--purple); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 100px; letter-spacing: 0.06em; white-space: nowrap; }
+  .pricing-name { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .pricing-price { font-family: 'Instrument Serif', serif; font-size: 48px; letter-spacing: -0.03em; color: var(--text); line-height: 1; margin-bottom: 4px; }
+  .pricing-period { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  .pricing-desc { font-size: 14px; color: var(--muted); line-height: 1.65; font-weight: 300; margin-bottom: 24px; flex: 1; }
+  .pricing-features { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 8px; }
+  .pricing-features li { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .pricing-features li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+  .pricing-features li.locked { color: var(--dim); }
+  .pricing-features li.locked::before { content: '·'; color: var(--dim); }
+  .pricing-btn { border: none; border-radius: 100px; padding: 13px 24px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; text-align: center; }
+  .pricing-btn-trial { background: rgba(93,202,165,0.15); color: var(--teal); border: 1px solid rgba(93,202,165,0.4); }
+  .pricing-btn-trial:hover { background: rgba(93,202,165,0.25); transform: translateY(-2px); }
+  .pricing-btn-monthly { background: var(--purple); color: #fff; }
+  .pricing-btn-monthly:hover { background: #9490e8; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(127,119,221,0.3); }
+  .pricing-btn-annual { background: rgba(127,119,221,0.15); color: var(--purple-light); border: 1px solid rgba(127,119,221,0.4); }
+  .pricing-btn-annual:hover { background: rgba(127,119,221,0.25); transform: translateY(-2px); }
+  .pricing-note { font-size: 12px; color: var(--dim); text-align: center; margin-top: 20px; }
+  .pricing-savings { font-size: 11px; font-weight: 700; color: var(--teal); background: rgba(93,202,165,0.12); border-radius: 100px; padding: 3px 10px; display: inline-block; margin-bottom: 8px; }
 
-  .ea-close {
-    position: absolute; top: 16px; right: 16px;
-    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
-    color: var(--muted); font-size: 18px; line-height: 1;
-    width: 32px; height: 32px; border-radius: 50%;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; font-family: inherit;
-  }
-  .ea-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
-
-  .ea-eyebrow {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(127,119,221,0.12); border: 1px solid rgba(127,119,221,0.25);
-    border-radius: 100px; padding: 5px 12px;
-    font-size: 11px; font-weight: 700; color: var(--purple-light);
-    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
-  }
-  .ea-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 28px; letter-spacing: -0.02em; color: var(--text);
-    margin-bottom: 8px; line-height: 1.2;
-  }
-  .ea-title em { font-style: italic; color: var(--purple-light); }
-  .ea-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; font-weight: 300; }
-
-  .ea-field { margin-bottom: 16px; }
-  .ea-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
-  .ea-input, .ea-textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 15px; font-family: inherit; color: var(--text);
-    transition: border-color 0.2s;
-    outline: none;
-  }
-  .ea-input:focus, .ea-textarea:focus { border-color: rgba(127,119,221,0.5); background: rgba(127,119,221,0.05); }
-  .ea-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
-  .ea-input::placeholder, .ea-textarea::placeholder { color: var(--dim); }
-
-  .ea-submit {
-    width: 100%; padding: 14px;
-    background: var(--purple); color: #fff;
-    border: none; border-radius: 100px;
-    font-size: 15px; font-weight: 600; font-family: inherit;
-    cursor: pointer; transition: all 0.2s; margin-top: 8px;
-  }
-  .ea-submit:hover:not(:disabled) { background: #9490e8; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(127,119,221,0.35); }
-  .ea-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-  .ea-success-state { text-align: center; padding: 16px 0; }
-  .ea-success-icon { font-size: 48px; margin-bottom: 16px; }
-  .ea-success-title { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--text); margin-bottom: 10px; }
-  .ea-success-msg { font-size: 14px; color: var(--muted); line-height: 1.6; font-weight: 300; }
-  .ea-error-msg { text-align: center; font-size: 13px; color: #F0997B; margin-top: 10px; min-height: 18px; }
+  /* ── Status bar (shown when unlocked) ── */
+  .unlock-bar { background: linear-gradient(90deg, rgba(26,21,66,0.9), rgba(45,37,96,0.7)); border: 1px solid rgba(127,119,221,0.35); border-radius: 16px; padding: 16px 24px; max-width: 480px; margin: 0 auto 32px; display: none; align-items: center; justify-content: space-between; gap: 16px; }
+  .unlock-bar.visible { display: flex; }
+  .unlock-bar-text { font-size: 14px; color: var(--purple-light); font-weight: 600; }
+  .unlock-bar-sub { font-size: 12px; color: var(--dim); margin-top: 2px; }
+  .unlock-bar-btn { background: var(--purple); color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.2s; }
+  .unlock-bar-btn:hover { background: #9490e8; }
 </style>
 </head>
 <body>
@@ -493,9 +457,9 @@
     <a href="#how">How it works</a>
     <a href="#decoder">Decoder</a>
     <a href="#flow">Flow</a>
-    <a href="#devices">Devices</a>
+    <a href="#pricing">Pricing</a>
   </div>
-  <button class="nav-cta" onclick="openEarlyAccessModal()">Get early access</button>
+  <button class="nav-cta" id="nav-cta" onclick="handleNavCta()">Get early access</button>
 </nav>
 
 <!-- HERO -->
@@ -551,7 +515,7 @@
   </p>
 
   <div class="hero-ctas">
-    <button class="btn-primary-lg" onclick="openEarlyAccessModal()">Get early access →</button>
+    <button class="btn-primary-lg">Get early access →</button>
     <button class="btn-ghost-lg">See how it works</button>
   </div>
 
@@ -709,6 +673,73 @@
   </div>
 </section>
 
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="reveal">
+    <div class="section-eyebrow">Simple pricing</div>
+    <h2 class="section-headline" style="margin:0 auto 0; max-width:560px;">Try it first.<br><em>Stay if it helps.</em></h2>
+  </div>
+
+  <!-- shown when already unlocked -->
+  <div class="unlock-bar reveal" id="unlock-bar">
+    <div>
+      <div class="unlock-bar-text" id="unlock-bar-text">✦ You're unlocked</div>
+      <div class="unlock-bar-sub" id="unlock-bar-sub">Full access active on this device.</div>
+    </div>
+    <button class="unlock-bar-btn" onclick="window.location.href='inable-watch.html'">Open InAble →</button>
+  </div>
+
+  <div class="pricing-grid reveal" id="pricing-grid">
+    <!-- Trial -->
+    <div class="pricing-card">
+      <div class="pricing-name">Trial Week</div>
+      <div class="pricing-price">$1.99</div>
+      <div class="pricing-period">one time · 7 days full access</div>
+      <div class="pricing-desc">Try everything before you commit. No subscription, no auto-renew.</div>
+      <ul class="pricing-features">
+        <li>All 4 modes: Coach, Prep, Debrief, Decoder</li>
+        <li>Unlimited taps &amp; reads</li>
+        <li>Works on watch &amp; phone</li>
+        <li class="locked">Library (Monthly only)</li>
+      </ul>
+      <button class="pricing-btn pricing-btn-trial" onclick="handleCheckout('trial')">Start 7-day trial →</button>
+    </div>
+
+    <!-- Monthly (featured) -->
+    <div class="pricing-card featured">
+      <div class="pricing-featured-badge">Most popular</div>
+      <div class="pricing-name">Monthly</div>
+      <div class="pricing-price">$6.99</div>
+      <div class="pricing-period">per month · cancel anytime</div>
+      <div class="pricing-desc">Full access, every event. Library coming soon — save your best Coach lines and patterns.</div>
+      <ul class="pricing-features">
+        <li>Everything in Trial, always</li>
+        <li>Works on watch &amp; phone</li>
+        <li>Library: save your best responses</li>
+        <li>Usage pattern insights</li>
+      </ul>
+      <button class="pricing-btn pricing-btn-monthly" onclick="handleCheckout('monthly')">Get Monthly →</button>
+    </div>
+
+    <!-- Annual -->
+    <div class="pricing-card">
+      <div class="pricing-savings">Save $8.88 vs monthly</div>
+      <div class="pricing-name">Annual</div>
+      <div class="pricing-price">$75</div>
+      <div class="pricing-period">per year · best value</div>
+      <div class="pricing-desc">One payment, a full year of backup — before every event, during, and after.</div>
+      <ul class="pricing-features">
+        <li>Everything in Monthly</li>
+        <li>Works on watch &amp; phone</li>
+        <li>Library: save your best responses</li>
+        <li>Usage pattern insights</li>
+      </ul>
+      <button class="pricing-btn pricing-btn-annual" onclick="handleCheckout('annual')">Get Annual →</button>
+    </div>
+  </div>
+  <div class="pricing-note reveal">All plans unlock instantly. No account required. Privacy-first — your conversations never leave your device.</div>
+</section>
+
 <!-- TESTIMONIALS -->
 <section class="testimonials">
   <div class="reveal">
@@ -809,11 +840,12 @@
   <div class="cta-glow"></div>
   <div class="reveal">
     <h2 class="cta-headline">You belong<br><em>in the room.</em></h2>
-    <p class="cta-sub">InAble doesn't make you an extrovert. It makes you an introvert with backup. Get early access.</p>
-    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-      <button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;" onclick="openEarlyAccessModal()">Get early access →</button>
+    <p class="cta-sub">InAble doesn't make you an extrovert. It makes you an introvert with backup.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;" id="cta-btns">
+      <button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;" onclick="handleCheckout('trial')">Start 7-day trial · $1.99 →</button>
+      <button class="btn-ghost-lg" onclick="window.location.href='#pricing'">See all plans</button>
     </div>
-    <p style="margin-top:20px; font-size:13px; color:var(--dim);">Available on iOS, Android, Apple Watch &amp; WearOS</p>
+    <p style="margin-top:20px; font-size:13px; color:var(--dim);" id="cta-note">No account required · unlock instantly · privacy-first</p>
   </div>
 </section>
 
@@ -833,54 +865,112 @@
   <div style="display:flex; gap:24px; flex-wrap:wrap;">
     <a href="/privacy.html">Privacy</a>
     <a href="/terms.html">Terms</a>
-    <a href="mailto:hello@aricciviclabs.org">Contact</a>
+    <a href="mailto:hello@inable.app">Contact</a>
   </div>
   <div>© 2026 InAble · Introvert Able</div>
 </footer>
 
-<!-- EARLY ACCESS MODAL -->
-<div class="ea-overlay" id="eaOverlay" onclick="handleOverlayClick(event)">
-  <div class="ea-modal" id="eaModal">
-    <button class="ea-close" onclick="closeEarlyAccessModal()" aria-label="Close">&#x2715;</button>
-
-    <!-- Form state -->
-    <div id="eaFormState">
-      <div class="ea-eyebrow">
-        <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;animation:pulse 2s infinite;"></span>
-        Early Access
-      </div>
-      <div class="ea-title">Join the <em>waitlist</em></div>
-      <p class="ea-sub">InAble is in private beta. Drop your details and we'll reach out when a spot opens up.</p>
-
-      <div class="ea-field">
-        <label class="ea-label" for="eaName">Your name</label>
-        <input class="ea-input" id="eaName" type="text" placeholder="First and last name" autocomplete="name" />
-      </div>
-      <div class="ea-field">
-        <label class="ea-label" for="eaEmail">Email address</label>
-        <input class="ea-input" id="eaEmail" type="email" placeholder="you@example.com" autocomplete="email" />
-      </div>
-      <div class="ea-field">
-        <label class="ea-label" for="eaMessage">Anything you'd like us to know? <span style="opacity:0.5;font-weight:400;">(optional)</span></label>
-        <textarea class="ea-textarea" id="eaMessage" placeholder="What situations do you want help navigating? What device are you most excited about?"></textarea>
-      </div>
-
-      <button class="ea-submit" id="eaSubmitBtn" onclick="submitEarlyAccess()">Request early access →</button>
-      <div class="ea-error-msg" id="eaErrorMsg"></div>
-    </div>
-
-    <!-- Success state -->
-    <div id="eaSuccessState" style="display:none;">
-      <div class="ea-success-state">
-        <div class="ea-success-icon">✦</div>
-        <div class="ea-success-title">You're on the list.</div>
-        <p class="ea-success-msg">We'll be in touch as spots open up. In the meantime, you can try the InAble coach at <a href="https://inable.aricciviclabs.org" style="color:var(--purple-light);text-decoration:none;">inable.aricciviclabs.org</a>.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
+// ── Shared constants (must match inable-watch.html exactly) ──
+var STRIPE_LINKS = {
+  trial:   'https://buy.stripe.com/eVq6oI9Me2b89Y30pB7N60v',
+  monthly: 'https://buy.stripe.com/cNidRa4rU2b8dafb4f7N60u',
+  annual:  'https://buy.stripe.com/dRm5kE5vY5nk8TZdcn7N60t'
+};
+var SUCCESS_PARAM = 'inable_unlocked';
+var TRIAL_KEY     = 'inable_trial_expiry';
+var MONTHLY_KEY   = 'inable_monthly';
+var WATCH_URL     = 'inable-watch.html';
+
+// ── Access check (localStorage — shared with watch) ──
+function isUnlocked() {
+  if (localStorage.getItem(MONTHLY_KEY) === '1') return true;
+  var expiry = localStorage.getItem(TRIAL_KEY);
+  if (expiry && Date.now() < parseInt(expiry, 10)) return true;
+  return false;
+}
+
+function isTrialExpired() {
+  var expiry = localStorage.getItem(TRIAL_KEY);
+  return expiry && Date.now() >= parseInt(expiry, 10);
+}
+
+function getTier() {
+  if (localStorage.getItem(MONTHLY_KEY) === '1') return 'monthly';
+  var expiry = localStorage.getItem(TRIAL_KEY);
+  if (expiry && Date.now() < parseInt(expiry, 10)) return 'trial';
+  if (expiry && Date.now() >= parseInt(expiry, 10)) return 'expired';
+  return 'free';
+}
+
+// ── Checkout ──
+function handleCheckout(product) {
+  var link = STRIPE_LINKS[product];
+  if (!link) return;
+  window.location.href = link;
+}
+
+function handleNavCta() {
+  if (isUnlocked()) {
+    window.location.href = WATCH_URL;
+  } else {
+    window.location.href = '#pricing';
+  }
+}
+
+// ── On load: handle Stripe return, update UI ──
+(function init() {
+  var params = new URLSearchParams(window.location.search);
+  var unlockType = params.get(SUCCESS_PARAM);
+  if (unlockType) {
+    if (unlockType === 'trial') {
+      var expires = Date.now() + 7 * 24 * 60 * 60 * 1000;
+      localStorage.setItem(TRIAL_KEY, String(expires));
+    } else if (unlockType === 'monthly' || unlockType === 'annual') {
+      localStorage.setItem(MONTHLY_KEY, '1');
+    }
+    history.replaceState({}, '', window.location.pathname);
+    // Redirect to watch now that it's unlocked
+    window.location.href = WATCH_URL;
+    return;
+  }
+
+  updateUI();
+})();
+
+function updateUI() {
+  var tier = getTier();
+  var navCta = document.getElementById('nav-cta');
+  var unlockBar = document.getElementById('unlock-bar');
+  var unlockBarText = document.getElementById('unlock-bar-text');
+  var unlockBarSub = document.getElementById('unlock-bar-sub');
+  var ctaBtns = document.getElementById('cta-btns');
+  var ctaNote = document.getElementById('cta-note');
+
+  if (tier === 'monthly') {
+    navCta.textContent = 'Open InAble →';
+    unlockBar.classList.add('visible');
+    unlockBarText.textContent = '✦ Monthly plan active';
+    unlockBarSub.textContent = 'Full access on this device. Open InAble anytime.';
+    ctaBtns.innerHTML = '<button class="btn-primary-lg" style="font-size:17px;padding:17px 36px;" onclick="window.location.href=\'inable-watch.html\'">Open InAble →</button>';
+    ctaNote.textContent = 'Your plan is active. Tap to open.';
+  } else if (tier === 'trial') {
+    var expiry = localStorage.getItem(TRIAL_KEY);
+    var daysLeft = Math.ceil((parseInt(expiry, 10) - Date.now()) / 86400000);
+    navCta.textContent = 'Open InAble →';
+    unlockBar.classList.add('visible');
+    unlockBarText.textContent = '✓ Trial active · ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left';
+    unlockBarSub.textContent = 'Upgrade to Monthly to keep access after your trial.';
+    ctaBtns.innerHTML = '<button class="btn-primary-lg" style="font-size:17px;padding:17px 36px;" onclick="window.location.href=\'inable-watch.html\'">Open InAble →</button><button class="btn-ghost-lg" onclick="handleCheckout(\'monthly\')">Upgrade to Monthly</button>';
+    ctaNote.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining on your trial.';
+  } else if (tier === 'expired') {
+    navCta.textContent = 'Upgrade';
+    ctaBtns.innerHTML = '<button class="btn-primary-lg" style="font-size:17px;padding:17px 36px;" onclick="handleCheckout(\'monthly\')">Upgrade to Monthly →</button><button class="btn-ghost-lg" onclick="handleCheckout(\'annual\')">Get Annual · $75/yr</button>';
+    ctaNote.textContent = 'Your trial has ended. Upgrade to keep full access.';
+  }
+  // free: default state, no changes needed
+}
+
 // Reveal on scroll
 var reveals = document.querySelectorAll('.reveal');
 var observer = new IntersectionObserver(function(entries) {
@@ -892,69 +982,6 @@ var observer = new IntersectionObserver(function(entries) {
   });
 }, { threshold: 0.12 });
 reveals.forEach(function(el) { observer.observe(el); });
-
-// Early Access Modal
-function openEarlyAccessModal() {
-  document.getElementById('eaOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  setTimeout(function() { document.getElementById('eaName').focus(); }, 100);
-}
-
-function closeEarlyAccessModal() {
-  document.getElementById('eaOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('eaOverlay')) {
-    closeEarlyAccessModal();
-  }
-}
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeEarlyAccessModal();
-});
-
-function submitEarlyAccess() {
-  var name = document.getElementById('eaName').value.trim();
-  var email = document.getElementById('eaEmail').value.trim();
-  var message = document.getElementById('eaMessage').value.trim();
-  var errEl = document.getElementById('eaErrorMsg');
-  var btn = document.getElementById('eaSubmitBtn');
-
-  errEl.textContent = '';
-
-  if (!name) { errEl.textContent = 'Please enter your name.'; return; }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
-
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
-
-  var formData = new FormData();
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('message', message || '(no message)');
-  formData.append('_subject', 'InAble Early Access Request — ' + name);
-
-  fetch('https://formspree.io/f/mbdbkznw', {
-    method: 'POST',
-    body: formData,
-    headers: { 'Accept': 'application/json' }
-  })
-  .then(function(res) {
-    if (res.ok) {
-      document.getElementById('eaFormState').style.display = 'none';
-      document.getElementById('eaSuccessState').style.display = 'block';
-    } else {
-      throw new Error('submission failed');
-    }
-  })
-  .catch(function() {
-    errEl.textContent = 'Something went wrong. Please email us directly at operations@aricciviclabs.org.';
-    btn.disabled = false;
-    btn.textContent = 'Request early access →';
-  });
-}
 </script>
 </body>
 </html>

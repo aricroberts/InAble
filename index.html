@@ -370,169 +370,6 @@
     nav { padding: 16px 20px; }
     .nav-links { display: none; }
   }
-
-  /* ── Live Demo Section ── */
-  .demo-section {
-    padding: 100px 24px;
-    background: radial-gradient(ellipse at 50% 0%, rgba(127,119,221,0.1) 0%, transparent 60%);
-    position: relative;
-  }
-  .demo-inner { max-width: 1100px; margin: 0 auto; }
-  .demo-header { text-align: center; margin-bottom: 56px; }
-  .demo-layout {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 60px;
-    align-items: start;
-  }
-  @media (max-width: 800px) {
-    .demo-layout { grid-template-columns: 1fr; gap: 40px; }
-    .demo-phone-col { display: flex; justify-content: center; }
-  }
-
-  /* Scenario picker */
-  .demo-controls { }
-  .demo-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 14px; }
-  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 32px; }
-  @media (max-width: 500px) { .scenario-grid { grid-template-columns: 1fr; } }
-  .scenario-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .scenario-btn:hover { border-color: rgba(127,119,221,0.4); background: rgba(127,119,221,0.06); }
-  .scenario-btn.active { border-color: var(--purple); background: rgba(127,119,221,0.12); }
-  .scenario-emoji { font-size: 20px; margin-bottom: 6px; display: block; }
-  .scenario-name { font-size: 13px; font-weight: 600; color: var(--text); display: block; }
-  .scenario-desc { font-size: 11px; color: var(--muted); margin-top: 2px; display: block; font-weight: 300; }
-
-  /* Demo mode tabs */
-  .demo-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: rgba(255,255,255,0.04); border-radius: 12px; padding: 4px; }
-  .demo-tab {
-    flex: 1; padding: 9px 12px; border-radius: 9px; border: none;
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    cursor: pointer; transition: all 0.2s; color: var(--muted); background: none;
-  }
-  .demo-tab.active { background: rgba(127,119,221,0.25); color: var(--purple-light); }
-
-  /* Flow panel */
-  .demo-panel { display: none; }
-  .demo-panel.active { display: block; }
-  .flow-btns-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .flow-demo-btn {
-    border: none; border-radius: 14px; padding: 18px 14px;
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
-  }
-  .flow-demo-btn:active { transform: scale(0.97); }
-  .flow-demo-btn-plus { background: rgba(29,158,117,0.15); border: 1px solid rgba(29,158,117,0.35); }
-  .flow-demo-btn-plus:hover { background: rgba(29,158,117,0.22); }
-  .flow-demo-btn-minus { background: rgba(83,74,183,0.15); border: 1px solid rgba(83,74,183,0.35); }
-  .flow-demo-btn-minus:hover { background: rgba(83,74,183,0.22); }
-  .flow-demo-symbol { font-size: 32px; font-weight: 700; line-height: 1; }
-  .flow-demo-btn-plus .flow-demo-symbol { color: var(--teal); }
-  .flow-demo-btn-minus .flow-demo-symbol { color: var(--purple); }
-  .flow-demo-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
-  .flow-demo-btn-plus .flow-demo-lbl { color: var(--teal); }
-  .flow-demo-btn-minus .flow-demo-lbl { color: var(--purple); }
-  .flow-demo-sublbl { font-size: 10px; color: var(--muted); font-weight: 300; }
-
-  .demo-result-box {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-    min-height: 80px;
-    position: relative;
-    transition: border-color 0.3s;
-  }
-  .demo-result-box.has-result { border-color: rgba(127,119,221,0.35); }
-  .demo-result-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
-  .demo-result-text { font-size: 15px; color: var(--text); line-height: 1.65; }
-  .demo-result-empty { font-size: 14px; color: var(--dim); font-style: italic; line-height: 1.6; }
-  .demo-dots { display: none; justify-content: center; align-items: center; gap: 5px; padding: 16px 0; }
-  .demo-dots.show { display: flex; }
-  .demo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); animation: demobounce 1s ease-in-out infinite; }
-  .demo-dot:nth-child(2) { animation-delay: 0.15s; }
-  .demo-dot:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes demobounce { 0%,100%{transform:translateY(0);opacity:0.5} 50%{transform:translateY(-5px);opacity:1} }
-  .demo-retry { font-size: 12px; color: var(--dim); margin-top: 10px; cursor: pointer; display: none; }
-  .demo-retry:hover { color: var(--muted); }
-  .demo-retry.show { display: block; }
-
-  /* Decoder panel */
-  .decoder-demo-input {
-    width: 100%; background: rgba(0,0,0,0.4);
-    border: 1px solid var(--border); border-radius: 12px;
-    color: var(--text); font-family: 'DM Sans', sans-serif;
-    font-size: 14px; padding: 14px 16px; resize: none;
-    outline: none; line-height: 1.6; height: 90px;
-    margin-bottom: 10px; transition: border-color 0.2s;
-  }
-  .decoder-demo-input:focus { border-color: rgba(127,119,221,0.5); }
-  .decoder-demo-submit {
-    width: 100%; border: none; border-radius: 12px;
-    background: rgba(83,74,183,0.3); border: 1px solid rgba(83,74,183,0.5);
-    color: var(--purple-light); font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 700; padding: 13px;
-    cursor: pointer; transition: all 0.2s; margin-bottom: 14px;
-    letter-spacing: 0.04em;
-  }
-  .decoder-demo-submit:hover { background: rgba(83,74,183,0.45); }
-  .decoder-demo-submit:active { transform: scale(0.98); }
-  .decoder-signal-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .decoder-chip { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
-  .dchip-pos  { background: rgba(29,158,117,0.2); color: var(--teal); }
-  .dchip-neu  { background: rgba(255,255,255,0.06); color: var(--muted); }
-  .dchip-warn { background: rgba(250,199,117,0.15); color: var(--amber); }
-
-  /* Phone preview column */
-  .demo-phone-wrap {
-    position: sticky;
-    top: 100px;
-  }
-  .demo-phone-frame {
-    width: 240px;
-    background: #0a0914;
-    border-radius: 40px;
-    border: 1px solid rgba(255,255,255,0.12);
-    overflow: hidden;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 0 8px #0d0c1a, 0 0 0 9px rgba(255,255,255,0.05);
-    margin: 0 auto;
-  }
-  .demo-phone-inner {
-    padding: 14px 12px 12px;
-    display: flex; flex-direction: column;
-  }
-  .dph-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .dph-logo { font-size: 15px; font-weight: 700; background: linear-gradient(135deg, #7F77DD, #5DCAA5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .dph-live { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--teal); font-weight: 700; }
-  .dph-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; }
-  .dph-scenario { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 9px; padding: 7px 9px; margin-bottom: 8px; font-size: 11px; color: var(--text); }
-  .dph-scenario-sub { font-size: 9px; color: var(--muted); margin-top: 2px; }
-  .dph-result-area { background: rgba(0,0,0,0.3); border: 1px solid rgba(127,119,221,0.2); border-radius: 10px; padding: 9px 10px; min-height: 80px; }
-  .dph-result-lbl { font-size: 8px; font-weight: 700; color: var(--purple-light); letter-spacing: 0.08em; margin-bottom: 5px; }
-  .dph-result-text { font-size: 10px; color: var(--text); line-height: 1.5; }
-  .dph-result-empty { font-size: 10px; color: var(--dim); font-style: italic; }
-  .dph-dots { display: none; justify-content: center; gap: 4px; padding: 10px 0; }
-  .dph-dots.show { display: flex; }
-  .dph-dot-anim { width: 4px; height: 4px; border-radius: 50%; background: var(--purple); animation: demobounce 1s ease-in-out infinite; }
-  .dph-dot-anim:nth-child(2) { animation-delay: 0.15s; }
-  .dph-dot-anim:nth-child(3) { animation-delay: 0.3s; }
-  .dph-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
-  .dph-chip { font-size: 8px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
-  .dph-chip.sig-pos  { background: rgba(29,158,117,0.2); color: var(--teal); }
-  .dph-chip.sig-neu  { background: rgba(255,255,255,0.06); color: var(--muted); }
-  .dph-chip.sig-warn { background: rgba(250,199,117,0.15); color: var(--amber); }
-
-  .demo-cta-nudge { margin-top: 32px; padding: 20px 24px; background: rgba(127,119,221,0.07); border: 1px solid rgba(127,119,221,0.18); border-radius: 16px; text-align: center; }
-  .demo-cta-nudge p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; font-weight: 300; }
 </style>
 </head>
 <body>
@@ -541,7 +378,7 @@
 <nav>
   <div class="nav-logo">
     <!-- InAble Logo: icon + wordmark -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 200" height="32" style="width:auto; overflow:visible">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 200" height="32" width="auto" style="overflow:visible">
       <defs>
         <linearGradient id="nl-brandText" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7F77DD"/><stop offset="100%" stop-color="#5DCAA5"/></linearGradient>
         <linearGradient id="nl-purpleGlass" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#AFA9EC" stop-opacity="0.34"/><stop offset="100%" stop-color="#3C3489" stop-opacity="0.44"/></linearGradient>
@@ -574,12 +411,11 @@
   </div>
   <div class="nav-links">
     <a href="#how">How it works</a>
-    <a href="#try" style="color:var(--purple-light); font-weight:600;">Try it</a>
     <a href="#decoder">Decoder</a>
     <a href="#flow">Flow</a>
     <a href="#devices">Devices</a>
   </div>
-  <button class="nav-cta">Get early access</button>
+  <a href="mailto:operations@aricciviclabs.org?subject=InAble%20Early%20Access" style="text-decoration:none;"><button class="nav-cta">Get early access</button></a>
 </nav>
 
 <!-- HERO -->
@@ -635,7 +471,7 @@
   </p>
 
   <div class="hero-ctas">
-    <button class="btn-primary-lg">Get early access →</button>
+    <a href="mailto:operations@aricciviclabs.org?subject=InAble%20Early%20Access" style="text-decoration:none;"><button class="btn-primary-lg">Get early access →</button></a>
     <button class="btn-ghost-lg">See how it works</button>
   </div>
 
@@ -736,134 +572,6 @@
       <div class="phase-label">Phase three</div>
       <div class="phase-name">Debrief</div>
       <p class="phase-desc">After. You write it out. InAble reads it — surfaces what worked, what to try next, and catches the moments you're still replaying at midnight.</p>
-    </div>
-  </div>
-</section>
-
-<!-- LIVE DEMO -->
-<section class="demo-section" id="try">
-  <div class="demo-inner">
-    <div class="demo-header reveal">
-      <div class="section-eyebrow">Try it now</div>
-      <h2 class="section-headline" style="margin:0 auto 16px; max-width:560px;">Real AI. Real suggestions.<br><em>Right here.</em></h2>
-      <p style="color:var(--muted); font-size:17px; max-width:480px; margin:0 auto; line-height:1.7; font-weight:300;">Pick a scenario, then tap Flow or use Decoder. These are live responses — the same AI that runs in the app.</p>
-    </div>
-
-    <div class="demo-layout reveal" style="transition-delay:0.1s;">
-
-      <!-- LEFT: Controls -->
-      <div class="demo-controls">
-        <div class="demo-label">1 — Pick your situation</div>
-        <div class="scenario-grid" id="scenario-grid">
-          <button class="scenario-btn active" data-scenario="networking" onclick="selectScenario(this)">
-            <span class="scenario-emoji">🤝</span>
-            <span class="scenario-name">Networking event</span>
-            <span class="scenario-desc">Industry mixer, ~40 people, mostly strangers</span>
-          </button>
-          <button class="scenario-btn" data-scenario="party" onclick="selectScenario(this)">
-            <span class="scenario-emoji">🎉</span>
-            <span class="scenario-name">Work holiday party</span>
-            <span class="scenario-desc">Team social, people you sort of know</span>
-          </button>
-          <button class="scenario-btn" data-scenario="dinner" onclick="selectScenario(this)">
-            <span class="scenario-emoji">🍽️</span>
-            <span class="scenario-name">Dinner with strangers</span>
-            <span class="scenario-desc">Friend's friends, 6 people, shared table</span>
-          </button>
-          <button class="scenario-btn" data-scenario="conference" onclick="selectScenario(this)">
-            <span class="scenario-emoji">🎤</span>
-            <span class="scenario-name">Conference hallway</span>
-            <span class="scenario-desc">Post-talk mingle, topic fading fast</span>
-          </button>
-        </div>
-
-        <div class="demo-label">2 — Choose a tool</div>
-        <div class="demo-tabs">
-          <button class="demo-tab active" id="tab-flow" onclick="switchTab('flow')">+ / − Flow</button>
-          <button class="demo-tab" id="tab-decoder" onclick="switchTab('decoder')">🔍 Decoder</button>
-        </div>
-
-        <!-- FLOW PANEL -->
-        <div class="demo-panel active" id="panel-flow">
-          <p style="font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.6; font-weight:300;">Tap + to get a move that deepens or widens the conversation. Tap − to gracefully pull back and hand the floor.</p>
-          <div class="flow-btns-row">
-            <button class="flow-demo-btn flow-demo-btn-plus" onclick="runFlow('up')">
-              <span class="flow-demo-symbol">+</span>
-              <span class="flow-demo-lbl">Increase</span>
-              <span class="flow-demo-sublbl">Deepen or widen</span>
-            </button>
-            <button class="flow-demo-btn flow-demo-btn-minus" onclick="runFlow('down')">
-              <span class="flow-demo-symbol">−</span>
-              <span class="flow-demo-lbl">Decrease</span>
-              <span class="flow-demo-sublbl">Hand the floor</span>
-            </button>
-          </div>
-          <div class="demo-result-box" id="flow-result-box">
-            <div class="demo-dots" id="flow-dots">
-              <div class="demo-dot"></div><div class="demo-dot"></div><div class="demo-dot"></div>
-            </div>
-            <div class="demo-result-empty" id="flow-empty">Tap + or − above to get a live suggestion from InAble.</div>
-            <div style="display:none;" id="flow-result-content">
-              <div class="demo-result-label" id="flow-result-label" style="color:var(--teal);">↑ DEEPEN / WIDEN</div>
-              <div class="demo-result-text" id="flow-result-text"></div>
-            </div>
-          </div>
-          <div class="demo-retry show" id="flow-retry" style="display:none;" onclick="runFlow(lastFlowDir)">↻ tap for another suggestion</div>
-        </div>
-
-        <!-- DECODER PANEL -->
-        <div class="demo-panel" id="panel-decoder">
-          <p style="font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.6; font-weight:300;">Describe a moment you're still thinking about. InAble gives you a straight, honest read — not reassurance.</p>
-          <textarea class="decoder-demo-input" id="decoder-demo-input" placeholder="e.g. 'I made a joke and two people laughed but one person went quiet. Was it too much?'"></textarea>
-          <button class="decoder-demo-submit" onclick="runDemoDecoder()">✦ Read this for me</button>
-          <div class="demo-result-box" id="decoder-result-box">
-            <div class="demo-dots" id="decoder-dots">
-              <div class="demo-dot"></div><div class="demo-dot"></div><div class="demo-dot"></div>
-            </div>
-            <div class="demo-result-empty" id="decoder-empty">Describe a moment above and InAble will interpret it.</div>
-            <div style="display:none;" id="decoder-result-content">
-              <div class="demo-result-label" style="color:var(--purple-light);">INABLE SAYS</div>
-              <div class="demo-result-text" id="decoder-result-text"></div>
-              <div class="decoder-signal-chips" id="decoder-chips"></div>
-            </div>
-          </div>
-          <div style="display:none;" id="decoder-retry" onclick="runDemoDecoder()" style="font-size:12px; color:var(--dim); margin-top:10px; cursor:pointer;">↻ try again</div>
-        </div>
-
-        <div class="demo-cta-nudge">
-          <p>This is just two of InAble's tools — the full app adds Prep, live Coach suggestions, and Debrief with session tracking.</p>
-          <button class="btn-primary-lg" style="font-size:14px; padding:12px 28px;">Get early access →</button>
-        </div>
-      </div>
-
-      <!-- RIGHT: Phone preview -->
-      <div class="demo-phone-col">
-        <div class="demo-phone-wrap">
-          <div class="demo-phone-frame">
-            <div class="demo-phone-inner">
-              <div class="dph-header">
-                <span class="dph-logo">InAble</span>
-                <span class="dph-live"><span class="dph-dot"></span>Live</span>
-              </div>
-              <div class="dph-scenario" id="dph-scenario">
-                🤝 Networking event
-                <div class="dph-scenario-sub">Industry mixer · ~40 people</div>
-              </div>
-              <div class="dph-result-area">
-                <div class="dph-dots" id="dph-dots">
-                  <div class="dph-dot-anim"></div><div class="dph-dot-anim"></div><div class="dph-dot-anim"></div>
-                </div>
-                <div class="dph-result-lbl" id="dph-lbl" style="display:none;">INABLE SAYS</div>
-                <div class="dph-result-text" id="dph-text" style="display:none;"></div>
-                <div class="dph-chips" id="dph-chips"></div>
-                <div class="dph-result-empty" id="dph-empty">Tap a button on the left to see InAble in action.</div>
-              </div>
-            </div>
-          </div>
-          <div class="device-label" style="margin-top:16px; text-align:center;">Live demo · real AI</div>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
@@ -1023,7 +731,7 @@
     <h2 class="cta-headline">You belong<br><em>in the room.</em></h2>
     <p class="cta-sub">InAble doesn't make you an extrovert. It makes you an introvert with backup. Get early access.</p>
     <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-      <button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;">Get early access →</button>
+      <a href="mailto:operations@aricciviclabs.org?subject=InAble%20Early%20Access" style="text-decoration:none;"><button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;">Get early access →</button></a>
     </div>
     <p style="margin-top:20px; font-size:13px; color:var(--dim);">Available on iOS, Android, Apple Watch &amp; WearOS</p>
   </div>
@@ -1062,219 +770,6 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.12 });
 reveals.forEach(el => observer.observe(el));
-
-// ── Demo logic ──
-var currentScenario = 'networking';
-var lastFlowDir = 'up';
-
-var SCENARIO_META = {
-  networking: { label: '🤝 Networking event', sub: 'Industry mixer · ~40 people', ctx: 'a professional networking event with ~40 people, mostly strangers, industry mixer vibe' },
-  party: { label: '🎉 Work holiday party', sub: 'Team social · people you sort of know', ctx: 'a work holiday party, ~20–30 colleagues, semi-social, mixture of close teammates and people you rarely speak to' },
-  dinner: { label: '🍽️ Dinner with strangers', sub: "Friend's friends · 6 people", ctx: "a dinner party with 6 people, your friend's friends, seated around a table, getting to know each other" },
-  conference: { label: '🎤 Conference hallway', sub: 'Post-talk mingle · topic fading', ctx: 'a conference hallway networking moment after a session, topic is starting to fade, ~3 people, professional context' }
-};
-
-function selectScenario(btn) {
-  document.querySelectorAll('.scenario-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  currentScenario = btn.getAttribute('data-scenario');
-  var meta = SCENARIO_META[currentScenario];
-  document.getElementById('dph-scenario').innerHTML = meta.label + '<div class="dph-scenario-sub">' + meta.sub + '</div>';
-  // Reset results when scenario changes
-  resetFlowResult();
-  resetDecoderResult();
-}
-
-function switchTab(tab) {
-  document.getElementById('tab-flow').classList.toggle('active', tab === 'flow');
-  document.getElementById('tab-decoder').classList.toggle('active', tab === 'decoder');
-  document.getElementById('panel-flow').classList.toggle('active', tab === 'flow');
-  document.getElementById('panel-decoder').classList.toggle('active', tab === 'decoder');
-}
-
-function setPhoneLoading(show) {
-  document.getElementById('dph-dots').classList.toggle('show', show);
-  document.getElementById('dph-empty').style.display = show ? 'none' : '';
-}
-
-function setPhoneResult(lbl, text, chips, lblColor) {
-  document.getElementById('dph-dots').classList.remove('show');
-  document.getElementById('dph-empty').style.display = 'none';
-  var lblEl = document.getElementById('dph-lbl');
-  var txtEl = document.getElementById('dph-text');
-  lblEl.textContent = lbl;
-  lblEl.style.color = lblColor || 'var(--purple-light)';
-  lblEl.style.display = 'block';
-  txtEl.textContent = text;
-  txtEl.style.display = 'block';
-  var chipsEl = document.getElementById('dph-chips');
-  chipsEl.innerHTML = '';
-  if (chips) {
-    var clsMap = { 'dchip-pos': 'sig-pos', 'dchip-neu': 'sig-neu', 'dchip-warn': 'sig-warn' };
-    chips.slice(0, 3).forEach(function(c) {
-      var s = document.createElement('span');
-      s.className = 'dph-chip ' + (clsMap[c.cls] || 'sig-neu');
-      s.textContent = c.text;
-      chipsEl.appendChild(s);
-    });
-  }
-}
-
-function resetFlowResult() {
-  document.getElementById('flow-empty').style.display = 'block';
-  document.getElementById('flow-result-content').style.display = 'none';
-  document.getElementById('flow-result-box').classList.remove('has-result');
-  document.getElementById('flow-dots').classList.remove('show');
-  document.getElementById('flow-retry').style.display = 'none';
-}
-
-function resetDecoderResult() {
-  document.getElementById('decoder-empty').style.display = 'block';
-  document.getElementById('decoder-result-content').style.display = 'none';
-  document.getElementById('decoder-result-box').classList.remove('has-result');
-  document.getElementById('decoder-dots').classList.remove('show');
-  document.getElementById('decoder-retry').style.display = 'none';
-}
-
-async function callClaudeDemo(system, user, onChunk) {
-  var res = await fetch('/api/claude', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 200,
-      stream: true,
-      system: system,
-      messages: [{ role: 'user', content: user }]
-    })
-  });
-  if (!res.ok) throw new Error('api');
-  var reader = res.body.getReader();
-  var dec = new TextDecoder();
-  var full = '';
-  while (true) {
-    var chunk = await reader.read();
-    if (chunk.done) break;
-    var lines = dec.decode(chunk.value).split('\n').filter(function(l) { return l.startsWith('data: '); });
-    for (var i = 0; i < lines.length; i++) {
-      try {
-        var d = JSON.parse(lines[i].slice(6));
-        if (d.type === 'content_block_delta' && d.delta && d.delta.text) {
-          full += d.delta.text;
-          if (onChunk) onChunk(full);
-        }
-      } catch(e) {}
-    }
-  }
-  return full;
-}
-
-async function runFlow(dir) {
-  lastFlowDir = dir;
-  var meta = SCENARIO_META[currentScenario];
-  var isUp = dir === 'up';
-
-  // UI: loading state
-  document.getElementById('flow-empty').style.display = 'none';
-  document.getElementById('flow-result-content').style.display = 'none';
-  document.getElementById('flow-dots').classList.add('show');
-  document.getElementById('flow-result-box').classList.remove('has-result');
-  document.getElementById('flow-retry').style.display = 'none';
-  setPhoneLoading(true);
-
-  var labelText = isUp ? '↑ DEEPEN / WIDEN' : '↓ HAND THE FLOOR';
-  var labelColor = isUp ? 'var(--teal)' : 'var(--purple)';
-  document.getElementById('flow-result-label').textContent = labelText;
-  document.getElementById('flow-result-label').style.color = labelColor;
-
-  var system = 'You are InAble, a social coach for introverts. Give ONE specific, immediately usable suggestion (max 2 short sentences) for someone who wants to ' + (isUp ? 'deepen connection or bring more people into the conversation' : 'reduce their speaking load while staying present and gracefully hand the conversational floor to others') + '. Context: ' + meta.ctx + '. ' + (isUp ? 'Give a phrase in quotes they can actually say, or one concrete tactic.' : 'Give a redirect phrase in quotes or a specific step-back move.') + ' No preamble. No labels. No em-dashes at the start.';
-
-  var resultText = document.getElementById('flow-result-text');
-  var phoneText = '';
-
-  try {
-    await callClaudeDemo(system, 'Direction: ' + (isUp ? 'increase' : 'decrease'), function(t) {
-      resultText.textContent = t;
-      phoneText = t;
-      document.getElementById('dph-text').textContent = t.length > 120 ? t.slice(0, 120) + '…' : t;
-    });
-
-    document.getElementById('flow-dots').classList.remove('show');
-    document.getElementById('flow-result-content').style.display = 'block';
-    document.getElementById('flow-result-box').classList.add('has-result');
-    document.getElementById('flow-retry').style.display = 'block';
-    setPhoneResult(labelText, phoneText.length > 110 ? phoneText.slice(0, 110) + '…' : phoneText, null, labelColor);
-
-  } catch(e) {
-    document.getElementById('flow-dots').classList.remove('show');
-    document.getElementById('flow-empty').style.display = 'block';
-    document.getElementById('flow-empty').textContent = 'Could not reach InAble right now — try again in a moment.';
-    document.getElementById('dph-empty').style.display = 'block';
-    document.getElementById('dph-dots').classList.remove('show');
-  }
-}
-
-async function runDemoDecoder() {
-  var input = document.getElementById('decoder-demo-input').value.trim();
-  if (!input) { document.getElementById('decoder-demo-input').focus(); return; }
-
-  document.getElementById('decoder-empty').style.display = 'none';
-  document.getElementById('decoder-result-content').style.display = 'none';
-  document.getElementById('decoder-dots').classList.add('show');
-  document.getElementById('decoder-result-box').classList.remove('has-result');
-  document.getElementById('decoder-retry').style.display = 'none';
-  document.getElementById('decoder-chips').innerHTML = '';
-  setPhoneLoading(true);
-
-  var system = 'You are InAble — a sharp, emotionally literate social interpreter for introverts. Interpret the conversational moment honestly in 2-3 short sentences. Do not give generic reassurance. Be specific and real. Then end with exactly: SIGNALS:["tag","tag","tag"] — 2-4 lowercase word tags (2-4 words each), an honest mix of positive, neutral, and cautionary where warranted. Max 90 words total before SIGNALS.';
-
-  var full = '';
-  var resultTextEl = document.getElementById('decoder-result-text');
-
-  try {
-    await callClaudeDemo(system, input, function(t) {
-      full = t;
-      var sigIdx = t.indexOf('SIGNALS:');
-      resultTextEl.textContent = sigIdx > -1 ? t.slice(0, sigIdx).trim() : t;
-      document.getElementById('dph-text').textContent = (sigIdx > -1 ? t.slice(0, sigIdx).trim() : t).slice(0, 110) + (t.length > 110 ? '…' : '');
-    });
-
-    // Parse signals
-    var chips = [];
-    var m = full.match(/SIGNALS:\[([^\]]+)\]/);
-    if (m) {
-      try {
-        var tags = JSON.parse('[' + m[1] + ']');
-        var posWords = ['landed','engaged','interested','warm','genuine','real','authentic','processed','good','connection','strong'];
-        var warnWords = ['flat','overshare','misstep','cold','awkward','watch','careful','missed','overplayed'];
-        tags.forEach(function(t) {
-          var cls = posWords.some(function(p) { return t.includes(p); }) ? 'dchip-pos' : warnWords.some(function(w) { return t.includes(w); }) ? 'dchip-warn' : 'dchip-neu';
-          chips.push({ text: t, cls: cls });
-          var s = document.createElement('span');
-          s.className = 'decoder-chip ' + cls;
-          s.textContent = t;
-          document.getElementById('decoder-chips').appendChild(s);
-        });
-      } catch(e) {}
-    }
-
-    document.getElementById('decoder-dots').classList.remove('show');
-    document.getElementById('decoder-result-content').style.display = 'block';
-    document.getElementById('decoder-result-box').classList.add('has-result');
-    document.getElementById('decoder-retry').style.display = 'block';
-
-    var finalText = full.replace(/SIGNALS:\[[\s\S]*\]/, '').trim();
-    var phoneChips = chips.slice(0, 3);
-    setPhoneResult('INABLE SAYS', finalText.length > 100 ? finalText.slice(0, 100) + '…' : finalText, phoneChips, 'var(--purple-light)');
-
-  } catch(e) {
-    document.getElementById('decoder-dots').classList.remove('show');
-    document.getElementById('decoder-empty').style.display = 'block';
-    document.getElementById('decoder-empty').textContent = 'Could not reach InAble right now — try again in a moment.';
-    document.getElementById('dph-empty').style.display = 'block';
-    document.getElementById('dph-dots').classList.remove('show');
-  }
-}
 </script>
 </body>
 </html>

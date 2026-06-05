@@ -45,7 +45,7 @@
   .tagline { font-size: 9px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
   .pulse-ring { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s ease infinite; margin-top: 2px; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(0.8)} }
-  .home-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 100%; margin-top: 8px; }
+  .home-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; margin-top: 8px; }
   .home-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 7px 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: background 0.15s; }
   .home-btn:active { background: rgba(127,119,221,0.2); }
   .home-btn-icon { font-size: 15px; }
@@ -151,6 +151,43 @@
 
   /* ── Bottom bar hint ── */
   .scroll-hint { font-size: 7px; color: var(--dimmer); text-align: center; padding: 2px 0; flex-shrink: 0; }
+
+  /* ── Paywall screen ── */
+  #paywall { background: radial-gradient(ellipse at 50% 20%, #1a1542 0%, #080710 65%); align-items: center; justify-content: flex-start; padding-top: 18px; gap: 0; }
+  .pw-icon { font-size: 24px; margin-bottom: 4px; }
+  .pw-title { font-size: 13px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 3px; }
+  .pw-sub { font-size: 9px; color: var(--muted); text-align: center; line-height: 1.5; margin-bottom: 12px; padding: 0 8px; }
+  .pw-plan { width: 100%; border-radius: 12px; padding: 10px 10px 9px; margin-bottom: 6px; cursor: pointer; border: none; font-family: inherit; text-align: left; transition: all 0.15s; }
+  .pw-plan:active { transform: scale(0.97); }
+  .pw-plan-trial { background: rgba(93,202,165,0.15); border: 1px solid rgba(93,202,165,0.4); }
+  .pw-plan-monthly { background: rgba(127,119,221,0.15); border: 1px solid rgba(127,119,221,0.4); }
+  .pw-plan-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+  .pw-plan-name { font-size: 11px; font-weight: 700; }
+  .pw-plan-trial .pw-plan-name { color: var(--teal); }
+  .pw-plan-monthly .pw-plan-name { color: var(--purple); }
+  .pw-plan-price { font-size: 11px; font-weight: 700; }
+  .pw-plan-trial .pw-plan-price { color: var(--teal); }
+  .pw-plan-monthly .pw-plan-price { color: var(--purple); }
+  .pw-plan-desc { font-size: 8px; color: var(--muted); line-height: 1.4; }
+  .pw-badge { font-size: 7px; font-weight: 700; padding: 1px 5px; border-radius: 5px; background: rgba(93,202,165,0.2); color: var(--teal); margin-left: 5px; }
+  .pw-free-link { font-size: 8px; color: var(--dimmer); text-align: center; margin-top: 4px; cursor: pointer; text-decoration: underline; }
+
+  /* ── Upgrade screen (trial expired) ── */
+  #upgrade { background: radial-gradient(ellipse at 50% 20%, #1a1240 0%, #080710 65%); align-items: center; justify-content: flex-start; padding-top: 14px; }
+  .up-icon { font-size: 20px; margin-bottom: 3px; }
+  .up-title { font-size: 12px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 2px; }
+  .up-sub { font-size: 9px; color: var(--muted); text-align: center; line-height: 1.5; margin-bottom: 10px; padding: 0 6px; }
+  .up-days { font-size: 9px; font-weight: 700; color: var(--amber); text-align: center; margin-bottom: 8px; }
+
+  /* ── Usage counter badge ── */
+  .usage-pill { font-size: 7px; font-weight: 700; padding: 2px 6px; border-radius: 6px; background: rgba(250,199,117,0.15); color: var(--amber); }
+  .usage-pill.ok { background: rgba(93,202,165,0.12); color: var(--teal); }
+
+  /* ── Locked debrief overlay ── */
+  .debrief-lock { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 5px; padding: 10px; }
+  .debrief-lock-icon { font-size: 20px; }
+  .debrief-lock-text { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.45; }
+  .debrief-lock-btn { border: none; border-radius: 10px; padding: 8px 14px; background: rgba(127,119,221,0.25); border: 1px solid rgba(127,119,221,0.5); color: var(--purple); font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 3px; }
 </style>
 </head>
 <body>
@@ -161,19 +198,24 @@
   <div class="tagline">Introvert Able</div>
   <div class="pulse-ring"></div>
   <div class="home-btns">
-    <div class="home-btn" onclick="go('coach')">
+    <div class="home-btn" onclick="guardedGo('coach')">
       <div class="home-btn-icon">💬</div>
       <div class="home-btn-label">Coach</div>
     </div>
-    <div class="home-btn" onclick="go('prep')">
+    <div class="home-btn" onclick="guardedGo('prep')">
       <div class="home-btn-icon">📋</div>
       <div class="home-btn-label">Prep</div>
     </div>
-    <div class="home-btn" onclick="go('debrief')">
+    <div class="home-btn" onclick="guardedGo('debrief')">
       <div class="home-btn-icon">📈</div>
       <div class="home-btn-label">Debrief</div>
     </div>
+    <div class="home-btn" onclick="guardedGo('decoder')">
+      <div class="home-btn-icon">🔍</div>
+      <div class="home-btn-label">Decode</div>
+    </div>
   </div>
+  <div id="home-status" style="font-size:8px; color:var(--muted); margin-top:8px; text-align:center;"></div>
 </div>
 
 <!-- COACH -->
@@ -181,7 +223,7 @@
   <div class="w-header">
     <button class="w-back" onclick="go('home')">←</button>
     <span class="w-title">Coach</span>
-    <span class="w-badge badge-coach">Live</span>
+    <span class="w-badge badge-coach" id="coach-usage-badge">Live</span>
   </div>
   <div class="energy-wrap">
     <div class="energy-row">
@@ -207,8 +249,8 @@
   </div>
   <div class="scroll-hint">↕ scroll · tap for more</div>
   <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; margin-top:4px; flex-shrink:0;">
-    <button class="tap-btn btn-teal" style="padding:7px 4px; font-size:9px;" onclick="go('flow-screen')">+ / −<br><span style="font-size:7px; font-weight:400;">flow</span></button>
-    <button class="tap-btn btn-purple" style="padding:7px 4px; font-size:9px;" onclick="go('decoder')">🔍<br><span style="font-size:7px; font-weight:400;">decode</span></button>
+    <button class="tap-btn btn-teal" style="padding:7px 4px; font-size:9px;" onclick="guardedGo('flow-screen')">+ / −<br><span style="font-size:7px; font-weight:400;">flow</span></button>
+    <button class="tap-btn btn-purple" style="padding:7px 4px; font-size:9px;" onclick="guardedGo('decoder')">🔍<br><span style="font-size:7px; font-weight:400;">decode</span></button>
     <button class="tap-btn btn-coral" style="padding:7px 4px; font-size:9px;">🚪<br><span style="font-size:7px; font-weight:400;">exit</span></button>
   </div>
 </div>
@@ -239,8 +281,8 @@
     </div>
   </div>
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; flex-shrink:0; margin-top:5px;">
-    <button class="tap-btn btn-teal" style="font-size:9px; padding:7px 4px;" onclick="go('flow-screen')">+ / − Flow</button>
-    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="go('decoder')">🔍 Decode</button>
+    <button class="tap-btn btn-teal" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('flow-screen')">+ / − Flow</button>
+    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('decoder')">🔍 Decode</button>
   </div>
 </div>
 
@@ -249,8 +291,15 @@
   <div class="w-header">
     <button class="w-back" onclick="go('home')">←</button>
     <span class="w-title">Debrief</span>
-    <span class="w-badge badge-debrief">After</span>
+    <span class="w-badge badge-debrief" id="debrief-badge">After</span>
   </div>
+  <!-- Locked state (free users) -->
+  <div id="debrief-locked" class="debrief-lock" style="display:none;">
+    <div class="debrief-lock-icon">🔒</div>
+    <div class="debrief-lock-text">Debrief is available on the<br>Trial &amp; Monthly plans.</div>
+    <button class="debrief-lock-btn" onclick="go('paywall'); pwSource='debrief';">Unlock InAble</button>
+  </div>
+  <!-- Unlocked entry state -->
   <div id="debrief-entry">
     <textarea class="debrief-textarea" placeholder="How did it go? Any moments you're still thinking about…" id="debrief-input"></textarea>
     <button class="tap-btn btn-purple" style="margin-top:4px;" onclick="runDebrief()">✦ Debrief with InAble</button>
@@ -262,11 +311,11 @@
       <div class="stat-box"><div class="stat-num" style="color:var(--purple);" id="d-conf">+12%</div><div class="stat-lbl">confidence</div></div>
     </div>
     <div class="scroll-area" id="debrief-wins"></div>
-    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px; margin-top:4px;" onclick="go('decoder')">🔍 Decode a moment</button>
+    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px; margin-top:4px;" onclick="guardedGo('decoder')">🔍 Decode a moment</button>
   </div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; flex-shrink:0; margin-top:4px;">
-    <button class="tap-btn btn-amber" style="font-size:9px; padding:7px 4px;" onclick="go('flow-screen')">+ / − Flow</button>
-    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="go('decoder')">🔍 Decode</button>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; flex-shrink:0; margin-top:4px;" id="debrief-footer">
+    <button class="tap-btn btn-amber" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('flow-screen')">+ / − Flow</button>
+    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('decoder')">🔍 Decode</button>
   </div>
 </div>
 
@@ -300,7 +349,7 @@
   <div class="w-header">
     <button class="w-back" onclick="goBack()">←</button>
     <span class="w-title">Decoder</span>
-    <span class="w-badge" style="background:rgba(127,119,221,0.2);color:var(--purple);">InAble</span>
+    <span class="w-badge" id="decoder-usage-badge" style="background:rgba(127,119,221,0.2);color:var(--purple);">InAble</span>
   </div>
   <textarea class="decoder-input" id="decoder-input" placeholder="e.g. 'I told a story and she laughed then checked her phone…'"></textarea>
   <button class="tap-btn btn-purple" style="margin-top:5px; font-size:10px; padding:8px;" onclick="runDecoder()">✦ Read this for me</button>
@@ -314,130 +363,345 @@
   </div>
 </div>
 
+<!-- PAYWALL -->
+<div id="paywall" class="screen">
+  <div class="pw-icon">✦</div>
+  <div class="pw-title">Unlock InAble</div>
+  <div class="pw-sub" id="pw-sub-text">You've used your free turns.<br>Keep going with a Trial or Monthly plan.</div>
+  <button class="pw-plan pw-plan-trial" onclick="handleCheckout('trial')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Trial Week <span class="pw-badge">Popular</span></span>
+      <span class="pw-plan-price">$1.99</span>
+    </div>
+    <div class="pw-plan-desc">Full access to all 4 modes for 7 days. No commitment.</div>
+  </button>
+  <button class="pw-plan pw-plan-monthly" onclick="handleCheckout('monthly')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Monthly Plan</span>
+      <span class="pw-plan-price">$6.99<span style="font-size:8px;font-weight:400;">/mo</span></span>
+    </div>
+    <div class="pw-plan-desc">Everything in Trial, always on. Library coming soon — save your best Coach lines &amp; patterns.</div>
+  </button>
+  <div class="pw-free-link" onclick="go('home')">← Go back, stay free</div>
+</div>
+
+<!-- UPGRADE (trial expired) -->
+<div id="upgrade" class="screen">
+  <div class="up-icon">⏱</div>
+  <div class="up-title">Your trial has ended</div>
+  <div class="up-sub">Ready to keep going? Your Coach lines, Decoder reads, and Debrief insights are waiting.</div>
+  <div class="up-days">$6.99/month · $75/year</div>
+  <button class="pw-plan pw-plan-monthly" style="width:100%;" onclick="handleCheckout('monthly')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Go Monthly</span>
+      <span class="pw-plan-price">$6.99<span style="font-size:8px;font-weight:400;">/mo</span></span>
+    </div>
+    <div class="pw-plan-desc">Full access + Library (coming soon) — save your best responses and patterns.</div>
+  </button>
+  <button class="pw-plan pw-plan-trial" style="width:100%; margin-top:0;" onclick="handleCheckout('annual')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Go Annual <span class="pw-badge">Save 30%</span></span>
+      <span class="pw-plan-price">$75<span style="font-size:8px;font-weight:400;">/yr</span></span>
+    </div>
+    <div class="pw-plan-desc">Best value. Same as Monthly, billed once a year.</div>
+  </button>
+  <div class="pw-free-link" onclick="dropToFree()">Continue with free limits</div>
+</div>
+
 <script>
-let prevScreen = 'home';
-let currentFlowDir = 'up';
-let currentPhase = 'coach';
+// ── Stripe Payment Links ──
+var STRIPE_LINKS = {
+  trial:   'https://buy.stripe.com/eVq6oI9Me2b89Y30pB7N60v',
+  monthly: 'https://buy.stripe.com/cNidRa4rU2b8dafb4f7N60u',
+  annual:  'https://buy.stripe.com/dRm5kE5vY5nk8TZdcn7N60t'
+};
+
+var SUCCESS_PARAM = 'inable_unlocked';
+var TRIAL_KEY     = 'inable_trial_expiry';
+var MONTHLY_KEY   = 'inable_monthly';
+
+// ── Usage counters (session-only, reset on refresh) ──
+var usage = { coach: 0, decoder: 0, prep: 0 };
+var FREE_LIMITS = { coach: 3, decoder: 2, prep: 1 };
+
+// ── State ──
+var pwSource = 'home'; // which screen triggered the paywall
+
+// ── Access check ──
+function isUnlocked() {
+  if (sessionStorage.getItem(MONTHLY_KEY) === '1') return true;
+  var expiry = sessionStorage.getItem(TRIAL_KEY);
+  if (expiry && Date.now() < parseInt(expiry, 10)) return true;
+  return false;
+}
+
+function isTrialExpired() {
+  var expiry = sessionStorage.getItem(TRIAL_KEY);
+  return expiry && Date.now() >= parseInt(expiry, 10);
+}
+
+// ── On load: check for Stripe return or trial expiry ──
+(function init() {
+  var params = new URLSearchParams(window.location.search);
+  var unlockType = params.get(SUCCESS_PARAM);
+  if (unlockType) {
+    if (unlockType === 'trial') {
+      var expires = Date.now() + 7 * 24 * 60 * 60 * 1000;
+      sessionStorage.setItem(TRIAL_KEY, String(expires));
+    } else if (unlockType === 'monthly' || unlockType === 'annual') {
+      sessionStorage.setItem(MONTHLY_KEY, '1');
+    }
+    history.replaceState({}, '', window.location.pathname);
+  }
+
+  // If trial just expired on a new open, go straight to upgrade screen
+  if (isTrialExpired() && !sessionStorage.getItem(MONTHLY_KEY)) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('upgrade').classList.add('active');
+    return;
+  }
+
+  updateHomeStatus();
+  updateUsageBadges();
+})();
+
+// ── Navigation ──
+var prevScreen = 'home';
+var currentFlowDir = 'up';
+var currentPhase = 'coach';
 
 function go(id) {
-  if (id !== 'home') { prevScreen = document.querySelector('.screen.active')?.id || 'home'; }
+  if (id !== 'home') { prevScreen = document.querySelector('.screen.active') ? document.querySelector('.screen.active').id : 'home'; }
   if (id === 'flow-screen') { document.getElementById('flow-phase-badge').textContent = currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1); }
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
-  if (['coach','prep','debrief'].includes(id)) currentPhase = id;
+  if (id === 'coach' || id === 'prep' || id === 'debrief') currentPhase = id;
+
+  // Handle debrief lock state
+  if (id === 'debrief') {
+    var locked = !isUnlocked();
+    document.getElementById('debrief-locked').style.display = locked ? 'flex' : 'none';
+    document.getElementById('debrief-entry').style.display = locked ? 'none' : 'block';
+    document.getElementById('debrief-result').style.display = 'none';
+    document.getElementById('debrief-footer').style.display = locked ? 'none' : 'grid';
+  }
 }
+
 function goBack() { go(prevScreen); }
 
+// ── Guarded navigation: check usage limits before entering ──
+function guardedGo(id) {
+  if (isUnlocked()) { go(id); return; }
+
+  var limitMap = { coach: 'coach', decoder: 'decoder', prep: 'prep', 'flow-screen': 'coach' };
+  var limitKey = limitMap[id];
+
+  if (limitKey && usage[limitKey] >= FREE_LIMITS[limitKey]) {
+    pwSource = id;
+    var subEl = document.getElementById('pw-sub-text');
+    var msgs = {
+      coach: "You've used your 3 free Coach taps.",
+      decoder: "You've used your 2 free Decoder reads.",
+      prep: "You've used your free Prep session.",
+      debrief: "Debrief is available on Trial &amp; Monthly plans."
+    };
+    subEl.innerHTML = (msgs[limitKey] || msgs[limitKey]) + '<br>Keep going with a plan.';
+    go('paywall');
+    return;
+  }
+  go(id);
+}
+
+function dropToFree() {
+  sessionStorage.removeItem(TRIAL_KEY);
+  go('home');
+  updateHomeStatus();
+  updateUsageBadges();
+}
+
+// ── Checkout ──
+function handleCheckout(product) {
+  var base = STRIPE_LINKS[product];
+  if (!base) {
+    alert('Unknown product: ' + product);
+    return;
+  }
+  window.location.href = base;
+}
+
+// ── UI helpers ──
+function updateHomeStatus() {
+  var el = document.getElementById('home-status');
+  if (isUnlocked()) {
+    var expiry = sessionStorage.getItem(TRIAL_KEY);
+    if (sessionStorage.getItem(MONTHLY_KEY) === '1') {
+      el.innerHTML = '<span style="color:var(--purple);">✦ Monthly</span>';
+    } else if (expiry) {
+      var daysLeft = Math.ceil((parseInt(expiry,10) - Date.now()) / 86400000);
+      el.innerHTML = '<span style="color:var(--teal);">Trial · ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left</span>';
+    }
+  } else {
+    el.innerHTML = '<span style="color:var(--dimmer);">Free · limited</span>';
+  }
+}
+
+function updateUsageBadges() {
+  var coachBadge = document.getElementById('coach-usage-badge');
+  var decoderBadge = document.getElementById('decoder-usage-badge');
+  if (isUnlocked()) {
+    coachBadge.textContent = 'Live';
+    coachBadge.className = 'w-badge badge-coach';
+    decoderBadge.textContent = 'InAble';
+    decoderBadge.className = 'w-badge';
+    decoderBadge.style.cssText = 'background:rgba(127,119,221,0.2);color:var(--purple);';
+  } else {
+    var cLeft = FREE_LIMITS.coach - usage.coach;
+    coachBadge.textContent = cLeft + ' left';
+    coachBadge.className = 'w-badge ' + (cLeft > 0 ? 'usage-pill ok' : 'usage-pill');
+    var dLeft = FREE_LIMITS.decoder - usage.decoder;
+    decoderBadge.textContent = dLeft + ' left';
+    decoderBadge.className = 'w-badge ' + (dLeft > 0 ? 'usage-pill ok' : 'usage-pill');
+    decoderBadge.style.cssText = '';
+  }
+}
+
+// ── API ──
 async function callClaude(system, user, onChunk) {
-  const res = await fetch('/api/claude', {
+  var res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 200,
       stream: true,
-      system,
-      messages: [{ role: 'user', content: user }],
-    }),
+      system: system,
+      messages: [{ role: 'user', content: user }]
+    })
   });
-  const reader = res.body.getReader();
-  const dec = new TextDecoder();
-  let full = '';
+  var reader = res.body.getReader();
+  var dec = new TextDecoder();
+  var full = '';
   while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    for (const line of dec.decode(value).split('\n').filter(l => l.startsWith('data: '))) {
+    var chunk = await reader.read();
+    if (chunk.done) break;
+    var lines = dec.decode(chunk.value).split('\n').filter(function(l) { return l.indexOf('data: ') === 0; });
+    for (var i = 0; i < lines.length; i++) {
       try {
-        const d = JSON.parse(line.slice(6));
-        if (d.type === 'content_block_delta' && d.delta?.text) { full += d.delta.text; onChunk(full); }
-      } catch {}
+        var d = JSON.parse(lines[i].slice(6));
+        if (d.type === 'content_block_delta' && d.delta && d.delta.text) {
+          full += d.delta.text;
+          onChunk(full);
+        }
+      } catch(e) {}
     }
   }
   return full;
 }
 
-const FLOW_SYS = (dir, phase) => `You are InAble, a social coach for introverts. One specific, immediately usable suggestion (max 2 short sentences) for someone who wants to ${dir === 'up' ? 'deepen connection or bring more people in' : 'reduce their speaking load while staying present'}. Phase: ${phase}. ${dir === 'up' ? 'Give a phrase in quotes or a tactic.' : 'Give a redirect phrase or a step-back tactic.'}  No preamble. No labels.`;
+var FLOW_SYS = function(dir, phase) {
+  return 'You are InAble, a social coach for introverts. One specific, immediately usable suggestion (max 2 short sentences) for someone who wants to ' + (dir === 'up' ? 'deepen connection or bring more people in' : 'reduce their speaking load while staying present') + '. Phase: ' + phase + '. ' + (dir === 'up' ? 'Give a phrase in quotes or a tactic.' : 'Give a redirect phrase or a step-back tactic.') + '  No preamble. No labels.';
+};
 
-const DECODER_SYS = `You are InAble — a sharp, emotionally literate social interpreter for introverts. Interpret the conversational snippet honestly in 2-3 short sentences. Then end with: SIGNALS:["tag","tag","tag"] — 2-4 word lowercase tags, honest mix of positive/neutral/cautionary. Max 80 words total.`;
+var DECODER_SYS = 'You are InAble — a sharp, emotionally literate social interpreter for introverts. Interpret the conversational snippet honestly in 2-3 short sentences. Then end with: SIGNALS:["tag","tag","tag"] — 2-4 word lowercase tags, honest mix of positive/neutral/cautionary. Max 80 words total.';
 
-const DEBRIEF_SYS = `You are InAble. Analyze this social event reflection. Return ONLY JSON: {"convos":N,"goals":N,"conf":"+X%","win":"one concrete win in ≤12 words","next":"one try-next in ≤12 words"}`;
+var DEBRIEF_SYS = 'You are InAble. Analyze this social event reflection. Return ONLY JSON: {"convos":N,"goals":N,"conf":"+X%","win":"one concrete win in ≤12 words","next":"one try-next in ≤12 words"}';
 
 async function getFlow(dir) {
+  // Count against coach usage
+  if (!isUnlocked()) {
+    usage.coach++;
+    updateUsageBadges();
+  }
   currentFlowDir = dir;
-  const dotsEl = document.getElementById('flow-dots');
-  const resultEl = document.getElementById('flow-result');
-  const textEl = document.getElementById('flow-result-text');
-  const labelEl = document.getElementById('flow-result-label');
+  var dotsEl = document.getElementById('flow-dots');
+  var resultEl = document.getElementById('flow-result');
+  var textEl = document.getElementById('flow-result-text');
+  var labelEl = document.getElementById('flow-result-label');
   resultEl.classList.remove('visible');
   dotsEl.style.display = 'flex';
   textEl.textContent = '';
   labelEl.textContent = dir === 'up' ? '↑ DEEPEN / WIDEN' : '↓ HAND THE FLOOR';
   labelEl.style.color = dir === 'up' ? 'var(--teal)' : 'var(--purple)';
   try {
-    await callClaude(FLOW_SYS(dir, currentPhase), `Phase:${currentPhase} Direction:${dir}`, t => { textEl.textContent = t; });
-  } catch { textEl.textContent = 'Tap again to retry.'; }
+    await callClaude(FLOW_SYS(dir, currentPhase), 'Phase:' + currentPhase + ' Direction:' + dir, function(t) { textEl.textContent = t; });
+  } catch(e) { textEl.textContent = 'Tap again to retry.'; }
   dotsEl.style.display = 'none';
   resultEl.classList.add('visible');
+
+  // After each flow tap, check if free limit hit
+  if (!isUnlocked() && usage.coach >= FREE_LIMITS.coach) {
+    updateUsageBadges();
+  }
 }
 
 async function runDecoder() {
-  const input = document.getElementById('decoder-input').value.trim();
+  var input = document.getElementById('decoder-input').value.trim();
   if (!input) return;
-  const dots = document.getElementById('decoder-dots');
-  const resultEl = document.getElementById('decoder-result');
-  const textEl = document.getElementById('decoder-text');
-  const sigsEl = document.getElementById('decoder-signals');
+
+  // Check decoder limit
+  if (!isUnlocked() && usage.decoder >= FREE_LIMITS.decoder) {
+    pwSource = 'decoder';
+    document.getElementById('pw-sub-text').innerHTML = "You've used your 2 free Decoder reads.<br>Unlock for unlimited reads.";
+    go('paywall');
+    return;
+  }
+  if (!isUnlocked()) { usage.decoder++; updateUsageBadges(); }
+
+  var dots = document.getElementById('decoder-dots');
+  var resultEl = document.getElementById('decoder-result');
+  var textEl = document.getElementById('decoder-text');
+  var sigsEl = document.getElementById('decoder-signals');
   dots.style.display = 'flex';
   resultEl.style.display = 'none';
   textEl.textContent = '';
   sigsEl.innerHTML = '';
-  let full = '';
+  var full = '';
   try {
-    await callClaude(DECODER_SYS, input, t => {
+    await callClaude(DECODER_SYS, input, function(t) {
       full = t;
-      const sigIdx = t.indexOf('SIGNALS:');
+      var sigIdx = t.indexOf('SIGNALS:');
       textEl.textContent = sigIdx > -1 ? t.slice(0, sigIdx).trim() : t;
     });
-    const m = full.match(/SIGNALS:\[([^\]]+)\]/);
+    var m = full.match(/SIGNALS:\[([^\]]+)\]/);
     if (m) {
       try {
-        const tags = JSON.parse(`[${m[1]}]`);
-        const posWords = ['landed','engaged','interested','warm','genuine','real','authentic','processed','good'];
-        const warnWords = ['flat','overshare','misstep','cold','awkward','watch','careful'];
-        tags.forEach(t => {
-          const s = document.createElement('span');
-          s.className = 'signal ' + (posWords.some(p=>t.includes(p)) ? 'sig-pos' : warnWords.some(w=>t.includes(w)) ? 'sig-warn' : 'sig-neu');
+        var tags = JSON.parse('[' + m[1] + ']');
+        var posWords = ['landed','engaged','interested','warm','genuine','real','authentic','processed','good'];
+        var warnWords = ['flat','overshare','misstep','cold','awkward','watch','careful'];
+        tags.forEach(function(t) {
+          var s = document.createElement('span');
+          s.className = 'signal ' + (posWords.some(function(p){return t.indexOf(p)>-1;}) ? 'sig-pos' : warnWords.some(function(w){return t.indexOf(w)>-1;}) ? 'sig-warn' : 'sig-neu');
           s.textContent = t;
           sigsEl.appendChild(s);
         });
-      } catch {}
+      } catch(e) {}
     }
-  } catch { textEl.textContent = 'Tap again to retry.'; }
+  } catch(e) { textEl.textContent = 'Tap again to retry.'; }
   dots.style.display = 'none';
   resultEl.style.display = 'block';
 }
 
 async function runDebrief() {
-  const input = document.getElementById('debrief-input').value.trim();
+  var input = document.getElementById('debrief-input').value.trim();
   if (!input) return;
   document.getElementById('debrief-entry').style.display = 'none';
-  const resultEl = document.getElementById('debrief-result');
+  var resultEl = document.getElementById('debrief-result');
   resultEl.style.display = 'block';
   document.getElementById('debrief-wins').innerHTML = '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   try {
-    let full = '';
-    await callClaude(DEBRIEF_SYS, input, t => { full = t; });
-    const m = full.match(/\{[\s\S]*\}/);
+    var full = '';
+    await callClaude(DEBRIEF_SYS, input, function(t) { full = t; });
+    var m = full.match(/\{[\s\S]*\}/);
     if (m) {
-      const d = JSON.parse(m[0]);
-      document.getElementById('d-convos').textContent = d.convos ?? '–';
-      document.getElementById('d-goals').textContent = d.goals ?? '–';
-      document.getElementById('d-conf').textContent = d.conf ?? '–';
-      document.getElementById('debrief-wins').innerHTML = `
-        <div class="sug-card"><div class="sug-type type-deepen">win</div><div class="sug-text">${d.win}</div></div>
-        <div class="sug-card"><div class="sug-type type-opener">try next</div><div class="sug-text">${d.next}</div></div>`;
+      var d = JSON.parse(m[0]);
+      document.getElementById('d-convos').textContent = d.convos !== undefined ? d.convos : '–';
+      document.getElementById('d-goals').textContent = d.goals !== undefined ? d.goals : '–';
+      document.getElementById('d-conf').textContent = d.conf || '–';
+      document.getElementById('debrief-wins').innerHTML =
+        '<div class="sug-card"><div class="sug-type type-deepen">win</div><div class="sug-text">' + d.win + '</div></div>' +
+        '<div class="sug-card"><div class="sug-type type-opener">try next</div><div class="sug-text">' + d.next + '</div></div>';
     }
-  } catch {
+  } catch(e) {
     document.getElementById('debrief-wins').innerHTML = '<div class="sug-card"><div class="sug-text">Couldn\'t parse. Try again.</div></div>';
   }
 }

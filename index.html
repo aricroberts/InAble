@@ -370,6 +370,86 @@
     nav { padding: 16px 20px; }
     .nav-links { display: none; }
   }
+
+  /* ── Early Access Modal ── */
+  .ea-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(7,6,15,0.85);
+    backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .ea-overlay.open { display: flex; }
+
+  .ea-modal {
+    background: #13112a;
+    border: 1px solid rgba(127,119,221,0.3);
+    border-radius: 24px;
+    padding: 40px 36px;
+    width: 100%; max-width: 460px;
+    position: relative;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(127,119,221,0.1);
+    animation: modalIn 0.25s ease both;
+  }
+  @keyframes modalIn { from { opacity:0; transform:translateY(16px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+  .ea-close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    color: var(--muted); font-size: 18px; line-height: 1;
+    width: 32px; height: 32px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .ea-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+  .ea-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(127,119,221,0.12); border: 1px solid rgba(127,119,221,0.25);
+    border-radius: 100px; padding: 5px 12px;
+    font-size: 11px; font-weight: 700; color: var(--purple-light);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .ea-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px; letter-spacing: -0.02em; color: var(--text);
+    margin-bottom: 8px; line-height: 1.2;
+  }
+  .ea-title em { font-style: italic; color: var(--purple-light); }
+  .ea-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; font-weight: 300; }
+
+  .ea-field { margin-bottom: 16px; }
+  .ea-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+  .ea-input, .ea-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px; font-family: inherit; color: var(--text);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .ea-input:focus, .ea-textarea:focus { border-color: rgba(127,119,221,0.5); background: rgba(127,119,221,0.05); }
+  .ea-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+  .ea-input::placeholder, .ea-textarea::placeholder { color: var(--dim); }
+
+  .ea-submit {
+    width: 100%; padding: 14px;
+    background: var(--purple); color: #fff;
+    border: none; border-radius: 100px;
+    font-size: 15px; font-weight: 600; font-family: inherit;
+    cursor: pointer; transition: all 0.2s; margin-top: 8px;
+  }
+  .ea-submit:hover:not(:disabled) { background: #9490e8; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(127,119,221,0.35); }
+  .ea-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .ea-success-state { text-align: center; padding: 16px 0; }
+  .ea-success-icon { font-size: 48px; margin-bottom: 16px; }
+  .ea-success-title { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--text); margin-bottom: 10px; }
+  .ea-success-msg { font-size: 14px; color: var(--muted); line-height: 1.6; font-weight: 300; }
+  .ea-error-msg { text-align: center; font-size: 13px; color: #F0997B; margin-top: 10px; min-height: 18px; }
 </style>
 </head>
 <body>
@@ -415,7 +495,7 @@
     <a href="#flow">Flow</a>
     <a href="#devices">Devices</a>
   </div>
-  <a href="mailto:operations@aricciviclabs.org?subject=InAble%20Early%20Access" style="text-decoration:none;"><button class="nav-cta">Get early access</button></a>
+  <button class="nav-cta" onclick="openEarlyAccessModal()">Get early access</button>
 </nav>
 
 <!-- HERO -->
@@ -471,7 +551,7 @@
   </p>
 
   <div class="hero-ctas">
-    <a href="mailto:operations@aricciviclabs.org?subject=InAble%20Early%20Access" style="text-decoration:none;"><button class="btn-primary-lg">Get early access →</button></a>
+    <button class="btn-primary-lg" onclick="openEarlyAccessModal()">Get early access →</button>
     <button class="btn-ghost-lg">See how it works</button>
   </div>
 
@@ -731,7 +811,7 @@
     <h2 class="cta-headline">You belong<br><em>in the room.</em></h2>
     <p class="cta-sub">InAble doesn't make you an extrovert. It makes you an introvert with backup. Get early access.</p>
     <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-      <a href="mailto:operations@aricciviclabs.org?subject=InAble%20Early%20Access" style="text-decoration:none;"><button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;">Get early access →</button></a>
+      <button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;" onclick="openEarlyAccessModal()">Get early access →</button>
     </div>
     <p style="margin-top:20px; font-size:13px; color:var(--dim);">Available on iOS, Android, Apple Watch &amp; WearOS</p>
   </div>
@@ -758,18 +838,123 @@
   <div>© 2026 InAble · Introvert Able</div>
 </footer>
 
+<!-- EARLY ACCESS MODAL -->
+<div class="ea-overlay" id="eaOverlay" onclick="handleOverlayClick(event)">
+  <div class="ea-modal" id="eaModal">
+    <button class="ea-close" onclick="closeEarlyAccessModal()" aria-label="Close">&#x2715;</button>
+
+    <!-- Form state -->
+    <div id="eaFormState">
+      <div class="ea-eyebrow">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;animation:pulse 2s infinite;"></span>
+        Early Access
+      </div>
+      <div class="ea-title">Join the <em>waitlist</em></div>
+      <p class="ea-sub">InAble is in private beta. Drop your details and we'll reach out when a spot opens up.</p>
+
+      <div class="ea-field">
+        <label class="ea-label" for="eaName">Your name</label>
+        <input class="ea-input" id="eaName" type="text" placeholder="First and last name" autocomplete="name" />
+      </div>
+      <div class="ea-field">
+        <label class="ea-label" for="eaEmail">Email address</label>
+        <input class="ea-input" id="eaEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="ea-field">
+        <label class="ea-label" for="eaMessage">Anything you'd like us to know? <span style="opacity:0.5;font-weight:400;">(optional)</span></label>
+        <textarea class="ea-textarea" id="eaMessage" placeholder="What situations do you want help navigating? What device are you most excited about?"></textarea>
+      </div>
+
+      <button class="ea-submit" id="eaSubmitBtn" onclick="submitEarlyAccess()">Request early access →</button>
+      <div class="ea-error-msg" id="eaErrorMsg"></div>
+    </div>
+
+    <!-- Success state -->
+    <div id="eaSuccessState" style="display:none;">
+      <div class="ea-success-state">
+        <div class="ea-success-icon">✦</div>
+        <div class="ea-success-title">You're on the list.</div>
+        <p class="ea-success-msg">We'll be in touch as spots open up. In the meantime, you can try the InAble coach at <a href="https://inable.app" style="color:var(--purple-light);text-decoration:none;">inable.app</a>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // Reveal on scroll
-const reveals = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((entry, i) => {
+var reveals = document.querySelectorAll('.reveal');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
     if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), 60);
+      setTimeout(function() { entry.target.classList.add('visible'); }, 60);
       observer.unobserve(entry.target);
     }
   });
 }, { threshold: 0.12 });
-reveals.forEach(el => observer.observe(el));
+reveals.forEach(function(el) { observer.observe(el); });
+
+// Early Access Modal
+function openEarlyAccessModal() {
+  document.getElementById('eaOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() { document.getElementById('eaName').focus(); }, 100);
+}
+
+function closeEarlyAccessModal() {
+  document.getElementById('eaOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('eaOverlay')) {
+    closeEarlyAccessModal();
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeEarlyAccessModal();
+});
+
+function submitEarlyAccess() {
+  var name = document.getElementById('eaName').value.trim();
+  var email = document.getElementById('eaEmail').value.trim();
+  var message = document.getElementById('eaMessage').value.trim();
+  var errEl = document.getElementById('eaErrorMsg');
+  var btn = document.getElementById('eaSubmitBtn');
+
+  errEl.textContent = '';
+
+  if (!name) { errEl.textContent = 'Please enter your name.'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  var formData = new FormData();
+  formData.append('name', name);
+  formData.append('email', email);
+  formData.append('message', message || '(no message)');
+  formData.append('_subject', 'InAble Early Access Request — ' + name);
+
+  fetch('https://formspree.io/f/xdkgpvqn', {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function(res) {
+    if (res.ok) {
+      document.getElementById('eaFormState').style.display = 'none';
+      document.getElementById('eaSuccessState').style.display = 'block';
+    } else {
+      throw new Error('submission failed');
+    }
+  })
+  .catch(function() {
+    errEl.textContent = 'Something went wrong. Please email us directly at operations@aricciviclabs.org.';
+    btn.disabled = false;
+    btn.textContent = 'Request early access →';
+  });
+}
 </script>
 </body>
 </html>

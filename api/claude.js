@@ -1,21 +1,12 @@
 /**
  * InAble — Anthropic API Proxy
- * Vercel Edge Function: /api/claude
+ * Vercel Serverless Function (Node.js runtime): /api/claude.js
  *
- * SETUP:
- *   1. Add this file to your repo at /api/claude.js
- *   2. In Vercel dashboard → Settings → Environment Variables, add:
- *        ANTHROPIC_API_KEY = sk-ant-...
- *   3. Deploy. The function is live at https://inable.app/api/claude
- *
- * The landing page and inable-watch.html should call /api/claude
- * instead of https://api.anthropic.com/v1/messages directly.
- *
- * Supports streaming (text/event-stream) — required for the demo's
- * real-time typewriter effect.
+ * No vercel.json needed. Standard Node runtime, maximum compatibility.
+ * Set ANTHROPIC_API_KEY in Vercel Environment Variables.
  */
 
-export const config = { runtime: 'edge' };
+const https = require('https');
 
 const ALLOWED_ORIGINS = [
   'https://inable.app',
@@ -27,72 +18,6 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:5500',
 ];
 
-const MAX_TOKENS_CAP = 500;
-
-export default async function handler(req) {
-  const origin = req.headers.get('origin') || '';
-
-  // CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: corsHeaders(origin),
-    });
-  }
-
-  if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405, origin);
-  }
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return json({ error: 'API key not configured' }, 500, origin);
-  }
-
-  let body;
-  try {
-    body = await req.json();
-  } catch {
-    return json({ error: 'Invalid JSON' }, 400, origin);
-  }
-
-  if (!body.messages || !Array.isArray(body.messages)) {
-    return json({ error: 'messages array required' }, 400, origin);
-  }
-
-  // Enforce safe defaults
-  body.model = 'claude-sonnet-4-20250514';
-  body.max_tokens = Math.min(body.max_tokens || 300, MAX_TOKENS_CAP);
-
-  // Forward to Anthropic
-  const upstream = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify(body),
-  });
-
-  // Stream or pass through
-  const isStream = body.stream === true;
-  if (isStream) {
-    return new Response(upstream.body, {
-      status: upstream.status,
-      headers: {
-        ...corsHeaders(origin),
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'X-Accel-Buffering': 'no',
-      },
-    });
-  }
-
-  const data = await upstream.json();
-  return json(data, upstream.status, origin);
-}
-
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
@@ -103,12 +28,77 @@ function corsHeaders(origin) {
   };
 }
 
-function json(data, status, origin) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      ...corsHeaders(origin),
-      'Content-Type': 'application/json',
-    },
+module.exports = async function handler(req, res) {
+  const origin = req.headers['origin'] || '';
+  const headers = corsHeaders(origin);
+
+  // CORS preflight
+  if (req.method === 'OPTIONS') {
+    Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(500).json({ error: 'API key not configured' });
+  }
+
+  const body = req.body;
+
+  if (!body || !body.messages || !Array.isArray(body.messages)) {
+    Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(400).json({ error: 'messages array required' });
+  }
+
+  // Safe defaults
+  body.model = 'claude-sonnet-4-20250514';
+  body.max_tokens = Math.min(body.max_tokens || 300, 500);
+
+  const bodyStr = JSON.stringify(body);
+  const isStream = body.stream === true;
+
+  Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+
+  if (isStream) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no');
+  } else {
+    res.setHeader('Content-Type', 'application/json');
+  }
+
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'api.anthropic.com',
+      path: '/v1/messages',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(bodyStr),
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+    };
+
+    const proxyReq = https.request(options, (proxyRes) => {
+      res.status(proxyRes.statusCode);
+      proxyRes.pipe(res, { end: true });
+      proxyRes.on('end', resolve);
+    });
+
+    proxyReq.on('error', (err) => {
+      console.error('[proxy error]', err.message);
+      res.status(502).json({ error: 'Upstream API unreachable' });
+      resolve();
+    });
+
+    proxyReq.write(bodyStr);
+    proxyReq.end();
   });
-}
+};

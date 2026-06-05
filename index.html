@@ -541,7 +541,7 @@
 <nav>
   <div class="nav-logo">
     <!-- InAble Logo: icon + wordmark -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 200" height="32" width="auto" style="overflow:visible">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 200" height="32" style="width:auto; overflow:visible">
       <defs>
         <linearGradient id="nl-brandText" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7F77DD"/><stop offset="100%" stop-color="#5DCAA5"/></linearGradient>
         <linearGradient id="nl-purpleGlass" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#AFA9EC" stop-opacity="0.34"/><stop offset="100%" stop-color="#3C3489" stop-opacity="0.44"/></linearGradient>
@@ -1137,7 +1137,7 @@ function resetDecoderResult() {
 }
 
 async function callClaudeDemo(system, user, onChunk) {
-  var res = await fetch('https://api.anthropic.com/v1/messages', {
+  var res = await fetch('/api/claude', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

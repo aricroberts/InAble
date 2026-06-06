@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>InAble Mini</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap');
+
+:root {
+  --bg:      #080710;
+  --surface: rgba(255,255,255,0.06);
+  --border:  rgba(255,255,255,0.1);
+  --purple:  #8B7FE8;
+  --purple-l:#A99BF5;
+  --teal:    #2DD4BF;
+  --amber:   #F59E0B;
+  --coral:   #F87171;
+  --green:   #34D399;
+  --text:    #EEEDFE;
+  --muted:   #6b6a8e;
+  --dimmer:  #2a2845;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  width: 198px;
+  height: 242px;
+  overflow: hidden;
+  border-radius: 36px;
+  position: relative;
+  user-select: none;
+}
+
+/* ── Screens ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 9px 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  border-radius: 36px;
+  overflow: hidden;
+}
+
+.screen.active { opacity: 1; pointer-events: all; }
+
+/* ── Home ── */
+#home {
+  background: radial-gradient(ellipse at 55% 25%, #1a1245 0%, #080710 72%);
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--purple-l), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.logo-sub {
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.pulse { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); animation: pulse-anim 2.2s ease infinite; }
+@keyframes pulse-anim { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(0.75)} }
+
+/* ── Home prep badge ── */
+.prep-badge {
+  background: rgba(45,212,191,0.1);
+  border: 1px solid rgba(45,212,191,0.25);
+  border-radius: 8px;
+  padding: 5px 8px;
+  width: 100%;
+  text-align: center;
+}
+
+.prep-badge-label { font-size: 7px; color: var(--teal); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.prep-badge-val   { font-size: 9px; color: var(--text); margin-top: 1px; line-height: 1.3; }
+.no-prep-text     { font-size: 8px; color: var(--dimmer); }
+
+/* ── Home buttons ── */
+.home-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; margin-top: 6px; }
+
+.home-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 4px 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.home-btn:active { background: rgba(139,127,232,0.22); }
+.home-btn-icon   { font-size: 14px; }
+.home-btn-label  { font-size: 8px; color: var(--muted); font-weight: 600; letter-spacing: 0.04em; }
+.home-btn.locked .home-btn-icon::after { content: ' 🔒'; font-size: 8px; }
+
+/* ── Shared header ── */
+.w-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-shrink: 0; }
+.w-back { background: var(--surface); border: none; border-radius: 8px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 12px; flex-shrink: 0; }
+.w-title { font-size: 10px; font-weight: 700; color: var(--text); letter-spacing: 0.05em; text-transform: uppercase; }
+.w-badge { font-size: 7px; font-weight: 700; padding: 2px 6px; border-radius: 6px; }
+.badge-coach { background: rgba(139,127,232,0.2); color: var(--purple-l); }
+
+/* ── Scroll area ── */
+.scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ── Spinner ── */
+.dots { display: flex; gap: 3px; justify-content: center; padding: 5px 0; flex-shrink: 0; }
+.dot  { width: 4px; height: 4px; border-radius: 50%; background: var(--purple); animation: bounce 1.1s ease-in-out infinite; }
+.dot:nth-child(2) { animation-delay: 0.16s; }
+.dot:nth-child(3) { animation-delay: 0.32s; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Selector pills (mini) ── */
+.mini-sel-label { font-size: 7px; color: var(--muted); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 4px; flex-shrink: 0; }
+
+.sel-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 6px; flex-shrink: 0; }
+
+.sel-pill {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.sel-pill:active { transform: scale(0.96); }
+.sel-pill.active { background: rgba(139,127,232,0.2); border-color: rgba(139,127,232,0.5); color: var(--purple-l); }
+.sel-pill.act-teal { background: rgba(45,212,191,0.15); border-color: rgba(45,212,191,0.4); color: var(--teal); }
+.sel-pill.act-amber { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.4); color: var(--amber); }
+
+/* ── Energy row ── */
+.energy-mini { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; flex-shrink: 0; }
+.e-stepper { background: none; border: 1px solid var(--border); border-radius: 6px; width: 18px; height: 18px; color: var(--muted); cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; font-family: inherit; flex-shrink: 0; }
+.e-stepper:active { border-color: var(--purple-l); color: var(--purple-l); }
+.e-track { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; }
+.e-fill  { height: 100%; border-radius: 2px; transition: width 0.25s, background 0.25s; }
+.e-pct   { font-size: 8px; font-weight: 700; color: var(--text); min-width: 22px; text-align: right; flex-shrink: 0; }
+
+/* ── Flow buttons (main CTA) ── */
+.flow-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 6px; flex-shrink: 0; }
+
+.flow-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 9px 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.flow-btn:active { transform: scale(0.95); }
+
+.flow-plus  { background: rgba(45,212,191,0.12);  border: 1px solid rgba(45,212,191,0.3); }
+.flow-minus { background: rgba(139,127,232,0.12); border: 1px solid rgba(139,127,232,0.3); }
+
+.flow-symbol { font-size: 22px; font-weight: 700; line-height: 1; }
+.flow-plus  .flow-symbol { color: var(--teal); }
+.flow-minus .flow-symbol { color: var(--purple-l); }
+
+.flow-label { font-size: 7px; font-weight: 700; letter-spacing: 0.04em; }
+.flow-plus  .flow-label { color: var(--teal); }
+.flow-minus .flow-label { color: var(--purple-l); }
+
+/* ── Flow result ── */
+.flow-result {
+  background: var(--surface);
+  border-left: 2px solid var(--purple);
+  border-radius: 0 8px 8px 0;
+  padding: 7px 8px;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: none;
+}
+
+.flow-result::-webkit-scrollbar { display: none; }
+.flow-result.visible { display: block; animation: fadeUp 0.25s ease; }
+.flow-result-label { font-size: 7px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.flow-result-text  { font-size: 10px; color: var(--text); line-height: 1.45; }
+
+/* ── Quick action bar ── */
+.action-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; flex-shrink: 0; margin-top: 4px; }
+
+.action-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 5px 3px;
+  font-size: 7px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  transition: all 0.12s;
+  letter-spacing: 0.03em;
+}
+
+.action-btn:active { transform: scale(0.95); }
+
+.btn-decode { background: rgba(139,127,232,0.18); border: 1px solid rgba(139,127,232,0.35); color: var(--purple-l); }
+.btn-more   { background: rgba(45,212,191,0.12);  border: 1px solid rgba(45,212,191,0.3);  color: var(--teal); }
+.btn-exit   { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); color: var(--coral); }
+
+.action-btn-icon { font-size: 10px; }
+
+/* ── Prep context bar ── */
+.ctx-bar {
+  background: rgba(45,212,191,0.07);
+  border: 1px solid rgba(45,212,191,0.18);
+  border-radius: 7px;
+  padding: 5px 7px;
+  margin-bottom: 5px;
+  flex-shrink: 0;
+}
+
+.ctx-bar-label { font-size: 7px; color: var(--teal); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1px; }
+.ctx-bar-val   { font-size: 9px; color: var(--text); line-height: 1.3; }
+
+/* ── Decoder screen ── */
+.decoder-input {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 10px;
+  font-family: inherit;
+  padding: 6px 8px;
+  resize: none;
+  outline: none;
+  line-height: 1.4;
+  height: 52px;
+  flex-shrink: 0;
+  margin-bottom: 5px;
+}
+
+.decode-run-btn {
+  border: none;
+  border-radius: 9px;
+  padding: 7px;
+  width: 100%;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  background: rgba(139,127,232,0.25);
+  border: 1px solid rgba(139,127,232,0.45);
+  color: var(--purple-l);
+  transition: all 0.15s;
+  flex-shrink: 0;
+  margin-bottom: 5px;
+}
+
+.decode-run-btn:active { transform: scale(0.97); }
+
+.decoder-result {
+  background: rgba(139,127,232,0.07);
+  border-left: 2px solid var(--purple);
+  border-radius: 0 8px 8px 0;
+  padding: 7px 8px;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: none;
+  animation: fadeUp 0.25s ease;
+}
+
+.decoder-result::-webkit-scrollbar { display: none; }
+.decoder-result.visible { display: block; }
+.dr-label { font-size: 7px; font-weight: 700; color: var(--purple-l); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.dr-text  { font-size: 10px; color: var(--text); line-height: 1.45; }
+
+.signals { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+.signal  { font-size: 7px; font-weight: 600; padding: 2px 5px; border-radius: 6px; }
+.sig-pos  { background: rgba(52,211,153,0.15); color: var(--green); }
+.sig-neu  { background: rgba(255,255,255,0.06); color: var(--muted); }
+.sig-warn { background: rgba(245,158,11,0.15); color: var(--amber); }
+
+/* ── Paywall screen ── */
+#paywall {
+  background: radial-gradient(ellipse at 50% 20%, #1a1245 0%, #080710 65%);
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 16px;
+  gap: 6px;
+}
+
+.pw-icon  { font-size: 22px; }
+.pw-title { font-size: 12px; font-weight: 700; text-align: center; }
+.pw-sub   { font-size: 9px; color: var(--muted); text-align: center; line-height: 1.5; padding: 0 6px; }
+
+.pw-plan {
+  width: 100%;
+  border-radius: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  transition: all 0.12s;
+}
+
+.pw-plan:active { transform: scale(0.97); }
+.pw-plan-trial   { background: rgba(45,212,191,0.12); border: 1px solid rgba(45,212,191,0.35); }
+.pw-plan-monthly { background: rgba(139,127,232,0.12); border: 1px solid rgba(139,127,232,0.35); }
+
+.pw-plan-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+.pw-plan-name   { font-size: 10px; font-weight: 700; }
+.pw-plan-trial   .pw-plan-name  { color: var(--teal); }
+.pw-plan-monthly .pw-plan-name  { color: var(--purple-l); }
+.pw-plan-price  { font-size: 10px; font-weight: 700; }
+.pw-plan-trial   .pw-plan-price { color: var(--teal); }
+.pw-plan-monthly .pw-plan-price { color: var(--purple-l); }
+.pw-plan-desc   { font-size: 8px; color: var(--muted); line-height: 1.4; }
+.pw-badge { font-size: 6px; font-weight: 700; padding: 1px 4px; border-radius: 4px; background: rgba(45,212,191,0.2); color: var(--teal); margin-left: 4px; }
+.pw-back  { font-size: 8px; color: var(--dimmer); cursor: pointer; text-decoration: underline; text-align: center; }
+
+/* ── Status dot ── */
+.status-pill { font-size: 7px; font-weight: 700; padding: 1px 5px; border-radius: 5px; }
+.status-free     { background: rgba(255,255,255,0.06); color: var(--muted); }
+.status-unlocked { background: rgba(139,127,232,0.2); color: var(--purple-l); }
+.status-trial    { background: rgba(45,212,191,0.15); color: var(--teal); }
+</style>
+</head>
+<body>
+
+<!-- ═══ HOME ═══ -->
+<div id="home" class="screen active">
+  <div class="logo">InAble Mini</div>
+  <div class="logo-sub">Introvert Able</div>
+  <div class="pulse"></div>
+
+  <!-- Prep context from full app -->
+  <div id="home-prep-wrap" style="width:100%;margin-top:4px;">
+    <div class="prep-badge" id="home-prep-badge" style="display:none;">
+      <div class="prep-badge-label">📋 Prep synced</div>
+      <div class="prep-badge-val" id="home-prep-text">—</div>
+    </div>
+    <div class="no-prep-text" id="home-no-prep" style="display:none;">No prep yet — open InAble to set up</div>
+  </div>
+
+  <div class="home-btns">
+    <div class="home-btn" id="home-btn-coach" onclick="goCoach()">
+      <div class="home-btn-icon">💬</div>
+      <div class="home-btn-label">Coach</div>
+    </div>
+    <div class="home-btn" id="home-btn-decoder" onclick="goDecoder()">
+      <div class="home-btn-icon">🔍</div>
+      <div class="home-btn-label">Decode</div>
+    </div>
+  </div>
+  <div id="home-status" style="font-size:7px;color:var(--muted);margin-top:5px;text-align:center;"></div>
+</div>
+
+<!-- ═══ COACH ═══ -->
+<div id="coach" class="screen">
+  <div class="w-header">
+    <button class="w-back" onclick="go('home')">←</button>
+    <span class="w-title">Coach</span>
+    <span class="w-badge badge-coach" id="coach-badge">Live</span>
+  </div>
+
+  <!-- Prep context bar (if loaded) -->
+  <div id="coach-ctx" class="ctx-bar" style="display:none;">
+    <div class="ctx-bar-label">From prep</div>
+    <div class="ctx-bar-val" id="coach-ctx-text">—</div>
+  </div>
+
+  <!-- Situation selector -->
+  <div class="mini-sel-label">Situation</div>
+  <div class="sel-row" id="sit-row">
+    <button class="sel-pill active" onclick="selPill(this,'sit-row')">Topic dying</button>
+    <button class="sel-pill" onclick="selPill(this,'sit-row')">Silence</button>
+    <button class="sel-pill" onclick="selPill(this,'sit-row')">Good flow</button>
+    <button class="sel-pill" onclick="selPill(this,'sit-row')">1 person dominating</button>
+    <button class="sel-pill" onclick="selPill(this,'sit-row')">Just arrived</button>
+    <button class="sel-pill" onclick="selPill(this,'sit-row')">Exit needed</button>
+  </div>
+
+  <!-- Energy stepper -->
+  <div class="energy-mini">
+    <button class="e-stepper" onclick="adjEnergy(-10)">−</button>
+    <div class="e-track"><div class="e-fill" id="e-fill" style="width:65%;background:var(--teal);"></div></div>
+    <button class="e-stepper" onclick="adjEnergy(10)">+</button>
+    <div class="e-pct" id="e-pct">65%</div>
+  </div>
+
+  <!-- Main flow buttons -->
+  <div class="flow-btns">
+    <button class="flow-btn flow-plus" onclick="getFlow('up')">
+      <div class="flow-symbol">+</div>
+      <div class="flow-label">DEEPEN</div>
+    </button>
+    <button class="flow-btn flow-minus" onclick="getFlow('down')">
+      <div class="flow-symbol">−</div>
+      <div class="flow-label">HAND OFF</div>
+    </button>
+  </div>
+
+  <!-- Result -->
+  <div class="dots" id="flow-dots" style="display:none;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="flow-result" id="flow-result">
+    <div class="flow-result-label" id="flow-result-label">InAble</div>
+    <div class="flow-result-text" id="flow-result-text"></div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="action-bar">
+    <button class="action-btn btn-more" onclick="getFlow(currentDir)">
+      <span class="action-btn-icon">↺</span>Another
+    </button>
+    <button class="action-btn btn-decode" onclick="go('decoder')">
+      <span class="action-btn-icon">🔍</span>Decode
+    </button>
+    <button class="action-btn btn-exit" onclick="getFlow('exit')">
+      <span class="action-btn-icon">🚪</span>Exit
+    </button>
+  </div>
+</div>
+
+<!-- ═══ DECODER ═══ -->
+<div id="decoder" class="screen">
+  <div class="w-header">
+    <button class="w-back" onclick="go('home')">←</button>
+    <span class="w-title">Decode</span>
+    <span class="w-badge badge-coach" id="decoder-badge">Reads</span>
+  </div>
+
+  <!-- Type selector -->
+  <div class="mini-sel-label">What happened?</div>
+  <div class="sel-row" id="decode-type-row">
+    <button class="sel-pill active" onclick="selPill(this,'decode-type-row')">Something said</button>
+    <button class="sel-pill" onclick="selPill(this,'decode-type-row')">Their reaction</button>
+    <button class="sel-pill" onclick="selPill(this,'decode-type-row')">Silence</button>
+    <button class="sel-pill" onclick="selPill(this,'decode-type-row')">Group vibe</button>
+    <button class="sel-pill" onclick="selPill(this,'decode-type-row')">Message / text</button>
+  </div>
+
+  <textarea class="decoder-input" id="decoder-input" placeholder="What happened? Be brief — a sentence or two…"></textarea>
+  <button class="decode-run-btn" onclick="runDecoder()">✦ Read this</button>
+
+  <div class="dots" id="decoder-dots" style="display:none;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="decoder-result" id="decoder-result">
+    <div class="dr-label">InAble says</div>
+    <div class="dr-text" id="decoder-text"></div>
+    <div class="signals" id="decoder-signals"></div>
+  </div>
+</div>
+
+<!-- ═══ PAYWALL ═══ -->
+<div id="paywall" class="screen">
+  <div class="pw-icon">✦</div>
+  <div class="pw-title">Unlock InAble</div>
+  <div class="pw-sub" id="pw-sub">You've used your free turns.<br>Keep going with a plan.</div>
+  <button class="pw-plan pw-plan-trial" onclick="handleCheckout('trial')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Trial Week <span class="pw-badge">Try first</span></span>
+      <span class="pw-plan-price">$1.99</span>
+    </div>
+    <div class="pw-plan-desc">Full access for 7 days. No auto-renew.</div>
+  </button>
+  <button class="pw-plan pw-plan-monthly" onclick="handleCheckout('monthly')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Monthly</span>
+      <span class="pw-plan-price">$6.99<span style="font-size:7px;font-weight:400;">/mo</span></span>
+    </div>
+    <div class="pw-plan-desc">Always-on. Mini + full InAble.</div>
+  </button>
+  <div class="pw-back" onclick="go('home')">← Go back, stay free</div>
+</div>
+
+<!-- ═══ UPGRADE (trial expired) ═══ -->
+<div id="upgrade" class="screen" style="background:radial-gradient(ellipse at 50% 20%, #1a1240 0%, #080710 65%);align-items:center;justify-content:flex-start;padding-top:14px;gap:7px;">
+  <div class="pw-icon">⏱</div>
+  <div class="pw-title">Trial ended</div>
+  <div class="pw-sub">Ready to keep going? Monthly keeps Mini synced to InAble all the time.</div>
+  <button class="pw-plan pw-plan-monthly" style="width:100%;" onclick="handleCheckout('monthly')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Go Monthly</span>
+      <span class="pw-plan-price">$6.99<span style="font-size:7px;font-weight:400;">/mo</span></span>
+    </div>
+    <div class="pw-plan-desc">Full Mini + InAble access, cancel anytime.</div>
+  </button>
+  <button class="pw-plan pw-plan-trial" style="width:100%;margin-top:0;" onclick="handleCheckout('annual')">
+    <div class="pw-plan-header">
+      <span class="pw-plan-name">Annual <span class="pw-badge">Save 10%</span></span>
+      <span class="pw-plan-price">$75<span style="font-size:7px;font-weight:400;">/yr</span></span>
+    </div>
+    <div class="pw-plan-desc">Best value — one payment.</div>
+  </button>
+  <div class="pw-back" onclick="dropToFree()">Continue with free limits</div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════
+var STRIPE_LINKS = {
+  trial:   'https://buy.stripe.com/eVq6oI9Me2b89Y30pB7N60v',
+  monthly: 'https://buy.stripe.com/cNidRa4rU2b8dafb4f7N60u',
+  annual:  'https://buy.stripe.com/dRm5kE5vY5nk8TZdcn7N60t'
+};
+
+var SUCCESS_PARAM = 'inable_unlocked';
+var MONTHLY_KEY   = 'inable_monthly';
+var TRIAL_KEY     = 'inable_trial_expiry';
+var PREP_KEY      = 'inable_prep_data';
+
+var usage = { coach: 0, decoder: 0 };
+var FREE_LIMITS = { coach: 3, decoder: 2 };
+
+var energy = 65;
+var currentDir = 'up';
+var prevScreen = 'home';
+var pwSource = '';
+
+// ═══════════════════════════════════
+// ACCESS
+// ═══════════════════════════════════
+function isUnlocked() {
+  if (localStorage.getItem(MONTHLY_KEY) === '1') return true;
+  var expiry = localStorage.getItem(TRIAL_KEY);
+  if (expiry && Date.now() < parseInt(expiry, 10)) return true;
+  return false;
+}
+
+function isTrialExpired() {
+  var expiry = localStorage.getItem(TRIAL_KEY);
+  return expiry && Date.now() >= parseInt(expiry, 10);
+}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+(function init() {
+  var params = new URLSearchParams(window.location.search);
+  var unlockType = params.get(SUCCESS_PARAM);
+  if (unlockType) {
+    if (unlockType === 'trial') {
+      localStorage.setItem(TRIAL_KEY, String(Date.now() + 7 * 24 * 60 * 60 * 1000));
+    } else if (unlockType === 'monthly' || unlockType === 'annual') {
+      localStorage.setItem(MONTHLY_KEY, '1');
+    }
+    history.replaceState({}, '', window.location.pathname);
+  }
+
+  if (isTrialExpired() && !localStorage.getItem(MONTHLY_KEY)) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('upgrade').classList.add('active');
+    return;
+  }
+
+  loadPrepFromStorage();
+  updateHomeStatus();
+  updateBadges();
+})();
+
+function loadPrepFromStorage() {
+  var raw = localStorage.getItem(PREP_KEY);
+  var badge  = document.getElementById('home-prep-badge');
+  var noPrepEl = document.getElementById('home-no-prep');
+  var ctxEl  = document.getElementById('coach-ctx');
+  var ctxTxt = document.getElementById('coach-ctx-text');
+
+  if (raw) {
+    try {
+      var d = JSON.parse(raw);
+      var summary = d.eventType + (d.groupSize ? ' · ' + d.groupSize : '') + (d.goal ? '\nGoal: ' + d.goal : '');
+      document.getElementById('home-prep-text').textContent = summary;
+      badge.style.display = '';
+      noPrepEl.style.display = 'none';
+      ctxTxt.textContent = d.eventType + ' — ' + (d.goal || '');
+      ctxEl.style.display = '';
+    } catch(e) {
+      noPrepEl.style.display = '';
+      badge.style.display = 'none';
+    }
+  } else {
+    noPrepEl.style.display = '';
+    badge.style.display = 'none';
+  }
+}
+
+function updateHomeStatus() {
+  var el = document.getElementById('home-status');
+  if (isUnlocked()) {
+    if (localStorage.getItem(MONTHLY_KEY) === '1') {
+      el.innerHTML = '<span class="status-pill status-unlocked">✦ Monthly</span>';
+    } else {
+      var expiry = localStorage.getItem(TRIAL_KEY);
+      var daysLeft = Math.ceil((parseInt(expiry, 10) - Date.now()) / 86400000);
+      el.innerHTML = '<span class="status-pill status-trial">Trial · ' + daysLeft + 'd left</span>';
+    }
+  } else {
+    el.innerHTML = '<span class="status-pill status-free">Free · limited</span>';
+  }
+}
+
+function updateBadges() {
+  var cb = document.getElementById('coach-badge');
+  var db = document.getElementById('decoder-badge');
+  if (isUnlocked()) {
+    cb.textContent = 'Live'; cb.className = 'w-badge badge-coach';
+    db.textContent = 'Reads'; db.className = 'w-badge badge-coach';
+  } else {
+    var cLeft = Math.max(0, FREE_LIMITS.coach - usage.coach);
+    var dLeft = Math.max(0, FREE_LIMITS.decoder - usage.decoder);
+    cb.textContent = cLeft + ' left'; cb.className = 'w-badge ' + (cLeft > 0 ? 'status-pill status-trial' : 'status-pill');
+    db.textContent = dLeft + ' left'; db.className = 'w-badge ' + (dLeft > 0 ? 'status-pill status-trial' : 'status-pill');
+  }
+}
+
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+function go(id) {
+  if (id !== 'home') { prevScreen = document.querySelector('.screen.active') ? document.querySelector('.screen.active').id : 'home'; }
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function goCoach() {
+  if (!isUnlocked() && usage.coach >= FREE_LIMITS.coach) {
+    document.getElementById('pw-sub').innerHTML = "You've used your " + FREE_LIMITS.coach + " free Coach taps.<br>Unlock to keep going.";
+    pwSource = 'coach';
+    go('paywall');
+    return;
+  }
+  go('coach');
+}
+
+function goDecoder() {
+  if (!isUnlocked() && usage.decoder >= FREE_LIMITS.decoder) {
+    document.getElementById('pw-sub').innerHTML = "You've used your " + FREE_LIMITS.decoder + " free Decoder reads.<br>Unlock to keep going.";
+    pwSource = 'decoder';
+    go('paywall');
+    return;
+  }
+  go('decoder');
+}
+
+// ═══════════════════════════════════
+// PILL SELECTORS
+// ═══════════════════════════════════
+function selPill(btn, rowId) {
+  var row = document.getElementById(rowId);
+  var pills = row.querySelectorAll('.sel-pill');
+  for (var i = 0; i < pills.length; i++) { pills[i].classList.remove('active'); }
+  btn.classList.add('active');
+}
+
+function getActive(rowId) {
+  var row = document.getElementById(rowId);
+  var active = row.querySelector('.sel-pill.active');
+  return active ? active.textContent.trim() : '';
+}
+
+// ═══════════════════════════════════
+// ENERGY STEPPER
+// ═══════════════════════════════════
+function adjEnergy(delta) {
+  energy = Math.max(0, Math.min(100, energy + delta));
+  var fill = document.getElementById('e-fill');
+  var pct  = document.getElementById('e-pct');
+  fill.style.width = energy + '%';
+  fill.style.background = energy < 30 ? 'var(--coral)' : energy < 55 ? 'var(--amber)' : 'var(--teal)';
+  pct.textContent = energy + '%';
+}
+
+// ═══════════════════════════════════
+// API
+// ═══════════════════════════════════
+async function callClaude(sys, userMsg) {
+  var res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 120,
+      stream: true,
+      system: sys,
+      messages: [{ role: 'user', content: userMsg }]
+    })
+  });
+  return res.body.getReader();
+}
+
+async function streamToEl(reader, el) {
+  var dec = new TextDecoder();
+  var full = '';
+  while (true) {
+    var chunk = await reader.read();
+    if (chunk.done) break;
+    var lines = dec.decode(chunk.value).split('\n').filter(function(l) { return l.indexOf('data: ') === 0; });
+    for (var i = 0; i < lines.length; i++) {
+      try {
+        var d = JSON.parse(lines[i].slice(6));
+        if (d.type === 'content_block_delta' && d.delta && d.delta.text) {
+          full += d.delta.text;
+          el.textContent = full;
+        }
+      } catch(e) {}
+    }
+  }
+  return full;
+}
+
+// ═══════════════════════════════════
+// COACH — FLOW
+// ═══════════════════════════════════
+async function getFlow(dir) {
+  // Guard
+  if (!isUnlocked()) {
+    if (usage.coach >= FREE_LIMITS.coach) {
+      document.getElementById('pw-sub').innerHTML = "You've used your " + FREE_LIMITS.coach + " free Coach taps.<br>Unlock to keep going.";
+      pwSource = 'coach';
+      go('paywall');
+      return;
+    }
+    usage.coach++;
+    updateBadges();
+  }
+
+  if (dir !== 'exit') currentDir = dir;
+
+  var sit = getActive('sit-row');
+  var dotsEl   = document.getElementById('flow-dots');
+  var resultEl = document.getElementById('flow-result');
+  var labelEl  = document.getElementById('flow-result-label');
+  var textEl   = document.getElementById('flow-result-text');
+
+  resultEl.classList.remove('visible');
+  dotsEl.style.display = 'flex';
+  textEl.textContent = '';
+
+  if (dir === 'exit') {
+    labelEl.textContent = '🚪 EXIT';
+    labelEl.style.color = 'var(--coral)';
+  } else if (dir === 'up') {
+    labelEl.textContent = '↑ DEEPEN';
+    labelEl.style.color = 'var(--teal)';
+  } else {
+    labelEl.textContent = '↓ HAND OFF';
+    labelEl.style.color = 'var(--purple-l)';
+  }
+
+  // Load prep context
+  var prepCtx = '';
+  var raw = localStorage.getItem(PREP_KEY);
+  if (raw) {
+    try {
+      var pd = JSON.parse(raw);
+      prepCtx = 'Event: ' + pd.eventType + '. Goal: ' + pd.goal + '. ';
+    } catch(e) {}
+  }
+
+  var dirDesc = dir === 'exit'
+    ? 'give an exit line — graceful, not abrupt'
+    : dir === 'up'
+    ? 'deepen the conversation or bring others in'
+    : 'hand the floor, step back, or reduce speaking load gracefully';
+
+  var sys = 'You are InAble. Social coach for introverts. Give ONE immediately usable suggestion (max 2 sentences). ' +
+    'Goal: ' + dirDesc + '. Situation: ' + sit + '. Energy: ' + energy + '%. ' + prepCtx +
+    'If a phrase, put it in quotes. If a tactic, be specific. No preamble. No label.';
+
+  try {
+    var reader = await callClaude(sys, 'Situation: ' + sit + '. Direction: ' + dir + '. Energy: ' + energy + '%.');
+    await streamToEl(reader, textEl);
+  } catch(e) {
+    textEl.textContent = 'Tap again to retry.';
+  }
+
+  dotsEl.style.display = 'none';
+  resultEl.classList.add('visible');
+}
+
+// ═══════════════════════════════════
+// DECODER
+// ═══════════════════════════════════
+async function runDecoder() {
+  var input = document.getElementById('decoder-input').value.trim();
+  if (!input) return;
+
+  if (!isUnlocked()) {
+    if (usage.decoder >= FREE_LIMITS.decoder) {
+      document.getElementById('pw-sub').innerHTML = "You've used your " + FREE_LIMITS.decoder + " free Decoder reads.<br>Unlock to keep going.";
+      pwSource = 'decoder';
+      go('paywall');
+      return;
+    }
+    usage.decoder++;
+    updateBadges();
+  }
+
+  var decType = getActive('decode-type-row');
+  var dotsEl   = document.getElementById('decoder-dots');
+  var resultEl = document.getElementById('decoder-result');
+  var textEl   = document.getElementById('decoder-text');
+  var sigsEl   = document.getElementById('decoder-signals');
+
+  dotsEl.style.display = 'flex';
+  resultEl.classList.remove('visible');
+  textEl.textContent = '';
+  sigsEl.innerHTML = '';
+
+  var sys = 'You are InAble — emotionally literate social interpreter for introverts. Situation type: ' + decType + '. ' +
+    'Interpret in 2 short sentences (honest, not just reassuring). End with SIGNALS:["tag","tag","tag"] — 2–3 lowercase tags. Max 70 words total. No preamble.';
+
+  var full = '';
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 150,
+        stream: true,
+        system: sys,
+        messages: [{ role: 'user', content: input }]
+      })
+    });
+    var reader = res.body.getReader();
+    var dec = new TextDecoder();
+    while (true) {
+      var chunk = await reader.read();
+      if (chunk.done) break;
+      var lines = dec.decode(chunk.value).split('\n').filter(function(l) { return l.indexOf('data: ') === 0; });
+      for (var i = 0; i < lines.length; i++) {
+        try {
+          var dd = JSON.parse(lines[i].slice(6));
+          if (dd.type === 'content_block_delta' && dd.delta && dd.delta.text) {
+            full += dd.delta.text;
+            var sigIdx = full.indexOf('SIGNALS:');
+            textEl.textContent = sigIdx > -1 ? full.slice(0, sigIdx).trim() : full;
+          }
+        } catch(e2) {}
+      }
+    }
+
+    // Parse signals
+    var m = full.match(/SIGNALS:\[([^\]]+)\]/);
+    if (m) {
+      try {
+        var tags = JSON.parse('[' + m[1] + ']');
+        var posWords = ['landed','warm','genuine','good','connected','engaged','interested'];
+        var warnWords = ['flat','cold','off','awkward','overshare','watch'];
+        tags.forEach(function(t) {
+          var s = document.createElement('span');
+          s.className = 'signal ' + (posWords.some(function(p){return t.indexOf(p)>-1;}) ? 'sig-pos' : warnWords.some(function(w){return t.indexOf(w)>-1;}) ? 'sig-warn' : 'sig-neu');
+          s.textContent = t;
+          sigsEl.appendChild(s);
+        });
+      } catch(e) {}
+    }
+  } catch(e) {
+    textEl.textContent = 'Tap again to retry.';
+  }
+
+  dotsEl.style.display = 'none';
+  resultEl.classList.add('visible');
+}
+
+// ═══════════════════════════════════
+// CHECKOUT
+// ═══════════════════════════════════
+function handleCheckout(product) {
+  var base = STRIPE_LINKS[product];
+  if (!base) return;
+  window.location.href = base;
+}
+
+function dropToFree() {
+  localStorage.removeItem(TRIAL_KEY);
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('home').classList.add('active');
+  updateHomeStatus();
+  updateBadges();
+}
+</script>
+</body>
+</html>

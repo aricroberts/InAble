@@ -61,12 +61,6 @@
     height: 94px;
   }
   .nav-logo svg { height: 94px; width: auto; }
-  .nav-meta { display: flex; align-items: center; gap: 12px; border-left: 1px solid var(--border); padding-left: 7px; margin-left: 3px; }
-  .nav-by { font-size: 20px; color: var(--muted); font-weight: 400; }
-  .nav-by a { color: var(--purple); text-decoration: none; font-weight: 500; transition: color 0.2s; }
-  .nav-by a:hover { color: #9490e8; }
-  .nav-pillar { display: flex; align-items: center; gap: 6px; font-size: 22px; color: var(--muted); font-weight: 400; }
-  .nav-pillar-dot { width: 8px; height: 8px; border-radius: 50%; background: #e879a0; flex-shrink: 0; }
   .nav-links { display: flex; align-items: center; gap: 32px; }
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
   .nav-links a:hover { color: var(--text); }
@@ -244,8 +238,9 @@
   }
   .section-headline em { font-style: italic; color: var(--purple-light); }
 
-  .phases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  @media (max-width: 700px) { .phases-grid { grid-template-columns: 1fr; } }
+  .phases-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .phases-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .phases-grid { grid-template-columns: 1fr; } }
 
   .phase-card {
     background: var(--surface);
@@ -268,6 +263,11 @@
   }
   .inable-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
   @media (max-width: 700px) { .inable-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+  /* Mini section responsive */
+  @media (max-width: 700px) {
+    #mini > div { grid-template-columns: 1fr !important; gap: 40px !important; }
+  }
 
   .inable-card {
     background: linear-gradient(135deg, rgba(26,21,66,0.8) 0%, rgba(45,37,96,0.6) 100%);
@@ -375,7 +375,6 @@
   @media (max-width: 600px) {
     nav { padding: 16px 20px; }
     .nav-links { display: none; }
-    .nav-meta { display: none; }
   }
 </style>
 </head>
@@ -385,7 +384,7 @@
 <nav>
   <div class="nav-logo">
     <!-- InAble Logo: icon + wordmark -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" height="32" width="auto" style="overflow:visible">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 200" height="32" width="auto" style="overflow:visible">
       <defs>
         <linearGradient id="nl-brandText" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7F77DD"/><stop offset="100%" stop-color="#5DCAA5"/></linearGradient>
         <linearGradient id="nl-purpleGlass" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#AFA9EC" stop-opacity="0.34"/><stop offset="100%" stop-color="#3C3489" stop-opacity="0.44"/></linearGradient>
@@ -416,17 +415,13 @@
       </g>
     </svg>
   </div>
-  <div class="nav-meta">
-    <span class="nav-by">by <a href="https://aricciviclabs.org" target="_blank">AricCivicLabs</a></span>
-    <span class="nav-pillar"><span class="nav-pillar-dot"></span>Social &amp; Psychological Enablement</span>
-  </div>
   <div class="nav-links">
     <a href="#how">How it works</a>
     <a href="#decoder">Decoder</a>
-    <a href="#flow">Flow</a>
-    <a href="#devices">Devices</a>
+    <a href="#mini">Mini</a>
+    <a href="#pricing">Pricing</a>
   </div>
-  <button class="nav-cta">Get early access</button>
+  <button class="nav-cta" onclick="window.location.href='inable.html'">Open InAble →</button>
 </nav>
 
 <!-- HERO -->
@@ -436,7 +431,7 @@
 
   <div class="hero-eyebrow">
     <div class="live-dot"></div>
-    Real-time social coaching
+    Real-time social coaching · Now live
   </div>
 
   <!-- Hero Logo -->
@@ -476,85 +471,112 @@
   </h1>
 
   <p class="hero-sub">
-    InAble gives you the words, the reads, and the exit strategies — 
-    in real time, on your wrist or in your pocket. So you can be in the room 
-    without being drained by it.
+    InAble gives you the words, the reads, and the exit strategies —
+    in real time, on your phone or in a glanceable Mini view.
+    So you can be in the room without being drained by it.
   </p>
 
   <div class="hero-ctas">
-    <button class="btn-primary-lg">Get early access →</button>
-    <button class="btn-ghost-lg">See how it works</button>
+    <button class="btn-primary-lg" onclick="window.location.href='inable.html'">Open InAble →</button>
+    <button class="btn-ghost-lg" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See how it works</button>
   </div>
 
-  <!-- Device preview -->
+  <!-- Device preview: Full + Mini -->
   <div class="device-preview">
-    <!-- Watch -->
-    <div style="text-align:center;">
-      <div class="watch-frame">
-        <div class="device-screen" style="padding:9px;">
-          <div class="ws-header">
-            <span class="ws-logo">InAble</span>
-            <span class="ws-live"><span class="ws-dot"></span>Live</span>
-          </div>
-          <div class="ws-energy"><div class="ws-energy-fill"></div></div>
-          <div class="ws-sug">
-            <div class="ws-sug-type">deepen</div>
-            <div class="ws-sug-text">"What surprised you most about your work lately?"</div>
-          </div>
-          <div class="ws-sug">
-            <div class="ws-sug-type" style="color:#7F77DD;">opener</div>
-            <div class="ws-sug-text">"How do you two know each other?"</div>
-          </div>
-          <div class="ws-btns">
-            <div class="ws-btn">+ / −<br>flow</div>
-            <div class="ws-btn">🔍<br>decode</div>
-            <div class="ws-btn">🚪<br>exit</div>
-          </div>
-        </div>
-      </div>
-      <div class="device-label">Apple Watch / WearOS</div>
-    </div>
-
-    <!-- Phone -->
+    <!-- InAble Full (phone) -->
     <div style="text-align:center;">
       <div class="phone-frame">
-        <div class="device-screen" style="padding:10px; overflow:hidden;">
-          <div class="ps-header">
+        <div class="device-screen" style="padding:0; overflow:hidden; display:flex; flex-direction:column;">
+          <!-- Topbar -->
+          <div style="background:rgba(60,52,137,0.45); padding:8px 10px 7px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
             <span class="ps-logo">InAble</span>
-            <span class="ps-live">● Live</span>
+            <span style="font-size:8px; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(127,119,221,0.25); color:#AFA9EC;">✦ Monthly</span>
           </div>
-          <div class="ps-tabs">
-            <div class="ps-tab active">COACH</div>
-            <div class="ps-tab">PREP</div>
-            <div class="ps-tab">DEBRIEF</div>
+          <!-- Tabs -->
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0;">
+            <div style="padding:6px 2px; text-align:center; font-size:7.5px; font-weight:700; color:#AFA9EC; border-bottom:2px solid #7F77DD; letter-spacing:.03em;">📋 PREP</div>
+            <div style="padding:6px 2px; text-align:center; font-size:7.5px; font-weight:600; color:#2e2c50; letter-spacing:.03em;">💬 COACH</div>
+            <div style="padding:6px 2px; text-align:center; font-size:7.5px; font-weight:600; color:#2e2c50; letter-spacing:.03em;">🔍 DECODE</div>
+            <div style="padding:6px 2px; text-align:center; font-size:7.5px; font-weight:600; color:#2e2c50; letter-spacing:.03em;">📈 DEBRIEF</div>
           </div>
-          <div class="ps-sit">
-            👥 Small group · topic fading
-            <div class="ps-sit-sub">~2 min silence risk</div>
-          </div>
-          <div class="ps-sug">
-            <span class="ps-tag" style="background:rgba(29,158,117,0.15);color:#5DCAA5;">DEEPEN</span>
-            <span class="ps-text">"What's surprised you most about work lately?"</span>
-          </div>
-          <div class="ps-sug">
-            <span class="ps-tag" style="background:rgba(127,119,221,0.15);color:#AFA9EC;">OPENER</span>
-            <span class="ps-text">"How do you two know each other?"</span>
-          </div>
-          <div class="ps-sug">
-            <span class="ps-tag" style="background:rgba(250,199,117,0.15);color:#FAC775;">RESCUE</span>
-            <span class="ps-text">"Wait — say more about that."</span>
-          </div>
-          <div class="ps-flow">
-            <div class="ps-flow-btn" style="background:rgba(29,158,117,0.12);color:#5DCAA5;border-color:rgba(29,158,117,0.3);">+ Increase</div>
-            <div class="ps-flow-btn" style="background:rgba(83,74,183,0.12);color:#AFA9EC;border-color:rgba(83,74,183,0.3);">− Decrease</div>
-          </div>
-          <div class="ps-inable">
-            <span class="ps-inable-text">🔍 InAble · Decoder</span>
-            <span class="ps-inable-badge">DECODE IT</span>
+          <!-- Prep panel -->
+          <div style="padding:8px 9px; flex:1; overflow:hidden;">
+            <div style="font-size:8px; font-weight:700; color:#8892B0; letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px;">What kind of event?</div>
+            <div style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:7px;">
+              <span style="background:rgba(139,127,232,0.2); border:1px solid rgba(139,127,232,0.45); border-radius:5px; padding:2px 6px; font-size:7.5px; font-weight:600; color:#AFA9EC;">Work party</span>
+              <span style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:5px; padding:2px 6px; font-size:7.5px; color:#4a5270;">Meeting</span>
+              <span style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:5px; padding:2px 6px; font-size:7.5px; color:#4a5270;">Networking</span>
+            </div>
+            <div style="font-size:8px; font-weight:700; color:#8892B0; letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px;">My goal</div>
+            <div style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:8px;">
+              <span style="background:rgba(139,127,232,0.2); border:1px solid rgba(139,127,232,0.45); border-radius:5px; padding:2px 6px; font-size:7.5px; font-weight:600; color:#AFA9EC;">One real conversation</span>
+              <span style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:5px; padding:2px 6px; font-size:7.5px; color:#4a5270;">Meet 2–3 people</span>
+            </div>
+            <!-- Energy stepper -->
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:8px;">
+              <span style="font-size:8px; color:#4a5270; font-weight:700; text-transform:uppercase; letter-spacing:.05em; flex-shrink:0; width:44px;">Energy</span>
+              <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:4px; width:14px; height:14px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#8892B0;">−</span>
+              <div style="flex:1; height:3px; background:rgba(255,255,255,0.06); border-radius:2px;"><div style="width:70%; height:100%; background:#2DD4BF; border-radius:2px;"></div></div>
+              <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:4px; width:14px; height:14px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#8892B0;">+</span>
+              <span style="font-size:8px; font-weight:700; color:#EEF0FF;">70%</span>
+            </div>
+            <!-- Generate button -->
+            <div style="background:rgba(139,127,232,0.85); border-radius:8px; padding:6px; text-align:center; font-size:8.5px; font-weight:700; color:#fff; margin-bottom:7px;">✦ Generate starters &amp; save prep</div>
+            <!-- Mini sync banner -->
+            <div style="background:rgba(45,212,191,0.07); border:1px solid rgba(45,212,191,0.2); border-radius:6px; padding:5px 7px; display:flex; align-items:center; justify-content:space-between;">
+              <div>
+                <div style="font-size:7.5px; color:#2DD4BF; font-weight:700;">📱 Mini is ready</div>
+                <div style="font-size:7px; color:#4a5270; margin-top:1px;">Prep syncs automatically</div>
+              </div>
+              <span style="background:rgba(45,212,191,0.15); border:1px solid rgba(45,212,191,0.3); border-radius:5px; padding:2px 6px; font-size:7.5px; font-weight:700; color:#2DD4BF;">Open →</span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="device-label">iPhone / Android</div>
+      <div class="device-label">InAble · Full</div>
+    </div>
+
+    <!-- InAble Mini (watch-size) -->
+    <div style="text-align:center;">
+      <div class="watch-frame">
+        <div class="device-screen" style="padding:9px; display:flex; flex-direction:column; gap:4px;">
+          <!-- Header -->
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size:10px; font-weight:700; background:linear-gradient(135deg,#7F77DD,#5DCAA5); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">InAble Mini</span>
+            <span style="font-size:7px; font-weight:700; padding:1px 5px; border-radius:5px; background:rgba(45,212,191,0.15); color:#2DD4BF;">● Live</span>
+          </div>
+          <!-- Prep synced bar -->
+          <div style="background:rgba(45,212,191,0.08); border:1px solid rgba(45,212,191,0.2); border-radius:6px; padding:4px 6px;">
+            <div style="font-size:6.5px; color:#2DD4BF; font-weight:700; text-transform:uppercase; letter-spacing:.05em;">📋 Prep synced</div>
+            <div style="font-size:8px; color:#EEEDFE; margin-top:1px;">Work party · 1-on-1</div>
+          </div>
+          <!-- Situation pills -->
+          <div style="display:flex; flex-wrap:wrap; gap:2px;">
+            <span style="background:rgba(139,127,232,0.2); border:1px solid rgba(139,127,232,0.4); border-radius:4px; padding:2px 5px; font-size:7px; font-weight:600; color:#AFA9EC;">Topic dying</span>
+            <span style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:2px 5px; font-size:7px; color:#4a5270;">Silence</span>
+            <span style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:2px 5px; font-size:7px; color:#4a5270;">Good flow</span>
+          </div>
+          <!-- Energy stepper mini -->
+          <div style="display:flex; align-items:center; gap:3px;">
+            <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:4px; width:14px; height:14px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#6b6a8e; flex-shrink:0;">−</span>
+            <div style="flex:1; height:3px; background:rgba(255,255,255,0.06); border-radius:2px;"><div style="width:65%; height:100%; background:#2DD4BF; border-radius:2px;"></div></div>
+            <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:4px; width:14px; height:14px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#6b6a8e; flex-shrink:0;">+</span>
+            <span style="font-size:7.5px; font-weight:700; color:#EEEDFE; flex-shrink:0;">65%</span>
+          </div>
+          <!-- Flow buttons -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+            <div style="background:rgba(45,212,191,0.12); border:1px solid rgba(45,212,191,0.3); border-radius:8px; padding:7px 4px; text-align:center;">
+              <div style="font-size:18px; font-weight:700; color:#2DD4BF; line-height:1;">+</div>
+              <div style="font-size:6.5px; font-weight:700; color:#2DD4BF; letter-spacing:.04em;">DEEPEN</div>
+            </div>
+            <div style="background:rgba(139,127,232,0.12); border:1px solid rgba(139,127,232,0.3); border-radius:8px; padding:7px 4px; text-align:center;">
+              <div style="font-size:18px; font-weight:700; color:#AFA9EC; line-height:1;">−</div>
+              <div style="font-size:6.5px; font-weight:700; color:#AFA9EC; letter-spacing:.04em;">HAND OFF</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">InAble Mini</div>
     </div>
   </div>
 </section>
@@ -563,26 +585,32 @@
 <section class="how" id="how">
   <div class="reveal">
     <div class="section-eyebrow">How it works</div>
-    <h2 class="section-headline">Three phases.<br><em>One through-line.</em></h2>
+    <h2 class="section-headline">Four modes.<br><em>One through-line.</em></h2>
   </div>
-  <div class="phases-grid">
+  <div class="phases-grid" style="grid-template-columns: repeat(4,1fr);">
     <div class="phase-card reveal">
       <div class="phase-icon">📋</div>
-      <div class="phase-label">Phase one</div>
+      <div class="phase-label">Before · Full only</div>
       <div class="phase-name">Prep</div>
-      <p class="phase-desc">Before you walk in, InAble builds your social brief — personalized starters, a clear goal, and a preview of who'll be there. You go in with a plan, not a prayer.</p>
+      <p class="phase-desc">Set up your event with pill selectors — event type, group size, who'll be there, your goal, your energy. InAble generates tailored conversation starters and syncs your context to Mini automatically.</p>
     </div>
-    <div class="phase-card reveal" style="transition-delay:0.1s;">
+    <div class="phase-card reveal" style="transition-delay:0.08s;">
       <div class="phase-icon">💬</div>
-      <div class="phase-label">Phase two</div>
+      <div class="phase-label">During · Full &amp; Mini</div>
       <div class="phase-name">Coach</div>
-      <p class="phase-desc">Live, in the moment. InAble surfaces what to say next — deepen, open, rescue, or exit — based on what's actually happening. Glanceable on your watch, tappable in your pocket.</p>
+      <p class="phase-desc">Live, in the moment. Tap + to deepen or bring others in. Tap − to hand the floor and step back. Adjust your energy level in real time. InAble gives you one specific, immediately usable move.</p>
     </div>
-    <div class="phase-card reveal" style="transition-delay:0.2s;">
+    <div class="phase-card reveal" style="transition-delay:0.16s;">
+      <div class="phase-icon">🔍</div>
+      <div class="phase-label">During or after · Full &amp; Mini</div>
+      <div class="phase-name">Decoder</div>
+      <p class="phase-desc">Something felt off — or really right. Paste in what happened. Choose the situation type. Get a straight, honest read: did that land? Was I too much? InAble doesn't just reassure — it actually tells you.</p>
+    </div>
+    <div class="phase-card reveal" style="transition-delay:0.24s;">
       <div class="phase-icon">📈</div>
-      <div class="phase-label">Phase three</div>
+      <div class="phase-label">After · Full only</div>
       <div class="phase-name">Debrief</div>
-      <p class="phase-desc">After. You write it out. InAble reads it — surfaces what worked, what to try next, and catches the moments you're still replaying at midnight.</p>
+      <p class="phase-desc">Write out how it went. InAble surfaces your concrete win, what to try next, and catches the moments you're still replaying at midnight — so they stop replaying.</p>
     </div>
   </div>
 </section>
@@ -627,15 +655,72 @@
   <div class="flow-cards">
     <div class="flow-card flow-card-plus reveal">
       <div class="flow-card-symbol">+</div>
-      <div class="flow-card-title">Increase flow</div>
+      <div class="flow-card-title">Deepen / Widen</div>
       <p class="flow-card-desc">Ready to go deeper? Or bring someone new into the conversation? The + button gives you one specific, immediately usable move — a question that unlocks real talk, or a natural intro that makes you the connector.</p>
       <div class="flow-example">"I feel like we've only scratched the surface — what's something you rarely get to talk about at these things?"</div>
     </div>
     <div class="flow-card flow-card-minus reveal" style="transition-delay:0.1s;">
       <div class="flow-card-symbol">−</div>
-      <div class="flow-card-title">Decrease flow</div>
+      <div class="flow-card-title">Hand the floor</div>
       <p class="flow-card-desc">Running low? The − button gives you a graceful redirect — hand the floor, invite someone else in, or become the curious listener. You stay present without having to perform.</p>
       <div class="flow-example">"I'm curious what everyone else thinks — [Name], you've dealt with this more than anyone here."</div>
+    </div>
+  </div>
+</section>
+
+<!-- MINI SECTION -->
+<section id="mini" style="padding: 100px 24px; background: radial-gradient(ellipse at 50% 60%, rgba(45,212,191,0.06) 0%, transparent 70%);">
+  <div style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+    <div class="reveal">
+      <div class="section-eyebrow" style="color: #2DD4BF;">InAble Mini</div>
+      <h2 class="section-headline" style="margin-bottom: 20px;">The glanceable<br><em style="color:#2DD4BF;">in-event view.</em></h2>
+      <p style="font-size:16px; color:var(--muted); line-height:1.8; font-weight:300; margin-bottom:16px;">Mini is stripped down to exactly what you need mid-conversation: Coach and Decoder. Nothing else in the way.</p>
+      <p style="font-size:16px; color:var(--muted); line-height:1.8; font-weight:300; margin-bottom:24px;">Prep on InAble Full before you walk in — Mini picks it up automatically. Your event context, goal, and energy baseline travel with you. No re-entering anything.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px;">
+        <span style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.25); border-radius:100px; padding:6px 14px; font-size:13px; font-weight:500; color:#2DD4BF;">Coach · live</span>
+        <span style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.25); border-radius:100px; padding:6px 14px; font-size:13px; font-weight:500; color:#2DD4BF;">Decoder · anytime</span>
+        <span style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.25); border-radius:100px; padding:6px 14px; font-size:13px; font-weight:500; color:#2DD4BF;">Syncs from Full</span>
+        <span style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.25); border-radius:100px; padding:6px 14px; font-size:13px; font-weight:500; color:#2DD4BF;">+/− energy steppers</span>
+      </div>
+      <button class="btn-primary-lg" style="background:#0D9488;" onclick="window.location.href='inable-mini.html'">Open Mini →</button>
+    </div>
+    <div class="reveal" style="transition-delay:0.15s; display:flex; flex-direction:column; align-items:center; gap:8px;">
+      <!-- Mini mockup enlarged -->
+      <div style="width:210px; height:256px; background:#111020; border-radius:40px; border:1px solid rgba(255,255,255,0.12); overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 0 6px #0d0c1a, 0 0 0 7px rgba(255,255,255,0.06);">
+        <div style="padding:12px 11px 10px; display:flex; flex-direction:column; gap:5px; height:100%;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size:13px; font-weight:700; background:linear-gradient(135deg,#8B7FE8,#2DD4BF); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">InAble Mini</span>
+            <span style="font-size:8px; font-weight:700; padding:2px 6px; border-radius:5px; background:rgba(45,212,191,0.15); color:#2DD4BF;">● Live</span>
+          </div>
+          <div style="background:rgba(45,212,191,0.08); border:1px solid rgba(45,212,191,0.2); border-radius:7px; padding:5px 7px;">
+            <div style="font-size:7.5px; color:#2DD4BF; font-weight:700; text-transform:uppercase; letter-spacing:.05em;">📋 Prep synced</div>
+            <div style="font-size:9.5px; color:#EEEDFE; margin-top:2px;">Networking · 1-on-1</div>
+          </div>
+          <div style="font-size:8px; font-weight:700; color:#6b6a8e; letter-spacing:.06em; text-transform:uppercase;">Situation</div>
+          <div style="display:flex; flex-wrap:wrap; gap:3px;">
+            <span style="background:rgba(139,127,232,0.2); border:1px solid rgba(139,127,232,0.4); border-radius:5px; padding:2px 7px; font-size:8.5px; font-weight:600; color:#A99BF5;">Topic dying</span>
+            <span style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:5px; padding:2px 7px; font-size:8.5px; color:#2a2845;">Silence</span>
+            <span style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:5px; padding:2px 7px; font-size:8.5px; color:#2a2845;">Good flow</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:5px; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#6b6a8e; flex-shrink:0;">−</span>
+            <div style="flex:1; height:3px; background:rgba(255,255,255,0.07); border-radius:2px;"><div style="width:62%; height:100%; background:#2DD4BF; border-radius:2px;"></div></div>
+            <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:5px; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#6b6a8e; flex-shrink:0;">+</span>
+            <span style="font-size:9px; font-weight:700; color:#EEEDFE;">62%</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; flex:1;">
+            <div style="background:rgba(45,212,191,0.12); border:1px solid rgba(45,212,191,0.3); border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;">
+              <span style="font-size:26px; font-weight:700; color:#2DD4BF; line-height:1;">+</span>
+              <span style="font-size:8px; font-weight:700; color:#2DD4BF; letter-spacing:.04em;">DEEPEN</span>
+            </div>
+            <div style="background:rgba(139,127,232,0.12); border:1px solid rgba(139,127,232,0.3); border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;">
+              <span style="font-size:26px; font-weight:700; color:#A99BF5; line-height:1;">−</span>
+              <span style="font-size:8px; font-weight:700; color:#A99BF5; letter-spacing:.04em;">HAND OFF</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:12px; color:var(--dim); letter-spacing:0.08em; text-transform:uppercase; font-weight:600;">InAble Mini</div>
     </div>
   </div>
 </section>
@@ -653,7 +738,7 @@
       <div class="testimonial-role">Software engineer, introvert</div>
     </div>
     <div class="testimonial reveal" style="transition-delay:0.1s;">
-      <div class="testimonial-quote">"The watch mode changed everything. A glance is all I need. I don't have to disappear to my phone — I can stay in the conversation."</div>
+      <div class="testimonial-quote">"Mini changed everything. I set up my prep on InAble before I walked in — Mini already knew the context. I just tapped + and it gave me exactly what I needed."</div>
       <div class="testimonial-author">Daniel K.</div>
       <div class="testimonial-role">Product manager, highly sensitive</div>
     </div>
@@ -665,74 +750,63 @@
   </div>
 </section>
 
-<!-- DEVICES -->
-<section class="devices-section" id="devices">
+<!-- PRICING -->
+<section id="pricing" style="padding: 100px 24px; text-align:center;">
   <div class="reveal">
-    <div class="section-eyebrow">Everywhere you need it</div>
-    <h2 class="section-headline" style="margin:0 auto 12px; max-width:600px;">On your wrist.<br><em>In your pocket.</em></h2>
-    <p style="color:var(--muted); font-size:16px; max-width:480px; margin:0 auto; line-height:1.7; font-weight:300;">
-      The watch UI is built for a single glance — no fumbling with your phone while mid-conversation. The phone gives you depth when you can step away.
+    <div class="section-eyebrow">Simple pricing</div>
+    <h2 class="section-headline" style="margin:0 auto 16px; max-width:560px;">Try it first.<br><em>Stay if it helps.</em></h2>
+    <p style="color:var(--muted); font-size:16px; max-width:440px; margin:0 auto 56px; line-height:1.7; font-weight:300;">
+      All plans unlock InAble Full and InAble Mini. No account required. Privacy-first — your conversations stay on your device.
     </p>
   </div>
-  <div class="devices-row">
-    <div class="reveal" style="text-align:center;">
-      <div class="watch-frame" style="width:165px; height:200px;">
-        <div class="device-screen" style="padding:10px;">
-          <div class="ws-header">
-            <span class="ws-logo">InAble</span>
-            <span class="ws-live"><span class="ws-dot"></span>Live</span>
-          </div>
-          <div class="ws-energy"><div class="ws-energy-fill"></div></div>
-          <div class="ws-sug" style="margin-bottom:5px;">
-            <div class="ws-sug-type">deepen</div>
-            <div class="ws-sug-text">"What's surprised you most about your work lately?"</div>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:auto;">
-            <div style="background:rgba(29,158,117,0.18); border:1px solid rgba(29,158,117,0.3); border-radius:8px; padding:7px 4px; text-align:center; font-size:14px; font-weight:700; color:#5DCAA5;">+</div>
-            <div style="background:rgba(83,74,183,0.18); border:1px solid rgba(83,74,183,0.3); border-radius:8px; padding:7px 4px; text-align:center; font-size:14px; font-weight:700; color:#7F77DD;">−</div>
-          </div>
-          <div style="background:rgba(83,74,183,0.15); border:1px solid rgba(83,74,183,0.3); border-radius:8px; padding:6px; text-align:center; font-size:9px; color:#AFA9EC; font-weight:700; margin-top:5px;">🔍 InAble Decoder</div>
-        </div>
-      </div>
-      <div class="device-label">Smartwatch</div>
+
+  <div class="reveal" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:860px; margin:0 auto;">
+
+    <!-- Trial -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px 24px; text-align:left; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(45,212,191,0.4)'" onmouseout="this.style.borderColor='var(--border)'" onclick="window.location.href='inable.html'">
+      <div style="font-size:13px; font-weight:600; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:12px;">Trial Week</div>
+      <div style="font-size:40px; font-weight:700; letter-spacing:-0.03em; color:var(--text); margin-bottom:4px;">$1.99</div>
+      <div style="font-size:13px; color:var(--dim); margin-bottom:20px;">one time · 7 days full access</div>
+      <p style="font-size:14px; color:var(--muted); line-height:1.65; font-weight:300; margin-bottom:24px;">Try everything before you commit. No subscription, no auto-renew.</p>
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px;">
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:#2DD4BF; flex-shrink:0;">✓</span>All 4 modes: Prep, Coach, Decoder, Debrief</li>
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:#2DD4BF; flex-shrink:0;">✓</span>InAble Mini sync</li>
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:#2DD4BF; flex-shrink:0;">✓</span>Unlimited taps &amp; reads</li>
+      </ul>
+      <div style="margin-top:24px; background:rgba(45,212,191,0.12); border:1px solid rgba(45,212,191,0.3); border-radius:100px; padding:10px 20px; text-align:center; font-size:14px; font-weight:700; color:#2DD4BF;">Start 7-day trial →</div>
     </div>
-    <div class="reveal" style="text-align:center; transition-delay:0.15s;">
-      <div class="phone-frame" style="width:220px; height:420px;">
-        <div class="device-screen" style="padding:12px; overflow:hidden;">
-          <div class="ps-header">
-            <span class="ps-logo">InAble</span>
-            <span class="ps-live">● Live</span>
-          </div>
-          <div class="ps-tabs">
-            <div class="ps-tab active">COACH</div>
-            <div class="ps-tab">PREP</div>
-            <div class="ps-tab">DEBRIEF</div>
-          </div>
-          <div class="ps-sit" style="font-size:11px;">
-            👥 Small group · topic fading
-            <div class="ps-sit-sub">~2 min silence risk</div>
-          </div>
-          <div class="ps-sug">
-            <span class="ps-tag" style="background:rgba(29,158,117,0.15);color:#5DCAA5;">DEEPEN</span>
-            <span class="ps-text">"What's surprised you most lately?"</span>
-          </div>
-          <div class="ps-sug">
-            <span class="ps-tag" style="background:rgba(127,119,221,0.15);color:#AFA9EC;">OPENER</span>
-            <span class="ps-text">"How do you two know each other?"</span>
-          </div>
-          <div class="ps-flow">
-            <div class="ps-flow-btn" style="background:rgba(29,158,117,0.12);color:#5DCAA5;border-color:rgba(29,158,117,0.3); font-size:13px;">+ Increase</div>
-            <div class="ps-flow-btn" style="background:rgba(83,74,183,0.12);color:#AFA9EC;border-color:rgba(83,74,183,0.3); font-size:13px;">− Decrease</div>
-          </div>
-          <div class="ps-inable" style="margin-top:10px;">
-            <span class="ps-inable-text">🔍 InAble · Decoder</span>
-            <span class="ps-inable-badge">DECODE IT</span>
-          </div>
-        </div>
-      </div>
-      <div class="device-label">Smartphone</div>
+
+    <!-- Monthly (featured) -->
+    <div style="background:rgba(83,74,183,0.1); border:1px solid rgba(127,119,221,0.4); border-radius:20px; padding:32px 24px; text-align:left; cursor:pointer; transition:all 0.2s; position:relative;" onmouseover="this.style.borderColor='rgba(127,119,221,0.7)'" onmouseout="this.style.borderColor='rgba(127,119,221,0.4)'" onclick="window.location.href='inable.html'">
+      <div style="position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:var(--purple); color:#fff; font-size:11px; font-weight:700; letter-spacing:0.06em; padding:4px 14px; border-radius:100px;">Most popular</div>
+      <div style="font-size:13px; font-weight:600; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:12px;">Monthly</div>
+      <div style="font-size:40px; font-weight:700; letter-spacing:-0.03em; color:var(--text); margin-bottom:4px;">$6.99</div>
+      <div style="font-size:13px; color:var(--dim); margin-bottom:20px;">per month · cancel anytime</div>
+      <p style="font-size:14px; color:var(--muted); line-height:1.65; font-weight:300; margin-bottom:24px;">Full access, every event. InAble Full + Mini — always in sync.</p>
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px;">
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:var(--purple-light); flex-shrink:0;">✓</span>Everything in Trial, always</li>
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:var(--purple-light); flex-shrink:0;">✓</span>Prep → Mini sync</li>
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:var(--purple-light); flex-shrink:0;">✓</span>Library coming soon</li>
+      </ul>
+      <div style="margin-top:24px; background:var(--purple); border-radius:100px; padding:10px 20px; text-align:center; font-size:14px; font-weight:700; color:#fff;">Get Monthly →</div>
     </div>
+
+    <!-- Annual -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px 24px; text-align:left; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(127,119,221,0.3)'" onmouseout="this.style.borderColor='var(--border)'" onclick="window.location.href='inable.html'">
+      <div style="font-size:11px; font-weight:700; color:var(--teal); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px;">Save 10% vs monthly</div>
+      <div style="font-size:13px; font-weight:600; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:12px;">Annual</div>
+      <div style="font-size:40px; font-weight:700; letter-spacing:-0.03em; color:var(--text); margin-bottom:4px;">$75</div>
+      <div style="font-size:13px; color:var(--dim); margin-bottom:20px;">per year · best value</div>
+      <p style="font-size:14px; color:var(--muted); line-height:1.65; font-weight:300; margin-bottom:24px;">One payment, a full year of backup — before every event, during, and after.</p>
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px;">
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:#2DD4BF; flex-shrink:0;">✓</span>Everything in Monthly</li>
+        <li style="font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start;"><span style="color:#2DD4BF; flex-shrink:0;">✓</span>Library coming soon</li>
+      </ul>
+      <div style="margin-top:24px; background:rgba(45,212,191,0.12); border:1px solid rgba(45,212,191,0.3); border-radius:100px; padding:10px 20px; text-align:center; font-size:14px; font-weight:700; color:#2DD4BF;">Get Annual →</div>
+    </div>
+
   </div>
+  <p class="reveal" style="margin-top:28px; font-size:13px; color:var(--dim); line-height:1.6;">All plans unlock instantly. No account required. Privacy-first — your conversations never leave your device.</p>
 </section>
 
 <!-- CTA -->
@@ -740,11 +814,12 @@
   <div class="cta-glow"></div>
   <div class="reveal">
     <h2 class="cta-headline">You belong<br><em>in the room.</em></h2>
-    <p class="cta-sub">InAble doesn't make you an extrovert. It makes you an introvert with backup. Get early access.</p>
+    <p class="cta-sub">InAble doesn't make you an extrovert. It makes you an introvert with backup.</p>
     <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-      <button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;">Get early access →</button>
+      <button class="btn-primary-lg" style="font-size:17px; padding:17px 36px;" onclick="window.location.href='inable.html'">Open InAble →</button>
+      <button class="btn-ghost-lg" style="font-size:15px;" onclick="window.location.href='inable-mini.html'">Try Mini first</button>
     </div>
-    <p style="margin-top:20px; font-size:13px; color:var(--dim);">Available on iOS, Android, Apple Watch &amp; WearOS</p>
+    <p style="margin-top:20px; font-size:13px; color:var(--dim);">Free to try · No account required · Privacy-first</p>
   </div>
 </section>
 

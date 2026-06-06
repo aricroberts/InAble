@@ -799,14 +799,14 @@ body {
       </div>
     </div>
 
-    <div id="prep-paywall-gate" class="paywall-gate" style="padding:32px 0;">
+    <div id="prep-paywall-gate" class="paywall-gate" style="padding:32px 0;display:none;">
       <div class="pw-orb">🔒</div>
-      <div class="pw-h" style="font-size:18px;">Prep is unlocked</div>
-      <div class="pw-p" style="font-size:13px;">Get AI-generated conversation starters tailored to your event. Try free for 7 days.</div>
+      <div class="pw-h" style="font-size:18px;">Prep requires a plan</div>
+      <div class="pw-p" style="font-size:13px;">Get AI-generated conversation starters tailored to your event, and sync your prep to Mini. Try free for 7 days.</div>
       <button class="btn-primary" onclick="showPaywall()">Unlock InAble →</button>
     </div>
 
-    <div id="prep-content">
+    <div id="prep-content" style="display:none;">
       <div class="btn-row">
         <button class="btn-primary" onclick="runPrep()">✦ Generate starters &amp; save prep</button>
         <button class="btn-secondary" onclick="savePrepOnly()">Save prep without starters</button>
@@ -1003,13 +1003,13 @@ body {
     <!-- Locked state -->
     <div id="debrief-paywall-gate" class="paywall-gate" style="padding:32px 0;display:none;">
       <div class="pw-orb">📈</div>
-      <div class="pw-h" style="font-size:18px;">Debrief is unlocked</div>
+      <div class="pw-h" style="font-size:18px;">Debrief requires a plan</div>
       <div class="pw-p" style="font-size:13px;">Process your events, find your wins, and build better instincts over time. Included in all plans.</div>
       <button class="btn-primary" onclick="showPaywall()">Unlock InAble →</button>
     </div>
 
     <!-- Unlocked state -->
-    <div id="debrief-content">
+    <div id="debrief-content" style="display:none;">
       <div class="field-group">
         <label class="field-label">How did it go? What's still on your mind?</label>
         <textarea class="field-textarea" id="debrief-input" style="height:130px;" placeholder="Stream of consciousness is fine. 'It went okay. I had one good conversation with someone from design. I talked too much at one point and could feel the energy shift. Left after 45 minutes feeling mostly okay but a little drained…'"></textarea>
@@ -1205,10 +1205,10 @@ function updatePrepGate() {
   var gate = document.getElementById('prep-paywall-gate');
   var content = document.getElementById('prep-content');
   if (isUnlocked()) {
-    gate.classList.remove('visible');
+    gate.style.display = 'none';
     content.style.display = '';
   } else {
-    gate.classList.add('visible');
+    gate.style.display = 'flex';
     content.style.display = 'none';
   }
 }

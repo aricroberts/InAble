@@ -80,15 +80,19 @@
   </a>
   <a href="/" class="back">← Back</a>
 
+  <div class="callout" style="margin-bottom:24px;">
+    <strong>Note:</strong> AricCivicLabs.Org maintains a single canonical <a href="https://aricciviclabs.org/legal.html" style="color:#7F77DD;">Privacy &amp; Terms page</a> covering all products. This page provides InAble-specific detail on microphone use and coaching data handling.
+  </div>
+
   <h1>Privacy Policy</h1>
   <p class="updated">Last updated: June 2026 · Effective immediately</p>
 
   <div class="callout">
-    <strong>Plain-English summary:</strong> InAble helps you navigate social situations. To do that, you type or dictate descriptions of your situation to us, and we send that text to Anthropic's AI to generate suggestions. We don't sell your data, we don't store your conversations, and the mic only ever captures your own voice while you're actively holding a button.
+    <strong>Plain-English summary:</strong> InAble helps you navigate social situations. When you type a description of your situation, that text is sent to Anthropic's Claude API to generate suggestions — this is a live transmission to a third-party service. We don't sell your data, we don't store your conversations on our end, and if you pay for a subscription your unlock state is saved in your browser's localStorage so the app stays unlocked across sessions on that device. The mic only ever captures your own voice while you're actively holding a button.
   </div>
 
   <h2>1. Who we are</h2>
-  <p>InAble ("we," "us," "our") is a social coaching tool for introverts, available at inable.app and as a mobile/watch application. For privacy questions, contact us at <a href="mailto:privacy@inable.app">privacy@inable.app</a>.</p>
+  <p>InAble is a social coaching tool for introverts, built by <strong>AricCivicLabs.Org</strong> and available at <a href="https://inable.aricciviclabs.org">inable.aricciviclabs.org</a>. For privacy questions, contact us at <a href="mailto:hello@aricciviclabs.org">hello@aricciviclabs.org</a>.</p>
 
   <h2>2. What data we collect and why</h2>
 
@@ -98,24 +102,20 @@
   <p><strong style="color:#EEEDFE; font-weight:500;">Microphone input</strong><br>
   The mic button in InAble captures only your own voice, only while you are actively pressing and holding the button. It does not listen to ambient conversation, does not record other people, and does not run in the background. The captured audio is converted to text locally by your device's speech recognition engine (Web Speech API) and only the resulting text — not audio — is sent to InAble's servers.</p>
 
-  <p><strong style="color:#EEEDFE; font-weight:500;">Account information (if you create an account)</strong><br>
-  Email address, used to identify your account and send you product updates if you opt in. We use Supabase to store account credentials securely.</p>
+  <p><strong style="color:#EEEDFE; font-weight:500;">Unlock state (localStorage)</strong><br>
+  If you purchase an InAble subscription, your unlock state is saved in your browser's localStorage so the app remains unlocked across sessions on that device. This is a key (e.g., <code>inable_monthly</code>) with a value of "1" — it contains no personal or financial information. You can clear it at any time using the in-app Destroy / Reset button or your browser's developer tools.</p>
 
-  <p><strong style="color:#EEEDFE; font-weight:500;">Usage data</strong><br>
-  We collect anonymised usage metrics (which features are used, error rates, response times) to improve the product. This data cannot be linked back to you as an individual.</p>
-
-  <p><strong style="color:#EEEDFE; font-weight:500;">IP address</strong><br>
-  Collected temporarily to enforce rate limits and prevent abuse. Not stored beyond the current session window.</p>
+  <p><strong style="color:#EEEDFE; font-weight:500;">Account information</strong><br>
+  InAble does not currently require or create user accounts. Unlock state is managed via browser localStorage only. If account-based authentication is introduced in a future version, this policy will be updated before that feature ships.</p>
 
   <hr class="section-divider">
 
   <h2>3. How we use your data</h2>
   <ul>
-    <li>To generate AI-powered suggestions in response to your inputs</li>
-    <li>To manage your account and authenticate you</li>
-    <li>To prevent abuse and enforce fair usage limits</li>
-    <li>To improve the product through anonymised analytics</li>
-    <li>To send product updates and announcements, only if you explicitly opt in</li>
+    <li>To generate AI-powered suggestions in response to your inputs via Anthropic's Claude API</li>
+    <li>To maintain your unlock state in localStorage if you purchase a subscription</li>
+    <li>To process payments and send receipts via Stripe</li>
+    <li>To respond to contact form submissions via Formspree</li>
   </ul>
   <p>We do not use your data to train AI models. We do not sell your data. We do not share your data with advertisers.</p>
 
@@ -124,20 +124,20 @@
   <h2>4. Third parties who receive your data</h2>
 
   <p><strong style="color:#EEEDFE; font-weight:500;">Anthropic, PBC</strong><br>
-  The text of your InAble inputs is sent to Anthropic's Claude API to generate responses. Anthropic's usage policies prohibit using API inputs to train models. You can review Anthropic's privacy policy at <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a>.</p>
+  The text you type into InAble's coaching features is sent to Anthropic's Claude API to generate responses. This is a live transmission to a third-party service — not local processing. Anthropic's API usage policies prohibit using API inputs to train models, but their data retention practices are governed by their own privacy policy. Review it at <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a>.</p>
+
+  <p><strong style="color:#EEEDFE; font-weight:500;">Stripe, Inc.</strong><br>
+  Purchases are processed by Stripe. When you check out, Stripe receives your name, email address, billing address, and payment card details. We receive only a payment confirmation and your email (used to send a receipt). Stripe's processing is governed by the <a href="https://stripe.com/privacy" target="_blank">Stripe Privacy Policy</a>.</p>
 
   <p><strong style="color:#EEEDFE; font-weight:500;">Vercel</strong><br>
-  Our API proxy runs on Vercel's infrastructure. Request logs are retained per Vercel's standard data retention policies.</p>
-
-  <p><strong style="color:#EEEDFE; font-weight:500;">Supabase</strong><br>
-  If you create an account, your account data is stored in Supabase. Data is encrypted at rest and in transit.</p>
+  InAble is hosted on Vercel's infrastructure. Standard request logs (IP address, timestamp, URL) are retained per Vercel's standard data retention policies. Review at <a href="https://vercel.com/legal/privacy-policy" target="_blank">vercel.com/legal/privacy-policy</a>.</p>
 
   <p>We do not use any advertising networks, social tracking pixels, or data brokers.</p>
 
   <hr class="section-divider">
 
   <h2>5. Data retention</h2>
-  <p>Your conversation inputs are not stored by InAble after a response is delivered. Account data is retained until you delete your account. Anonymised usage metrics are retained for up to 12 months. Rate-limit data (IP-based) resets every 24 hours.</p>
+  <p>Your conversation inputs are not stored by InAble after a response is delivered — they are transmitted to Anthropic and then discarded on our end. Your localStorage unlock state persists on your device until you clear it or use the Destroy button. Stripe retains your payment and transaction records per their own policies. Formspree retains contact form submissions per their policies.</p>
 
   <hr class="section-divider">
 
@@ -165,24 +165,24 @@
   </ul>
   <p>Voice data captured by the mic button is classified as sensitive personal information under CPRA. It is processed locally on your device and only the text transcript is transmitted. We do not retain audio recordings.</p>
 
-  <p>To exercise any of these rights, email <a href="mailto:privacy@inable.app">privacy@inable.app</a>. We will respond within 30 days.</p>
+  <p>To exercise any of these rights, email <a href="mailto:hello@aricciviclabs.org">hello@aricciviclabs.org</a>. We will respond within 30 days.</p>
 
   <hr class="section-divider">
 
-  <h2>7. Cookies and tracking</h2>
-  <p>InAble uses only essential session cookies required to keep you logged in. We do not use advertising cookies, third-party tracking pixels, or behavioural analytics cookies. You can disable cookies in your browser settings; this will log you out of your account.</p>
+  <h2>7. Cookies and local storage</h2>
+  <p>InAble does not use cookies. Unlock state for paid subscribers is stored in your browser's localStorage, not cookies. We do not use advertising cookies, third-party tracking pixels, or behavioural analytics cookies.</p>
 
   <h2>8. Children</h2>
   <p>InAble is not directed at children under 13 (or under 16 in the EEA). We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, contact us and we will delete it promptly.</p>
 
   <h2>9. Security</h2>
-  <p>All data in transit is encrypted via HTTPS/TLS. Your Anthropic API key is stored exclusively in server-side environment variables and is never transmitted to your browser. Account passwords are hashed and salted. We conduct periodic security reviews.</p>
+  <p>All data in transit is encrypted via HTTPS/TLS. The Anthropic API key used for the InAble landing page demo is stored in a server-side environment variable and is never exposed to your browser. The main InAble app (inable.html) makes direct API calls from your browser in environments where an API key is injected by the hosting context (e.g., Claude.ai widget). We conduct periodic security reviews.</p>
 
   <h2>10. Changes to this policy</h2>
   <p>If we make material changes, we will notify you by email (if you have an account) or by posting a notice in the app at least 14 days before the change takes effect. Continued use after the effective date constitutes acceptance.</p>
 
   <h2>11. Contact</h2>
-  <p>For privacy questions, data requests, or complaints: <a href="mailto:privacy@inable.app">privacy@inable.app</a></p>
+  <p>For privacy questions, data requests, or complaints: <a href="mailto:hello@aricciviclabs.org">hello@aricciviclabs.org</a></p>
   <p>If you are in the EEA and are not satisfied with our response, you have the right to lodge a complaint with your local supervisory authority.</p>
 
 </div>

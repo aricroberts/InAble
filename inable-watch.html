@@ -2,192 +2,370 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>InAble Watch</title>
+
+<!-- watchOS Safari / iOS PWA meta tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="InAble">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080710">
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap');
 
   :root {
-    --bg: #080710;
+    --bg:      #080710;
     --surface: rgba(255,255,255,0.06);
-    --border: rgba(255,255,255,0.1);
-    --purple: #7F77DD;
+    --border:  rgba(255,255,255,0.1);
+    --purple:  #7F77DD;
     --purple-dim: #3C3489;
-    --teal: #5DCAA5;
-    --amber: #FAC775;
-    --coral: #F0997B;
-    --text: #EEEDFE;
-    --muted: #6b6a8e;
-    --dimmer: #2a2845;
+    --teal:    #5DCAA5;
+    --amber:   #FAC775;
+    --coral:   #F0997B;
+    --text:    #EEEDFE;
+    --muted:   #6b6a8e;
+    --dimmer:  #2a2845;
+    /* Safari/watchOS viewport height fix — set by JS on load */
+    --app-height: 100vh;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
 
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
-    width: 198px;
-    height: 242px;
+    width: 100vw;
+    height: var(--app-height);
     overflow: hidden;
-    border-radius: 36px;
     position: relative;
     user-select: none;
+    /* env() covers watchOS notch/rounded-corner safe areas */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   /* ── Screens ── */
-  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 10px 9px 8px; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; border-radius: 36px; overflow: hidden; }
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 11px 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+    overflow: hidden;
+  }
   .screen.active { opacity: 1; pointer-events: all; }
 
   /* ── Home ── */
-  #home { background: radial-gradient(ellipse at 60% 30%, #1a1542 0%, #080710 70%); align-items: center; justify-content: center; gap: 6px; }
-  .logo { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #7F77DD, #5DCAA5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em; }
-  .tagline { font-size: 9px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
-  .pulse-ring { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s ease infinite; margin-top: 2px; }
+  #home {
+    background: radial-gradient(ellipse at 60% 30%, #1a1542 0%, #080710 70%);
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .logo {
+    font-size: 26px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #7F77DD, #5DCAA5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .tagline { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .pulse-ring {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 2s ease infinite;
+    margin-top: 2px;
+  }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(0.8)} }
-  .home-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; margin-top: 8px; }
-  .home-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 7px 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: background 0.15s; }
-  .home-btn:active { background: rgba(127,119,221,0.2); }
-  .home-btn-icon { font-size: 15px; }
-  .home-btn-label { font-size: 8px; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; }
 
-  /* ── Coach ── */
-  #coach { background: #080710; }
-  #prep  { background: #080710; }
-  #debrief { background: #080710; }
-  #decoder { background: #080710; }
-  #flow-screen { background: #080710; }
+  .home-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .home-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 6px;
+    min-height: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .home-btn:active { background: rgba(127,119,221,0.2); }
+  .home-btn-icon { font-size: 18px; }
+  .home-btn-label { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; }
 
   /* ── Shared header ── */
-  .w-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
-  .w-back { background: var(--surface); border: none; border-radius: 8px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 12px; flex-shrink: 0; }
-  .w-title { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.04em; text-transform: uppercase; }
-  .w-badge { font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 6px; }
-  .badge-coach { background: rgba(127,119,221,0.2); color: var(--purple); }
-  .badge-prep  { background: rgba(93,202,165,0.15); color: var(--teal); }
+  .w-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-shrink: 0; }
+  .w-back {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted); font-size: 16px; flex-shrink: 0;
+  }
+  .w-back:active { background: rgba(255,255,255,0.1); }
+  .w-title { font-size: 12px; font-weight: 700; color: var(--text); letter-spacing: 0.04em; text-transform: uppercase; }
+  .w-badge { font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 7px; }
+  .badge-coach   { background: rgba(127,119,221,0.2); color: var(--purple); }
+  .badge-prep    { background: rgba(93,202,165,0.15); color: var(--teal); }
   .badge-debrief { background: rgba(250,199,117,0.15); color: var(--amber); }
 
   /* ── Suggestion card ── */
-  .sug-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 8px; margin-bottom: 5px; flex-shrink: 0; }
-  .sug-type { font-size: 7px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
-  .sug-text { font-size: 10px; color: var(--text); line-height: 1.4; }
+  .sug-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 9px 10px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+  }
+  .sug-type {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .sug-text { font-size: 12px; color: var(--text); line-height: 1.45; }
   .type-deepen { color: var(--teal); }
   .type-opener { color: var(--purple); }
   .type-rescue { color: var(--amber); }
   .type-exit   { color: var(--coral); }
 
   /* ── Scroll area ── */
-  .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
   .scroll-area::-webkit-scrollbar { display: none; }
 
+  /* ── Coach suggestions ── */
+  .coach-suggestions {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .coach-suggestions::-webkit-scrollbar { display: none; }
+
+  /* ── Refresh hint ── */
+  .refresh-hint {
+    font-size: 10px;
+    color: var(--dimmer);
+    text-align: center;
+    padding: 6px 0 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+  .refresh-hint:active { color: var(--muted); }
+
   /* ── Big tap buttons ── */
-  .tap-btn { border: none; border-radius: 12px; padding: 9px 8px; width: 100%; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.15s; margin-bottom: 5px; }
+  .tap-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 8px;
+    min-height: 44px;
+    width: 100%;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.15s;
+    margin-bottom: 5px;
+    font-family: inherit;
+  }
   .tap-btn:active { transform: scale(0.97); }
   .btn-purple { background: rgba(83,74,183,0.3); color: var(--purple); border: 1px solid rgba(83,74,183,0.5); }
-  .btn-teal   { background: rgba(29,158,117,0.2); color: var(--teal); border: 1px solid rgba(29,158,117,0.4); }
-  .btn-coral  { background: rgba(216,90,48,0.2); color: var(--coral); border: 1px solid rgba(216,90,48,0.4); }
+  .btn-teal   { background: rgba(29,158,117,0.2); color: var(--teal);   border: 1px solid rgba(29,158,117,0.4); }
+  .btn-coral  { background: rgba(216,90,48,0.2);  color: var(--coral);  border: 1px solid rgba(216,90,48,0.4); }
   .btn-amber  { background: rgba(239,159,39,0.15); color: var(--amber); border: 1px solid rgba(239,159,39,0.35); }
 
   /* ── Energy bar ── */
-  .energy-wrap { margin-bottom: 6px; }
-  .energy-row { display: flex; align-items: center; gap: 5px; margin-bottom: 2px; }
-  .energy-lbl { font-size: 8px; color: var(--muted); width: 40px; flex-shrink: 0; }
+  .energy-wrap { margin-bottom: 7px; flex-shrink: 0; }
+  .energy-row  { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+  .energy-lbl  { font-size: 10px; color: var(--muted); width: 46px; flex-shrink: 0; }
   .energy-track { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; }
-  .energy-fill  { height: 100%; border-radius: 2px; background: var(--teal); width: 65%; }
-  .energy-note  { font-size: 8px; color: var(--dimmer); padding-left: 45px; }
+  .energy-fill  { height: 100%; border-radius: 2px; background: var(--teal); }
+  .energy-note  { font-size: 10px; color: var(--dimmer); padding-left: 52px; }
 
   /* ── Flow screen ── */
-  .flow-dir-row { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 7px; }
-  .flow-dir-btn { border: none; border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.15s; }
+  .flow-dir-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; flex-shrink: 0; }
+  .flow-dir-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 18px 6px;
+    min-height: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
   .flow-dir-btn:active { transform: scale(0.96); }
   .flow-plus  { background: rgba(29,158,117,0.18); border: 1px solid rgba(29,158,117,0.4); }
-  .flow-minus { background: rgba(83,74,183,0.18); border: 1px solid rgba(83,74,183,0.4); }
-  .flow-dir-symbol { font-size: 20px; font-weight: 700; line-height: 1; }
+  .flow-minus { background: rgba(83,74,183,0.18);  border: 1px solid rgba(83,74,183,0.4); }
+  .flow-dir-symbol { font-size: 24px; font-weight: 700; line-height: 1; }
   .flow-plus  .flow-dir-symbol { color: var(--teal); }
   .flow-minus .flow-dir-symbol { color: var(--purple); }
-  .flow-dir-label { font-size: 8px; font-weight: 700; letter-spacing: 0.05em; }
-  .flow-plus  .flow-dir-label { color: var(--teal); }
-  .flow-minus .flow-dir-label { color: var(--purple); }
-  .flow-result { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 9px; display: none; }
+  .flow-dir-label { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; }
+  .flow-plus  .flow-dir-label  { color: var(--teal); }
+  .flow-minus .flow-dir-label  { color: var(--purple); }
+
+  .flow-result {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 10px 11px;
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .flow-result.visible { display: block; animation: fadeUp 0.3s ease; }
-  .flow-result-label { font-size: 8px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 4px; }
-  .flow-result-text  { font-size: 10px; color: var(--text); line-height: 1.45; }
-  .flow-tap-more { font-size: 8px; color: var(--dimmer); margin-top: 5px; cursor: pointer; }
+  .flow-result-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .flow-result-text  { font-size: 12px; color: var(--text); line-height: 1.5; }
+  .flow-tap-more { font-size: 10px; color: var(--dimmer); margin-top: 7px; cursor: pointer; }
+  .flow-tap-more:active { color: var(--muted); }
+  .flow-source { font-size: 9px; color: var(--dimmer); margin-top: 4px; letter-spacing: 0.02em; }
 
   /* ── Decoder screen ── */
-  .decoder-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 9px; color: var(--text); font-size: 10px; font-family: inherit; padding: 7px 8px; resize: none; outline: none; line-height: 1.45; height: 60px; }
-  .decoder-result { background: rgba(127,119,221,0.08); border-left: 2px solid var(--purple); border-radius: 0 8px 8px 0; padding: 7px 8px; margin-top: 5px; animation: fadeUp 0.3s ease; }
-  .decoder-result-lbl { font-size: 8px; font-weight: 700; color: var(--purple); letter-spacing: 0.08em; margin-bottom: 3px; }
-  .decoder-result-text { font-size: 10px; color: var(--text); line-height: 1.45; }
-  .signals { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
-  .signal { font-size: 8px; font-weight: 600; padding: 2px 6px; border-radius: 8px; }
-  .sig-pos  { background: rgba(29,158,117,0.2); color: var(--teal); }
+  .decoder-input {
+    width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-size: 12px; font-family: inherit;
+    padding: 9px 10px; resize: none; outline: none; line-height: 1.45; height: 72px;
+    flex-shrink: 0;
+  }
+  .decoder-result {
+    background: rgba(127,119,221,0.08);
+    border-left: 2px solid var(--purple);
+    border-radius: 0 9px 9px 0;
+    padding: 9px 10px;
+    margin-top: 6px;
+    animation: fadeUp 0.3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .decoder-result-lbl { font-size: 10px; font-weight: 700; color: var(--purple); letter-spacing: 0.08em; margin-bottom: 4px; }
+  .decoder-result-text { font-size: 12px; color: var(--text); line-height: 1.45; }
+  .signals { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .signal { font-size: 9px; font-weight: 600; padding: 3px 7px; border-radius: 8px; }
+  .sig-pos  { background: rgba(29,158,117,0.2);  color: var(--teal); }
   .sig-neu  { background: rgba(255,255,255,0.06); color: var(--muted); }
-  .sig-warn { background: rgba(239,159,39,0.15); color: var(--amber); }
+  .sig-warn { background: rgba(239,159,39,0.15);  color: var(--amber); }
 
   /* ── Spinner dots ── */
-  .dots { display: flex; gap: 3px; justify-content: center; padding: 6px 0; }
-  .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--purple); animation: bounce 1s ease-in-out infinite; }
+  .dots { display: flex; gap: 4px; justify-content: center; padding: 8px 0; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); animation: bounce 1s ease-in-out infinite; }
   .dot:nth-child(2) { animation-delay: 0.15s; }
   .dot:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
 
   /* ── Prep fields ── */
-  .prep-field { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 6px 8px; margin-bottom: 5px; }
-  .prep-field-lbl { font-size: 8px; color: var(--muted); margin-bottom: 2px; }
-  .prep-field-val { font-size: 10px; color: var(--text); line-height: 1.35; }
+  .prep-field { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; flex-shrink: 0; }
+  .prep-field-lbl { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+  .prep-field-val { font-size: 12px; color: var(--text); line-height: 1.4; }
+  .prep-sync-note {
+    font-size: 10px; color: var(--dimmer); text-align: center;
+    padding: 10px 8px; line-height: 1.5;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.08);
+    border-radius: 10px;
+    margin-top: 6px;
+  }
 
   /* ── Debrief ── */
-  .debrief-textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 9px; color: var(--text); font-size: 10px; font-family: inherit; padding: 7px 8px; resize: none; outline: none; line-height: 1.45; height: 68px; }
-  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-  .stat-box { background: var(--surface); border-radius: 8px; padding: 5px 3px; text-align: center; }
-  .stat-num { font-size: 15px; font-weight: 700; color: var(--text); }
-  .stat-lbl { font-size: 7px; color: var(--muted); }
+  .debrief-textarea {
+    width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-size: 12px; font-family: inherit;
+    padding: 9px 10px; resize: none; outline: none; line-height: 1.45; height: 80px;
+  }
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 7px; flex-shrink: 0; }
+  .stat-box  { background: var(--surface); border-radius: 9px; padding: 7px 4px; text-align: center; }
+  .stat-num  { font-size: 18px; font-weight: 700; color: var(--text); }
+  .stat-lbl  { font-size: 9px; color: var(--muted); }
 
-  /* ── Scrollable suggestion list for coach ── */
-  .coach-suggestions { flex: 1; overflow-y: auto; scrollbar-width: none; margin-bottom: 5px; }
-  .coach-suggestions::-webkit-scrollbar { display: none; }
-
-  /* ── Bottom bar hint ── */
-  .scroll-hint { font-size: 7px; color: var(--dimmer); text-align: center; padding: 2px 0; flex-shrink: 0; }
-
-  /* ── Paywall screen ── */
-  #paywall { background: radial-gradient(ellipse at 50% 20%, #1a1542 0%, #080710 65%); align-items: center; justify-content: flex-start; padding-top: 18px; gap: 0; }
-  .pw-icon { font-size: 24px; margin-bottom: 4px; }
-  .pw-title { font-size: 13px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 3px; }
-  .pw-sub { font-size: 9px; color: var(--muted); text-align: center; line-height: 1.5; margin-bottom: 12px; padding: 0 8px; }
-  .pw-plan { width: 100%; border-radius: 12px; padding: 10px 10px 9px; margin-bottom: 6px; cursor: pointer; border: none; font-family: inherit; text-align: left; transition: all 0.15s; }
+  /* ── Paywall ── */
+  #paywall {
+    background: radial-gradient(ellipse at 50% 20%, #1a1542 0%, #080710 65%);
+    align-items: center; justify-content: flex-start; padding-top: 16px; gap: 0;
+  }
+  .pw-icon  { font-size: 26px; margin-bottom: 5px; }
+  .pw-title { font-size: 14px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 4px; }
+  .pw-sub   { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.5; margin-bottom: 12px; padding: 0 8px; }
+  .pw-plan  {
+    width: 100%; border-radius: 13px; padding: 11px 11px 10px; margin-bottom: 7px;
+    cursor: pointer; border: none; font-family: inherit; text-align: left;
+    transition: all 0.15s; min-height: 56px;
+  }
   .pw-plan:active { transform: scale(0.97); }
-  .pw-plan-trial { background: rgba(93,202,165,0.15); border: 1px solid rgba(93,202,165,0.4); }
+  .pw-plan-trial   { background: rgba(93,202,165,0.15); border: 1px solid rgba(93,202,165,0.4); }
   .pw-plan-monthly { background: rgba(127,119,221,0.15); border: 1px solid rgba(127,119,221,0.4); }
-  .pw-plan-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
-  .pw-plan-name { font-size: 11px; font-weight: 700; }
-  .pw-plan-trial .pw-plan-name { color: var(--teal); }
-  .pw-plan-monthly .pw-plan-name { color: var(--purple); }
-  .pw-plan-price { font-size: 11px; font-weight: 700; }
-  .pw-plan-trial .pw-plan-price { color: var(--teal); }
+  .pw-plan-header  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+  .pw-plan-name    { font-size: 12px; font-weight: 700; }
+  .pw-plan-trial   .pw-plan-name  { color: var(--teal); }
+  .pw-plan-monthly .pw-plan-name  { color: var(--purple); }
+  .pw-plan-price   { font-size: 12px; font-weight: 700; }
+  .pw-plan-trial   .pw-plan-price { color: var(--teal); }
   .pw-plan-monthly .pw-plan-price { color: var(--purple); }
-  .pw-plan-desc { font-size: 8px; color: var(--muted); line-height: 1.4; }
-  .pw-badge { font-size: 7px; font-weight: 700; padding: 1px 5px; border-radius: 5px; background: rgba(93,202,165,0.2); color: var(--teal); margin-left: 5px; }
-  .pw-free-link { font-size: 8px; color: var(--dimmer); text-align: center; margin-top: 4px; cursor: pointer; text-decoration: underline; }
+  .pw-plan-desc    { font-size: 10px; color: var(--muted); line-height: 1.4; }
+  .pw-badge        { font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 5px; background: rgba(93,202,165,0.2); color: var(--teal); margin-left: 5px; }
+  .pw-free-link    { font-size: 10px; color: var(--dimmer); text-align: center; margin-top: 4px; cursor: pointer; text-decoration: underline; }
 
-  /* ── Upgrade screen (trial expired) ── */
-  #upgrade { background: radial-gradient(ellipse at 50% 20%, #1a1240 0%, #080710 65%); align-items: center; justify-content: flex-start; padding-top: 14px; }
-  .up-icon { font-size: 20px; margin-bottom: 3px; }
-  .up-title { font-size: 12px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 2px; }
-  .up-sub { font-size: 9px; color: var(--muted); text-align: center; line-height: 1.5; margin-bottom: 10px; padding: 0 6px; }
-  .up-days { font-size: 9px; font-weight: 700; color: var(--amber); text-align: center; margin-bottom: 8px; }
+  /* ── Upgrade screen ── */
+  #upgrade {
+    background: radial-gradient(ellipse at 50% 20%, #1a1240 0%, #080710 65%);
+    align-items: center; justify-content: flex-start; padding-top: 14px;
+  }
+  .up-icon  { font-size: 22px; margin-bottom: 4px; }
+  .up-title { font-size: 13px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 3px; }
+  .up-sub   { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.5; margin-bottom: 10px; padding: 0 6px; }
+  .up-days  { font-size: 10px; font-weight: 700; color: var(--amber); text-align: center; margin-bottom: 8px; }
 
-  /* ── Usage counter badge ── */
-  .usage-pill { font-size: 7px; font-weight: 700; padding: 2px 6px; border-radius: 6px; background: rgba(250,199,117,0.15); color: var(--amber); }
-  .usage-pill.ok { background: rgba(93,202,165,0.12); color: var(--teal); }
+  /* ── Usage badge ── */
+  .usage-pill     { font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 7px; background: rgba(250,199,117,0.15); color: var(--amber); }
+  .usage-pill.ok  { background: rgba(93,202,165,0.12); color: var(--teal); }
 
-  /* ── Locked debrief overlay ── */
-  .debrief-lock { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 5px; padding: 10px; }
-  .debrief-lock-icon { font-size: 20px; }
-  .debrief-lock-text { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.45; }
-  .debrief-lock-btn { border: none; border-radius: 10px; padding: 8px 14px; background: rgba(127,119,221,0.25); border: 1px solid rgba(127,119,221,0.5); color: var(--purple); font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 3px; }
+  /* ── Debrief locked ── */
+  .debrief-lock      { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 6px; padding: 10px; }
+  .debrief-lock-icon { font-size: 22px; }
+  .debrief-lock-text { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.5; }
+  .debrief-lock-btn  {
+    border: none; border-radius: 11px; padding: 10px 16px;
+    background: rgba(127,119,221,0.25); border: 1px solid rgba(127,119,221,0.5);
+    color: var(--purple); font-size: 11px; font-weight: 700;
+    cursor: pointer; font-family: inherit; margin-top: 4px; min-height: 44px;
+  }
 </style>
 </head>
 <body>
@@ -215,7 +393,7 @@
       <div class="home-btn-label">Decode</div>
     </div>
   </div>
-  <div id="home-status" style="font-size:8px; color:var(--muted); margin-top:8px; text-align:center;"></div>
+  <div id="home-status" style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;"></div>
 </div>
 
 <!-- COACH -->
@@ -228,30 +406,19 @@
   <div class="energy-wrap">
     <div class="energy-row">
       <span class="energy-lbl">Energy</span>
-      <div class="energy-track"><div class="energy-fill" style="width:65%; background:var(--teal);"></div></div>
-      <span style="font-size:8px; color:var(--teal); font-weight:700; margin-left:3px;">65%</span>
+      <div class="energy-track"><div class="energy-fill" id="energy-fill-bar" style="width:65%;"></div></div>
+      <span id="energy-pct" style="font-size:10px; color:var(--teal); font-weight:700; margin-left:4px;">65%</span>
     </div>
-    <div class="energy-note">~40 min left</div>
+    <div class="energy-note" id="energy-note">~40 min left</div>
   </div>
   <div class="coach-suggestions" id="coach-sugs">
-    <div class="sug-card">
-      <div class="sug-type type-deepen">deepen</div>
-      <div class="sug-text">"What's surprised you most about your work lately?"</div>
-    </div>
-    <div class="sug-card">
-      <div class="sug-type type-opener">opener</div>
-      <div class="sug-text">"How do you two know each other?"</div>
-    </div>
-    <div class="sug-card">
-      <div class="sug-type type-rescue">rescue</div>
-      <div class="sug-text">"Wait — say more about that last thing."</div>
-    </div>
+    <!-- populated by renderCoachSugs() -->
   </div>
-  <div class="scroll-hint">↕ scroll · tap for more</div>
-  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; margin-top:4px; flex-shrink:0;">
-    <button class="tap-btn btn-teal" style="padding:7px 4px; font-size:9px;" onclick="guardedGo('flow-screen')">+ / −<br><span style="font-size:7px; font-weight:400;">flow</span></button>
-    <button class="tap-btn btn-purple" style="padding:7px 4px; font-size:9px;" onclick="guardedGo('decoder')">🔍<br><span style="font-size:7px; font-weight:400;">decode</span></button>
-    <button class="tap-btn btn-coral" style="padding:7px 4px; font-size:9px;">🚪<br><span style="font-size:7px; font-weight:400;">exit</span></button>
+  <div class="refresh-hint" onclick="refreshCoachSugs()">↻ new suggestions</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-top:5px; flex-shrink:0;">
+    <button class="tap-btn btn-teal" style="padding:9px 4px; font-size:10px; margin-bottom:0;" onclick="guardedGo('flow-screen')">+ / −<br><span style="font-size:9px; font-weight:400;">flow</span></button>
+    <button class="tap-btn btn-purple" style="padding:9px 4px; font-size:10px; margin-bottom:0;" onclick="guardedGo('decoder')">🔍<br><span style="font-size:9px; font-weight:400;">decode</span></button>
+    <button class="tap-btn btn-coral" style="padding:9px 4px; font-size:10px; margin-bottom:0;" onclick="showExitLine()">🚪<br><span style="font-size:9px; font-weight:400;">exit</span></button>
   </div>
 </div>
 
@@ -262,27 +429,12 @@
     <span class="w-title">Prep</span>
     <span class="w-badge badge-prep">Before</span>
   </div>
-  <div class="scroll-area">
-    <div class="prep-field">
-      <div class="prep-field-lbl">Event</div>
-      <div class="prep-field-val">Work holiday party · ~40 people</div>
-    </div>
-    <div class="prep-field">
-      <div class="prep-field-lbl">My goal</div>
-      <div class="prep-field-val">One real conversation.</div>
-    </div>
-    <div class="sug-card" style="margin-top:4px;">
-      <div class="sug-type" style="color:var(--teal);">starter</div>
-      <div class="sug-text">"What are you most excited about next year?"</div>
-    </div>
-    <div class="sug-card">
-      <div class="sug-type" style="color:#85B7EB;">starter</div>
-      <div class="sug-text">"What's a project nobody really saw that you're proud of?"</div>
-    </div>
+  <div class="scroll-area" id="prep-scroll">
+    <!-- populated by loadPrep() -->
   </div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; flex-shrink:0; margin-top:5px;">
-    <button class="tap-btn btn-teal" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('flow-screen')">+ / − Flow</button>
-    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('decoder')">🔍 Decode</button>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; flex-shrink:0; margin-top:6px;">
+    <button class="tap-btn btn-teal" style="font-size:10px; padding:9px 4px; margin-bottom:0;" onclick="guardedGo('flow-screen')">+ / − Flow</button>
+    <button class="tap-btn btn-purple" style="font-size:10px; padding:9px 4px; margin-bottom:0;" onclick="guardedGo('decoder')">🔍 Decode</button>
   </div>
 </div>
 
@@ -293,29 +445,27 @@
     <span class="w-title">Debrief</span>
     <span class="w-badge badge-debrief" id="debrief-badge">After</span>
   </div>
-  <!-- Locked state (free users) -->
   <div id="debrief-locked" class="debrief-lock" style="display:none;">
     <div class="debrief-lock-icon">🔒</div>
     <div class="debrief-lock-text">Debrief is available on the<br>Trial &amp; Monthly plans.</div>
     <button class="debrief-lock-btn" onclick="go('paywall'); pwSource='debrief';">Unlock InAble</button>
   </div>
-  <!-- Unlocked entry state -->
   <div id="debrief-entry">
     <textarea class="debrief-textarea" placeholder="How did it go? Any moments you're still thinking about…" id="debrief-input"></textarea>
-    <button class="tap-btn btn-purple" style="margin-top:4px;" onclick="runDebrief()">✦ Debrief with InAble</button>
+    <button class="tap-btn btn-purple" style="margin-top:5px;" onclick="runDebrief()">✦ Debrief with InAble</button>
   </div>
   <div id="debrief-result" style="display:none;">
     <div class="stats-row">
-      <div class="stat-box"><div class="stat-num" id="d-convos">3</div><div class="stat-lbl">convos</div></div>
-      <div class="stat-box"><div class="stat-num" id="d-goals">1</div><div class="stat-lbl">goal hit</div></div>
-      <div class="stat-box"><div class="stat-num" style="color:var(--purple);" id="d-conf">+12%</div><div class="stat-lbl">confidence</div></div>
+      <div class="stat-box"><div class="stat-num" id="d-convos">–</div><div class="stat-lbl">convos</div></div>
+      <div class="stat-box"><div class="stat-num" id="d-goals">–</div><div class="stat-lbl">goal hit</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--purple);" id="d-conf">–</div><div class="stat-lbl">confidence</div></div>
     </div>
     <div class="scroll-area" id="debrief-wins"></div>
-    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px; margin-top:4px;" onclick="guardedGo('decoder')">🔍 Decode a moment</button>
+    <button class="tap-btn btn-purple" style="font-size:10px; padding:9px; margin-top:5px;" onclick="guardedGo('decoder')">🔍 Decode a moment</button>
   </div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; flex-shrink:0; margin-top:4px;" id="debrief-footer">
-    <button class="tap-btn btn-amber" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('flow-screen')">+ / − Flow</button>
-    <button class="tap-btn btn-purple" style="font-size:9px; padding:7px 4px;" onclick="guardedGo('decoder')">🔍 Decode</button>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; flex-shrink:0; margin-top:5px;" id="debrief-footer">
+    <button class="tap-btn btn-amber" style="font-size:10px; padding:9px 4px; margin-bottom:0;" onclick="guardedGo('flow-screen')">+ / − Flow</button>
+    <button class="tap-btn btn-purple" style="font-size:10px; padding:9px 4px; margin-bottom:0;" onclick="guardedGo('decoder')">🔍 Decode</button>
   </div>
 </div>
 
@@ -339,6 +489,7 @@
   <div class="flow-result" id="flow-result">
     <div class="flow-result-label" id="flow-result-label">↑ DEEPEN / WIDEN</div>
     <div class="flow-result-text" id="flow-result-text"></div>
+    <div class="flow-source" id="flow-source"></div>
     <div class="flow-tap-more" onclick="getFlow(currentFlowDir)">↻ tap for another</div>
   </div>
   <div class="dots" id="flow-dots" style="display:none;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
@@ -351,11 +502,11 @@
     <span class="w-title">Decoder</span>
     <span class="w-badge" id="decoder-usage-badge" style="background:rgba(127,119,221,0.2);color:var(--purple);">InAble</span>
   </div>
-  <textarea class="decoder-input" id="decoder-input" placeholder="e.g. 'I told a story and she laughed then checked her phone…'"></textarea>
-  <button class="tap-btn btn-purple" style="margin-top:5px; font-size:10px; padding:8px;" onclick="runDecoder()">✦ Read this for me</button>
+  <textarea class="decoder-input" id="decoder-input" placeholder="'I told a story and she laughed, then looked at her phone…'"></textarea>
+  <button class="tap-btn btn-purple" style="margin-top:6px; font-size:11px;" onclick="runDecoder()">✦ Read this for me</button>
   <div id="decoder-dots" class="dots" style="display:none;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-  <div id="decoder-result" style="display:none;" class="scroll-area">
-    <div class="decoder-result">
+  <div id="decoder-result" style="display:none; flex:1; overflow:hidden;">
+    <div class="decoder-result" style="height:100%;">
       <div class="decoder-result-lbl">InAble says</div>
       <div class="decoder-result-text" id="decoder-text"></div>
       <div class="signals" id="decoder-signals"></div>
@@ -378,9 +529,9 @@
   <button class="pw-plan pw-plan-monthly" onclick="handleCheckout('monthly')">
     <div class="pw-plan-header">
       <span class="pw-plan-name">Monthly Plan</span>
-      <span class="pw-plan-price">$6.99<span style="font-size:8px;font-weight:400;">/mo</span></span>
+      <span class="pw-plan-price">$6.99<span style="font-size:9px;font-weight:400;">/mo</span></span>
     </div>
-    <div class="pw-plan-desc">Everything in Trial, always on. Library coming soon — save your best Coach lines &amp; patterns.</div>
+    <div class="pw-plan-desc">Everything in Trial, always on. Use it before every event.</div>
   </button>
   <div class="pw-free-link" onclick="go('home')">← Go back, stay free</div>
 </div>
@@ -394,16 +545,16 @@
   <button class="pw-plan pw-plan-monthly" style="width:100%;" onclick="handleCheckout('monthly')">
     <div class="pw-plan-header">
       <span class="pw-plan-name">Go Monthly</span>
-      <span class="pw-plan-price">$6.99<span style="font-size:8px;font-weight:400;">/mo</span></span>
+      <span class="pw-plan-price">$6.99<span style="font-size:9px;font-weight:400;">/mo</span></span>
     </div>
-    <div class="pw-plan-desc">Full access + Library (coming soon) — save your best responses and patterns.</div>
+    <div class="pw-plan-desc">Full access. Use it before every event.</div>
   </button>
   <button class="pw-plan pw-plan-trial" style="width:100%; margin-top:0;" onclick="handleCheckout('annual')">
     <div class="pw-plan-header">
       <span class="pw-plan-name">Go Annual <span class="pw-badge">Save 30%</span></span>
-      <span class="pw-plan-price">$75<span style="font-size:8px;font-weight:400;">/yr</span></span>
+      <span class="pw-plan-price">$75<span style="font-size:9px;font-weight:400;">/yr</span></span>
     </div>
-    <div class="pw-plan-desc">Best value. Same as Monthly, billed once a year.</div>
+    <div class="pw-plan-desc">Best value. Billed once a year.</div>
   </button>
   <div class="pw-free-link" onclick="dropToFree()">Continue with free limits</div>
 </div>
@@ -419,15 +570,206 @@ var STRIPE_LINKS = {
 var SUCCESS_PARAM = 'inable_unlocked';
 var TRIAL_KEY     = 'inable_trial_expiry';
 var MONTHLY_KEY   = 'inable_monthly';
+var PREP_KEY      = 'inable_prep_data'; // set by inable.html when user saves prep
 
-// ── Usage counters (session-only, reset on refresh) ──
+// ── Usage counters (session-only, reset on reload) ──
 var usage = { coach: 0, decoder: 0, prep: 0 };
 var FREE_LIMITS = { coach: 3, decoder: 2, prep: 1 };
 
 // ── State ──
-var pwSource = 'home';
+var pwSource     = 'home';
+var prevScreen   = 'home';
+var currentFlowDir = 'up';
+var currentPhase   = 'coach';
 
-// ── Access check (localStorage — shared with landing page) ──
+// ── Offline suggestion library ─────────────────────────────────────────────
+// Used when API is unavailable (standalone watchOS Safari, no internet, etc.)
+// Also the guaranteed instant fallback so no spinner appears during live events.
+var OFFLINE = {
+  deepen: [
+    "What surprised you most about that?",
+    "How'd you end up going that direction?",
+    "What would you do differently if you started over?",
+    "What's the hardest part that most people don't see?",
+    "What does that actually look like day-to-day?",
+    "Who else in your life really gets that?",
+    "How long have you been thinking about this?",
+    "What does success look like for you there?",
+    "What's the part people usually miss?",
+    "What was the moment you knew?",
+    "What changed your mind on that?",
+    "What's the most common misconception?",
+    "What would you tell your earlier self?",
+    "What's keeping you on it?",
+    "What's the version of this you're actually excited about?"
+  ],
+  opener: [
+    "How do you two know each other?",
+    "What brought you here tonight?",
+    "What are you working on right now?",
+    "What's keeping you busiest lately?",
+    "Are you local or just visiting?",
+    "What'd you think of the talk?",
+    "How'd you get into this field?",
+    "What's your connection to this group?",
+    "Is this your first time at one of these?",
+    "What's something you're looking forward to this month?",
+    "How long have you been in this space?",
+    "What do you do when you're not doing this?"
+  ],
+  rescue: [
+    "Wait — say more about that.",
+    "Can I come back to what you said earlier?",
+    "What does everyone else think about that?",
+    "That's something I've been thinking about too.",
+    "Let me sit with that for a second.",
+    "What's the thing no one ever asks you about this?",
+    "What would you do if you had unlimited time for it?",
+    "What's the wildest version of what could happen?",
+    "What do you wish people asked you more often?"
+  ],
+  exit: [
+    "I want to let you mingle — really good to meet you.",
+    "I should go say hi to a few more people — great talking.",
+    "I'll let you get back to it. This was genuinely good.",
+    "Let me grab your card before I lose you.",
+    "I'm going to go recharge a bit — this was great.",
+    "Really glad we talked. Let's stay in touch.",
+    "I promised myself I'd meet three new people — you're one of them."
+  ],
+  flowUp: [
+    "Ask one follow-up question and hold eye contact.",
+    "Invite someone nearby in: 'What do you think?'",
+    "Share a brief related thought, then hand it back.",
+    "Use their name once in your next sentence.",
+    "Just say: 'Tell me more about that.'",
+    "Give a specific, genuine reaction to what they said.",
+    "Lean in and nod — signal you're fully there."
+  ],
+  flowDown: [
+    "Ask a question and become the listener.",
+    "Say: 'I'd love your take — you know this better.'",
+    "Hand the floor: 'What does everyone else think?'",
+    "Let silence work for you. Pause, nod, wait.",
+    "Say 'That makes sense' and give them space to keep going.",
+    "Find the quietest person and bring them in.",
+    "Ask an open question, then stay completely quiet."
+  ]
+};
+
+// ── Utility: random pick from array ──
+function pickSug(category) {
+  var arr = OFFLINE[category];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ── Render 4 suggestion cards in coach view ──
+function renderCoachSugs() {
+  var container = document.getElementById('coach-sugs');
+  var types = [
+    { key: 'deepen', label: 'deepen', cls: 'type-deepen' },
+    { key: 'opener', label: 'opener', cls: 'type-opener' },
+    { key: 'rescue', label: 'rescue', cls: 'type-rescue' },
+    { key: 'exit',   label: 'exit',   cls: 'type-exit'   }
+  ];
+  // Shuffle to vary which type appears first
+  var shuffled = types.slice().sort(function() { return Math.random() - 0.5; });
+  container.innerHTML = shuffled.map(function(t) {
+    return '<div class="sug-card">' +
+      '<div class="sug-type ' + t.cls + '">' + t.label + '</div>' +
+      '<div class="sug-text">\u201c' + pickSug(t.key) + '\u201d</div>' +
+      '</div>';
+  }).join('');
+}
+
+// ── Show a single exit line in an overlay-style approach ──
+function showExitLine() {
+  var container = document.getElementById('coach-sugs');
+  container.innerHTML =
+    '<div class="sug-card" style="border-color:rgba(240,153,123,0.35);">' +
+      '<div class="sug-type type-exit">exit line</div>' +
+      '<div class="sug-text">\u201c' + pickSug('exit') + '\u201d</div>' +
+    '</div>';
+  container.scrollTop = 0;
+}
+
+// ── Refresh suggestions (counts against coach limit for free users) ──
+function refreshCoachSugs() {
+  if (!isUnlocked()) {
+    usage.coach++;
+    updateUsageBadges();
+    if (usage.coach > FREE_LIMITS.coach) {
+      pwSource = 'coach';
+      document.getElementById('pw-sub-text').innerHTML =
+        "You\u2019ve used your 3 free Coach taps.<br>Keep going with a plan.";
+      go('paywall');
+      return;
+    }
+  }
+  renderCoachSugs();
+}
+
+// ── Load prep from localStorage (written by inable.html's savePrepOnly / runPrep) ──
+// Data shape from getPrepData(): { eventType, groupSize, who, goal, extra, energy, savedAt }
+// runPrep() also appends: starters: [{type, text, sub}, ...]
+function loadPrep() {
+  var container = document.getElementById('prep-scroll');
+  var raw = localStorage.getItem(PREP_KEY);
+  if (raw) {
+    try {
+      var data = JSON.parse(raw);
+      var html = '';
+
+      // Event line: combine eventType + groupSize + who
+      var eventParts = [data.eventType, data.groupSize, data.who].filter(function(v) { return v && v.trim(); });
+      if (eventParts.length) {
+        html += '<div class="prep-field"><div class="prep-field-lbl">Event</div><div class="prep-field-val">' + esc(eventParts.join(' · ')) + '</div></div>';
+      }
+
+      // Goal
+      if (data.goal && data.goal.trim()) {
+        html += '<div class="prep-field"><div class="prep-field-lbl">My goal</div><div class="prep-field-val">' + esc(data.goal) + '</div></div>';
+      }
+
+      // Energy
+      if (data.energy !== undefined) {
+        var energyColor = data.energy < 30 ? 'var(--coral)' : data.energy < 60 ? 'var(--amber)' : 'var(--teal)';
+        html += '<div class="prep-field"><div class="prep-field-lbl">Energy going in</div>' +
+          '<div class="prep-field-val" style="color:' + energyColor + '; font-weight:700;">' + data.energy + '%</div></div>';
+      }
+
+      // Starters — each is {type, text, sub} from runPrep()
+      if (data.starters && data.starters.length) {
+        data.starters.forEach(function(s) {
+          var typeClass = 'type-deepen';
+          if (s.type === 'opener') typeClass = 'type-opener';
+          if (s.type === 'rescue') typeClass = 'type-rescue';
+          if (s.type === 'exit')   typeClass = 'type-exit';
+          html += '<div class="sug-card">' +
+            '<div class="sug-type ' + typeClass + '">' + esc(s.type || 'starter') + '</div>' +
+            '<div class="sug-text">\u201c' + esc(s.text) + '\u201d</div>' +
+            '</div>';
+        });
+      }
+
+      container.innerHTML = html || noPrep();
+      return;
+    } catch(e) {}
+  }
+  container.innerHTML = noPrep();
+}
+
+function noPrep() {
+  return '<div class="prep-field"><div class="prep-field-lbl">Event</div><div class="prep-field-val">Not set</div></div>' +
+    '<div class="prep-field"><div class="prep-field-lbl">My goal</div><div class="prep-field-val">Not set</div></div>' +
+    '<div class="prep-sync-note">Open InAble on your phone, fill in Prep, and tap \u201cSave prep\u201d — it\u2019ll appear here next time.</div>';
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Access check (localStorage — shared with inable.html on same origin) ──
 function isUnlocked() {
   if (localStorage.getItem(MONTHLY_KEY) === '1') return true;
   var expiry = localStorage.getItem(TRIAL_KEY);
@@ -440,14 +782,21 @@ function isTrialExpired() {
   return expiry && Date.now() >= parseInt(expiry, 10);
 }
 
-// ── On load: check for Stripe return or trial expiry ──
+// ── On load ──
 (function init() {
+  // Fix Safari / watchOS viewport height
+  var setHeight = function() {
+    document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
+  };
+  setHeight();
+  window.addEventListener('resize', setHeight);
+
+  // Stripe return
   var params = new URLSearchParams(window.location.search);
   var unlockType = params.get(SUCCESS_PARAM);
   if (unlockType) {
     if (unlockType === 'trial') {
-      var expires = Date.now() + 7 * 24 * 60 * 60 * 1000;
-      localStorage.setItem(TRIAL_KEY, String(expires));
+      localStorage.setItem(TRIAL_KEY, String(Date.now() + 7 * 24 * 60 * 60 * 1000));
     } else if (unlockType === 'monthly' || unlockType === 'annual') {
       localStorage.setItem(MONTHLY_KEY, '1');
     }
@@ -465,46 +814,47 @@ function isTrialExpired() {
 })();
 
 // ── Navigation ──
-var prevScreen = 'home';
-var currentFlowDir = 'up';
-var currentPhase = 'coach';
-
 function go(id) {
-  if (id !== 'home') { prevScreen = document.querySelector('.screen.active') ? document.querySelector('.screen.active').id : 'home'; }
-  if (id === 'flow-screen') { document.getElementById('flow-phase-badge').textContent = currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1); }
+  if (id !== 'home') {
+    var active = document.querySelector('.screen.active');
+    prevScreen = active ? active.id : 'home';
+  }
+  if (id === 'flow-screen') {
+    document.getElementById('flow-phase-badge').textContent =
+      currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1);
+  }
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
-  if (id === 'coach' || id === 'prep' || id === 'debrief') currentPhase = id;
 
-  // Handle debrief lock state
+  if (id === 'coach' || id === 'prep' || id === 'debrief') currentPhase = id;
+  if (id === 'coach') { renderCoachSugs(); }
+  if (id === 'prep')  { loadPrep(); }
+
   if (id === 'debrief') {
     var locked = !isUnlocked();
-    document.getElementById('debrief-locked').style.display = locked ? 'flex' : 'none';
-    document.getElementById('debrief-entry').style.display = locked ? 'none' : 'block';
-    document.getElementById('debrief-result').style.display = 'none';
-    document.getElementById('debrief-footer').style.display = locked ? 'none' : 'grid';
+    document.getElementById('debrief-locked').style.display  = locked ? 'flex' : 'none';
+    document.getElementById('debrief-entry').style.display   = locked ? 'none' : 'block';
+    document.getElementById('debrief-result').style.display  = 'none';
+    document.getElementById('debrief-footer').style.display  = locked ? 'none' : 'grid';
   }
 }
 
 function goBack() { go(prevScreen); }
 
-// ── Guarded navigation: check usage limits before entering ──
 function guardedGo(id) {
   if (isUnlocked()) { go(id); return; }
-
   var limitMap = { coach: 'coach', decoder: 'decoder', prep: 'prep', 'flow-screen': 'coach' };
   var limitKey = limitMap[id];
-
   if (limitKey && usage[limitKey] >= FREE_LIMITS[limitKey]) {
     pwSource = id;
-    var subEl = document.getElementById('pw-sub-text');
     var msgs = {
-      coach: "You've used your 3 free Coach taps.",
-      decoder: "You've used your 2 free Decoder reads.",
-      prep: "You've used your free Prep session.",
+      coach:   "You\u2019ve used your 3 free Coach taps.",
+      decoder: "You\u2019ve used your 2 free Decoder reads.",
+      prep:    "You\u2019ve used your free Prep session.",
       debrief: "Debrief is available on Trial &amp; Monthly plans."
     };
-    subEl.innerHTML = (msgs[limitKey] || msgs[limitKey]) + '<br>Keep going with a plan.';
+    document.getElementById('pw-sub-text').innerHTML =
+      (msgs[limitKey] || "You\u2019ve reached the free limit.") + '<br>Keep going with a plan.';
     go('paywall');
     return;
   }
@@ -521,10 +871,7 @@ function dropToFree() {
 // ── Checkout ──
 function handleCheckout(product) {
   var base = STRIPE_LINKS[product];
-  if (!base) {
-    alert('Unknown product: ' + product);
-    return;
-  }
+  if (!base) return;
   window.location.href = base;
 }
 
@@ -532,12 +879,14 @@ function handleCheckout(product) {
 function updateHomeStatus() {
   var el = document.getElementById('home-status');
   if (isUnlocked()) {
-    var expiry = localStorage.getItem(TRIAL_KEY);
     if (localStorage.getItem(MONTHLY_KEY) === '1') {
       el.innerHTML = '<span style="color:var(--purple);">✦ Monthly</span>';
-    } else if (expiry) {
-      var daysLeft = Math.ceil((parseInt(expiry,10) - Date.now()) / 86400000);
-      el.innerHTML = '<span style="color:var(--teal);">Trial · ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left</span>';
+    } else {
+      var expiry = localStorage.getItem(TRIAL_KEY);
+      if (expiry) {
+        var daysLeft = Math.ceil((parseInt(expiry, 10) - Date.now()) / 86400000);
+        el.innerHTML = '<span style="color:var(--teal);">Trial · ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left</span>';
+      }
     }
   } else {
     el.innerHTML = '<span style="color:var(--dimmer);">Free · limited</span>';
@@ -545,7 +894,7 @@ function updateHomeStatus() {
 }
 
 function updateUsageBadges() {
-  var coachBadge = document.getElementById('coach-usage-badge');
+  var coachBadge   = document.getElementById('coach-usage-badge');
   var decoderBadge = document.getElementById('decoder-usage-badge');
   if (isUnlocked()) {
     coachBadge.textContent = 'Live';
@@ -564,7 +913,11 @@ function updateUsageBadges() {
   }
 }
 
-// ── API ──
+// ── Claude API ──
+// NOTE: Direct calls to api.anthropic.com work only in the Claude.ai widget
+// environment where a key is injected. In standalone (watchOS Safari, phone PWA),
+// these calls will fail and the offline library is used automatically.
+// Future: swap URL to Supabase Edge Function proxy for full standalone AI access.
 async function callClaude(system, user, onChunk) {
   var res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -577,6 +930,7 @@ async function callClaude(system, user, onChunk) {
       messages: [{ role: 'user', content: user }]
     })
   });
+  if (!res.ok) throw new Error('http ' + res.status);
   var reader = res.body.getReader();
   var dec = new TextDecoder();
   var full = '';
@@ -598,62 +952,85 @@ async function callClaude(system, user, onChunk) {
 }
 
 var FLOW_SYS = function(dir, phase) {
-  return 'You are InAble, a social coach for introverts. One specific, immediately usable suggestion (max 2 short sentences) for someone who wants to ' + (dir === 'up' ? 'deepen connection or bring more people in' : 'reduce their speaking load while staying present') + '. Phase: ' + phase + '. ' + (dir === 'up' ? 'Give a phrase in quotes or a tactic.' : 'Give a redirect phrase or a step-back tactic.') + '  No preamble. No labels.';
+  return 'You are InAble, a social coach for introverts. One specific, immediately usable suggestion (max 2 short sentences) for someone who wants to ' +
+    (dir === 'up' ? 'deepen connection or bring more people in' : 'reduce their speaking load while staying present') +
+    '. Phase: ' + phase + '. ' +
+    (dir === 'up' ? 'Give a phrase in quotes or a concrete tactic.' : 'Give a redirect phrase or a step-back tactic.') +
+    ' No preamble. No labels.';
 };
 
 var DECODER_SYS = 'You are InAble — a sharp, emotionally literate social interpreter for introverts. Interpret the conversational snippet honestly in 2-3 short sentences. Then end with: SIGNALS:["tag","tag","tag"] — 2-4 word lowercase tags, honest mix of positive/neutral/cautionary. Max 80 words total.';
 
 var DEBRIEF_SYS = 'You are InAble. Analyze this social event reflection. Return ONLY JSON: {"convos":N,"goals":N,"conf":"+X%","win":"one concrete win in ≤12 words","next":"one try-next in ≤12 words"}';
 
+// ── Flow: try API, fall back to library silently ──
 async function getFlow(dir) {
-  // Count against coach usage
   if (!isUnlocked()) {
     usage.coach++;
     updateUsageBadges();
+    if (usage.coach > FREE_LIMITS.coach) {
+      pwSource = 'flow-screen';
+      document.getElementById('pw-sub-text').innerHTML =
+        "You\u2019ve used your 3 free Coach taps.<br>Keep going with a plan.";
+      go('paywall');
+      return;
+    }
   }
   currentFlowDir = dir;
-  var dotsEl = document.getElementById('flow-dots');
-  var resultEl = document.getElementById('flow-result');
-  var textEl = document.getElementById('flow-result-text');
-  var labelEl = document.getElementById('flow-result-label');
+  var dotsEl    = document.getElementById('flow-dots');
+  var resultEl  = document.getElementById('flow-result');
+  var textEl    = document.getElementById('flow-result-text');
+  var labelEl   = document.getElementById('flow-result-label');
+  var sourceEl  = document.getElementById('flow-source');
+
   resultEl.classList.remove('visible');
   dotsEl.style.display = 'flex';
   textEl.textContent = '';
-  labelEl.textContent = dir === 'up' ? '↑ DEEPEN / WIDEN' : '↓ HAND THE FLOOR';
+  sourceEl.textContent = '';
+  labelEl.textContent = dir === 'up' ? '\u2191 DEEPEN / WIDEN' : '\u2193 HAND THE FLOOR';
   labelEl.style.color = dir === 'up' ? 'var(--teal)' : 'var(--purple)';
+
+  var usedAPI = false;
   try {
-    await callClaude(FLOW_SYS(dir, currentPhase), 'Phase:' + currentPhase + ' Direction:' + dir, function(t) { textEl.textContent = t; });
-  } catch(e) { textEl.textContent = 'Tap again to retry.'; }
+    await callClaude(FLOW_SYS(dir, currentPhase), 'Phase:' + currentPhase + ' Direction:' + dir, function(t) {
+      textEl.textContent = t;
+      usedAPI = true;
+    });
+  } catch(e) {
+    // API unavailable — use library
+    var category = dir === 'up' ? 'flowUp' : 'flowDown';
+    textEl.textContent = pickSug(category);
+    sourceEl.textContent = '';
+  }
+
   dotsEl.style.display = 'none';
   resultEl.classList.add('visible');
-
-  // After each flow tap, check if free limit hit
-  if (!isUnlocked() && usage.coach >= FREE_LIMITS.coach) {
-    updateUsageBadges();
-  }
 }
 
+// ── Decoder: requires API (text-specific interpretation) ──
 async function runDecoder() {
   var input = document.getElementById('decoder-input').value.trim();
   if (!input) return;
 
-  // Check decoder limit
   if (!isUnlocked() && usage.decoder >= FREE_LIMITS.decoder) {
     pwSource = 'decoder';
-    document.getElementById('pw-sub-text').innerHTML = "You've used your 2 free Decoder reads.<br>Unlock for unlimited reads.";
+    document.getElementById('pw-sub-text').innerHTML =
+      "You\u2019ve used your 2 free Decoder reads.<br>Unlock for unlimited reads.";
     go('paywall');
     return;
   }
   if (!isUnlocked()) { usage.decoder++; updateUsageBadges(); }
 
-  var dots = document.getElementById('decoder-dots');
+  var dots    = document.getElementById('decoder-dots');
   var resultEl = document.getElementById('decoder-result');
-  var textEl = document.getElementById('decoder-text');
-  var sigsEl = document.getElementById('decoder-signals');
+  var textEl   = document.getElementById('decoder-text');
+  var sigsEl   = document.getElementById('decoder-signals');
+
   dots.style.display = 'flex';
   resultEl.style.display = 'none';
   textEl.textContent = '';
   sigsEl.innerHTML = '';
+
   var full = '';
   try {
     await callClaude(DECODER_SYS, input, function(t) {
@@ -661,47 +1038,58 @@ async function runDecoder() {
       var sigIdx = t.indexOf('SIGNALS:');
       textEl.textContent = sigIdx > -1 ? t.slice(0, sigIdx).trim() : t;
     });
+
     var m = full.match(/SIGNALS:\[([^\]]+)\]/);
     if (m) {
       try {
         var tags = JSON.parse('[' + m[1] + ']');
-        var posWords = ['landed','engaged','interested','warm','genuine','real','authentic','processed','good'];
+        var posWords  = ['landed','engaged','interested','warm','genuine','real','authentic','processed','good'];
         var warnWords = ['flat','overshare','misstep','cold','awkward','watch','careful'];
         tags.forEach(function(t) {
           var s = document.createElement('span');
-          s.className = 'signal ' + (posWords.some(function(p){return t.indexOf(p)>-1;}) ? 'sig-pos' : warnWords.some(function(w){return t.indexOf(w)>-1;}) ? 'sig-warn' : 'sig-neu');
+          s.className = 'signal ' + (
+            posWords.some(function(p)  { return t.indexOf(p) > -1; }) ? 'sig-pos' :
+            warnWords.some(function(w) { return t.indexOf(w) > -1; }) ? 'sig-warn' : 'sig-neu'
+          );
           s.textContent = t;
           sigsEl.appendChild(s);
         });
       } catch(e) {}
     }
-  } catch(e) { textEl.textContent = 'Tap again to retry.'; }
+  } catch(e) {
+    textEl.textContent = 'Decoder needs a connection. Try again or open InAble on your phone for a full read.';
+  }
+
   dots.style.display = 'none';
   resultEl.style.display = 'block';
 }
 
+// ── Debrief: requires API ──
 async function runDebrief() {
   var input = document.getElementById('debrief-input').value.trim();
   if (!input) return;
   document.getElementById('debrief-entry').style.display = 'none';
   var resultEl = document.getElementById('debrief-result');
   resultEl.style.display = 'block';
-  document.getElementById('debrief-wins').innerHTML = '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  document.getElementById('debrief-wins').innerHTML =
+    '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+
   try {
     var full = '';
     await callClaude(DEBRIEF_SYS, input, function(t) { full = t; });
     var m = full.match(/\{[\s\S]*\}/);
     if (m) {
       var d = JSON.parse(m[0]);
-      document.getElementById('d-convos').textContent = d.convos !== undefined ? d.convos : '–';
-      document.getElementById('d-goals').textContent = d.goals !== undefined ? d.goals : '–';
-      document.getElementById('d-conf').textContent = d.conf || '–';
+      document.getElementById('d-convos').textContent = d.convos !== undefined ? d.convos : '\u2013';
+      document.getElementById('d-goals').textContent  = d.goals  !== undefined ? d.goals  : '\u2013';
+      document.getElementById('d-conf').textContent   = d.conf || '\u2013';
       document.getElementById('debrief-wins').innerHTML =
-        '<div class="sug-card"><div class="sug-type type-deepen">win</div><div class="sug-text">' + d.win + '</div></div>' +
-        '<div class="sug-card"><div class="sug-type type-opener">try next</div><div class="sug-text">' + d.next + '</div></div>';
+        '<div class="sug-card"><div class="sug-type type-deepen">win</div><div class="sug-text">' + esc(d.win) + '</div></div>' +
+        '<div class="sug-card"><div class="sug-type type-opener">try next</div><div class="sug-text">' + esc(d.next) + '</div></div>';
     }
   } catch(e) {
-    document.getElementById('debrief-wins').innerHTML = '<div class="sug-card"><div class="sug-text">Couldn\'t parse. Try again.</div></div>';
+    document.getElementById('debrief-wins').innerHTML =
+      '<div class="sug-card"><div class="sug-text">Needs a connection. Try again with InAble on your phone.</div></div>';
   }
 }
 </script>

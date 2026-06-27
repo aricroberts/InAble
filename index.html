@@ -370,6 +370,24 @@
     nav { padding: 16px 20px; }
     .nav-links { display: none; }
   }
+
+/* ── Contact modal ── */
+#icm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#icm-overlay.open{display:flex}
+#icm-box{background:#0f0d1f;border:1px solid rgba(127,119,221,.3);border-radius:12px;padding:2rem;width:100%;max-width:420px;margin:1rem;position:relative}
+#icm-box h3{font-family:'Instrument Serif',Georgia,serif;font-size:1.5rem;color:#EEEDFE;margin-bottom:1.25rem;letter-spacing:-0.01em}
+.icm-row{margin-bottom:1rem}
+.icm-row label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:rgba(238,237,254,.45);margin-bottom:.35rem}
+.icm-row input,.icm-row textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.6rem .85rem;color:#EEEDFE;font-family:'DM Sans',sans-serif;font-size:.875rem;transition:border-color .2s}
+.icm-row input:focus,.icm-row textarea:focus{outline:none;border-color:rgba(127,119,221,.6)}
+.icm-row textarea{resize:vertical;min-height:90px}
+#icm-submit{background:linear-gradient(135deg,#7F77DD,#5DCAA5);color:#07060f;border:none;padding:.65rem 1.75rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.875rem;cursor:pointer;transition:opacity .2s;width:100%}
+#icm-submit:hover{opacity:.88}
+#icm-submit:disabled{opacity:.5;cursor:not-allowed}
+#icm-status{margin-top:.75rem;font-size:.8125rem;text-align:center;min-height:1.2em}
+#icm-close{position:absolute;top:.75rem;right:.9rem;background:none;border:none;color:rgba(238,237,254,.25);font-size:1.25rem;cursor:pointer;line-height:1}
+#icm-close:hover{color:#EEEDFE}
+/* ── /Contact modal ── */
 </style>
 </head>
 <body>
@@ -753,7 +771,7 @@
   <div style="display:flex; gap:24px; flex-wrap:wrap;">
     <a href="https://aricciviclabs.org/legal.html">Privacy</a>
     <a href="https://aricciviclabs.org/legal.html">Terms</a>
-    <a href="mailto:hello@inable.app">Contact</a>
+    <a href="#" onclick="openICM();return false;">Contact</a>
   </div>
   <div>© 2026 InAble · Introvert Able</div>
 </footer>
@@ -770,6 +788,59 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.12 });
 reveals.forEach(el => observer.observe(el));
+</script>
+
+<!-- ── Contact modal ── -->
+<div id="icm-overlay" role="dialog" aria-modal="true" aria-labelledby="icm-title">
+  <div id="icm-box">
+    <button id="icm-close" onclick="closeICM()" aria-label="Close">&times;</button>
+    <h3 id="icm-title">Get in Touch</h3>
+    <div class="icm-row"><label>Name</label><input id="icm-name" type="text" placeholder="Your name"></div>
+    <div class="icm-row"><label>Email</label><input id="icm-email" type="email" placeholder="you@example.com"></div>
+    <div class="icm-row"><label>Message</label><textarea id="icm-message" placeholder="How can we help?"></textarea></div>
+    <button id="icm-submit" onclick="sendICM()">Send Message</button>
+    <div id="icm-status"></div>
+  </div>
+</div>
+<!-- ── /Contact modal ── -->
+
+<script>
+/* ── Contact modal ── */
+function openICM(){document.getElementById('icm-overlay').classList.add('open');document.getElementById('icm-name').focus();}
+function closeICM(){document.getElementById('icm-overlay').classList.remove('open');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeICM();});
+var _icmo=document.getElementById('icm-overlay');
+if(_icmo)_icmo.addEventListener('click',function(e){if(e.target===this)closeICM();});
+function sendICM(){
+  var name=(document.getElementById('icm-name').value||'').trim();
+  var email=(document.getElementById('icm-email').value||'').trim();
+  var msg=(document.getElementById('icm-message').value||'').trim();
+  var status=document.getElementById('icm-status');
+  if(!name||!email||!msg){status.style.color='#F0997B';status.textContent='Please fill in all fields.';return;}
+  var btn=document.getElementById('icm-submit');
+  btn.disabled=true;btn.textContent='Sending\u2026';status.textContent='';
+  fetch('https://formspree.io/f/mbdbkznw',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({name:name,email:email,message:msg,_replyto:email,_subject:'Contact from InAble: '+name})
+  })
+  .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+  .then(function(res){
+    btn.disabled=false;btn.textContent='Send Message';
+    if(res.ok){
+      status.style.color='#5DCAA5';status.textContent="Sent! We'll be in touch soon.";
+      setTimeout(function(){
+        closeICM();
+        document.getElementById('icm-name').value='';
+        document.getElementById('icm-email').value='';
+        document.getElementById('icm-message').value='';
+        status.textContent='';
+      },2000);
+    }else{status.style.color='#F0997B';status.textContent='Something went wrong \u2014 try again shortly.';}
+  })
+  .catch(function(){btn.disabled=false;btn.textContent='Send Message';status.style.color='#F0997B';status.textContent='Network error \u2014 try again shortly.';});
+}
+/* ── /Contact modal ── */
 </script>
 </body>
 </html>

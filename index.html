@@ -23,6 +23,28 @@
     --dim: rgba(238,237,254,0.18);
   }
 
+/* ── ACL Eco Bar ── */
+.acl-eco-bar{position:fixed;top:0;left:0;right:0;z-index:101;display:flex;align-items:center;padding:0 28px;height:34px;background:rgba(7,6,15,0.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.055);}
+.acl-eco-org{font-family:'DM Mono',monospace;font-size:10.5px;font-weight:500;color:rgba(255,255,255,0.45);text-decoration:none;white-space:nowrap;flex-shrink:0;}
+.acl-eco-org:hover{color:rgba(255,255,255,0.78);}
+.acl-eco-div{flex:1;height:1px;background:rgba(255,255,255,0.07);margin:0 16px;}
+.acl-eco-links{display:flex;gap:18px;flex-shrink:0;}
+.acl-eco-links a{font-family:'DM Mono',monospace;font-size:10.5px;color:rgba(255,255,255,0.27);text-decoration:none;white-space:nowrap;transition:color .15s;}
+.acl-eco-links a:hover{color:rgba(255,255,255,0.62);}
+.acl-eco-here{font-family:'DM Mono',monospace;font-size:10.5px;color:rgba(255,255,255,0.58);white-space:nowrap;}
+@media(max-width:640px){.acl-eco-bar{display:none;}}
+/* ── ACL Suite Footer ── */
+.acl-suite-footer{border-top:1px solid rgba(255,255,255,0.06);padding:28px 28px 24px;}
+.acl-suite-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 24px;max-width:900px;margin:0 auto 20px;}
+.acl-suite-label{font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:9px;}
+.acl-suite-col a{display:block;font-size:12px;font-weight:500;color:rgba(255,255,255,0.35);text-decoration:none;margin-bottom:4px;transition:color .15s;}
+.acl-suite-col a:hover{color:rgba(255,255,255,0.68);}
+.acl-suite-here{display:block;font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);margin-bottom:4px;}
+.acl-suite-meta{border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;display:flex;align-items:center;gap:10px;font-size:10.5px;color:rgba(255,255,255,0.2);max-width:900px;margin:0 auto;flex-wrap:wrap;}
+.acl-suite-meta a{color:rgba(255,255,255,0.3);text-decoration:none;transition:color .15s;}
+.acl-suite-meta a:hover{color:rgba(255,255,255,0.6);}
+.acl-m-dot{color:rgba(255,255,255,0.1);}
+@media(max-width:640px){.acl-suite-grid{grid-template-columns:1fr 1fr;}}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html { scroll-behavior: smooth; }
@@ -48,7 +70,7 @@
 
   /* ── Nav ── */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    position: fixed; top: 34px; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
     padding: 20px 40px;
     background: rgba(7,6,15,0.7);
@@ -393,6 +415,21 @@
 <body>
 
 <!-- NAV -->
+<!-- ACL Eco Bar -->
+<div class="acl-eco-bar">
+  <a href="https://aricciviclabs.org" class="acl-eco-org">AricCivicLabs.Org</a>
+  <span class="acl-eco-div"></span>
+  <div class="acl-eco-links">
+    <a href="https://receipts.aricciviclabs.org">receipts.</a>
+    <a href="https://transitions.aricciviclabs.org">Transitions</a>
+    <span class="acl-eco-here">InAble</span>
+    <a href="https://meshforce.aricciviclabs.org">MeshForce</a>
+    <a href="https://theseam.aricciviclabs.org/seam.html">The Seam</a>
+    <a href="https://aricciviclabs.org/rights_connector.html">Rights Connector</a>
+  </div>
+</div>
+<!-- /ACL Eco Bar -->
+
 <nav>
   <div class="nav-logo">
     <!-- InAble Logo: icon + wordmark -->
@@ -773,8 +810,42 @@
     <a href="https://aricciviclabs.org/legal.html">Terms</a>
     <a href="#" onclick="openICM();return false;">Contact</a>
   </div>
-  <div>© 2026 InAble · Introvert Able</div>
+  <div>© 2026 InAble · Introvert Able · An AricCivicLabs.Org product</div>
 </footer>
+
+<!-- ACL Suite Footer -->
+<div class="acl-suite-footer">
+  <div class="acl-suite-grid">
+    <div class="acl-suite-col">
+      <div class="acl-suite-label">Work-Life Enablement</div>
+      <a href="https://receipts.aricciviclabs.org">receipts.</a>
+      <a href="https://transitions.aricciviclabs.org">Transitions</a>
+    </div>
+    <div class="acl-suite-col">
+      <div class="acl-suite-label">Social Enablement</div>
+      <span class="acl-suite-here">InAble</span>
+    </div>
+    <div class="acl-suite-col">
+      <div class="acl-suite-label">Workforce Management</div>
+      <a href="https://meshforce.aricciviclabs.org">MeshForce</a>
+      <a href="https://theseam.aricciviclabs.org/seam.html">The Seam</a>
+    </div>
+    <div class="acl-suite-col">
+      <div class="acl-suite-label">Civic &amp; Rights · Free</div>
+      <a href="https://aricciviclabs.org/rights_connector.html">Rights Connector</a>
+      <a href="https://aricciviclabs.org/rights_connector_constitution.html">The Constitution</a>
+      <a href="https://aricciviclabs.org/rights_connector_communities.html">Communities</a>
+    </div>
+  </div>
+  <div class="acl-suite-meta">
+    <a href="https://aricciviclabs.org">AricCivicLabs.Org</a>
+    <span class="acl-m-dot">·</span>
+    <a href="https://aricciviclabs.org/legal.html">Privacy &amp; Terms</a>
+    <span class="acl-m-dot">·</span>
+    <span>© 2026 AricCivicLabs.Org</span>
+  </div>
+</div>
+<!-- /ACL Suite Footer -->
 
 <script>
 // Reveal on scroll

@@ -410,6 +410,18 @@
 #icm-close{position:absolute;top:.75rem;right:.9rem;background:none;border:none;color:rgba(238,237,254,.25);font-size:1.25rem;cursor:pointer;line-height:1}
 #icm-close:hover{color:#EEEDFE}
 /* ── /Contact modal ── */
+/* Email capture */
+.email-capture-block{--ec-accent:#7F77DD;--ec-success:#5DCAA5;--ec-error:#FAC775;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:.875rem 1rem;}
+.email-capture-block .ec-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:rgba(238,237,254,0.45);margin:0 0 8px;display:flex;align-items:center;gap:5px;}
+.email-capture-block .ec-row{display:flex;gap:7px;align-items:stretch;margin-bottom:7px;flex-wrap:wrap;}
+.email-capture-block .ec-input{flex:1;min-width:180px;font-size:13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:7px 10px;color:#EEEDFE;font-family:inherit;}
+.email-capture-block .ec-input:focus{outline:none;border-color:var(--ec-accent);}
+.email-capture-block .ec-btn{font-size:12px;font-weight:600;padding:7px 14px;background:var(--ec-accent);border:none;border-radius:6px;color:#fff;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.email-capture-block .ec-btn:hover{opacity:.88;}
+.email-capture-block .ec-consent{display:flex;align-items:flex-start;gap:7px;cursor:pointer;user-select:none;border:1px solid rgba(93,202,165,0.3);border-radius:6px;padding:7px 9px;background:rgba(93,202,165,0.07);}
+.email-capture-block .ec-consent input[type=checkbox]{margin-top:2px;flex-shrink:0;accent-color:#5DCAA5;cursor:pointer;}
+.email-capture-block .ec-consent span{font-size:11px;color:rgba(238,237,254,0.5);line-height:1.5;}
+.email-capture-block .ec-status{font-size:11px;margin-top:5px;min-height:14px;}
 </style>
 </head>
 <body>
@@ -425,7 +437,7 @@
     <span class="acl-eco-here">InAble</span>
     <a href="https://meshforce.aricciviclabs.org">MeshForce</a>
     <a href="https://theseam.aricciviclabs.org/seam.html">The Seam</a>
-    <a href="https://aricciviclabs.org/rights_connector.html">Rights Connector</a>
+    <a href="https://civic.aricciviclabs.org/rights_connector.html">Rights Connector</a>
   </div>
 </div>
 <!-- /ACL Eco Bar -->
@@ -792,6 +804,22 @@
   </div>
 </section>
 
+<!-- EMAIL CAPTURE -->
+<div style="display:flex;justify-content:center;padding:2rem 1.5rem 0;">
+  <div class="email-capture-block" style="max-width:480px;width:100%;">
+    <p class="ec-label"><i class="ti ti-mail" style="font-size:12px"></i> Stay in the loop on InAble updates</p>
+    <div class="ec-row">
+      <input type="email" id="ec-il-email" class="ec-input" placeholder="you@example.com" autocomplete="email"/>
+      <button class="ec-btn" onclick="handleEmailSubmit('ec-il-email','ec-il-check','ec-il-status','inable-landing')">Save</button>
+    </div>
+    <label class="ec-consent">
+      <input type="checkbox" id="ec-il-check">
+      <span>Send me occasional updates from InAble / AricCivicLabs. Unsubscribe anytime. We never sell your data.</span>
+    </label>
+    <div class="ec-status" id="ec-il-status"></div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div>
@@ -832,9 +860,10 @@
     </div>
     <div class="acl-suite-col">
       <div class="acl-suite-label">Civic &amp; Rights · Free</div>
-      <a href="https://aricciviclabs.org/rights_connector.html">Rights Connector</a>
-      <a href="https://aricciviclabs.org/rights_connector_constitution.html">The Constitution</a>
-      <a href="https://aricciviclabs.org/rights_connector_communities.html">Communities</a>
+      <a href="https://civic.aricciviclabs.org/rights_connector.html">Rights Connector</a>
+      <a href="https://civic.aricciviclabs.org/rights_connector_constitution.html">The Constitution</a>
+      <a href="https://civic.aricciviclabs.org/rights_connector_communities.html">Communities</a>
+      <a href="https://civic.aricciviclabs.org/rights_connector_reps.html">Representatives</a>
     </div>
   </div>
   <div class="acl-suite-meta">
@@ -877,6 +906,34 @@ reveals.forEach(el => observer.observe(el));
 
 <script>
 /* ── Contact modal ── */
+function captureEmail(email, optedIn, source) {
+  if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) return false;
+  email = email.trim().toLowerCase();
+  try { sessionStorage.setItem('rcpts_user_email', email); sessionStorage.setItem('rcpts_email_source', source); } catch(e) {}
+  if (optedIn) {
+    try {
+      fetch('https://epntzskzmdlfqyosscbc.supabase.co/functions/v1/subscribe', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: source })
+      });
+    } catch(e) {}
+  }
+  return true;
+}
+function handleEmailSubmit(inputId, checkId, statusId, source) {
+  var emailEl = document.getElementById(inputId);
+  var checkEl = document.getElementById(checkId);
+  var statusEl = document.getElementById(statusId);
+  if (!emailEl || !statusEl) return;
+  var email = (emailEl.value || '').trim();
+  var optedIn = checkEl ? checkEl.checked : false;
+  if (!email || email.indexOf('@') === -1) { statusEl.style.color='var(--ec-error)'; statusEl.textContent='Please enter a valid email address.'; return; }
+  var ok = captureEmail(email, optedIn, source);
+  if (!ok) { statusEl.style.color='var(--ec-error)'; statusEl.textContent='Please enter a valid email address.'; return; }
+  statusEl.style.color='var(--ec-success)';
+  statusEl.textContent = optedIn ? 'Saved \u2014 unsubscribe anytime.' : 'Got it.';
+  emailEl.value = ''; if (checkEl) checkEl.checked = false;
+}
 function openICM(){document.getElementById('icm-overlay').classList.add('open');document.getElementById('icm-name').focus();}
 function closeICM(){document.getElementById('icm-overlay').classList.remove('open');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeICM();});

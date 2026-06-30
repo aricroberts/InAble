@@ -2,14 +2,11 @@
  * Minimal SW: enables PWA installability without aggressive caching.
  * API calls always go to the network; no coaching responses are cached.
  */
-
-var CACHE_NAME = 'inable-shell-v1';
-
+var CACHE_NAME = 'inable-shell-v2';
 var SHELL_ASSETS = [
   '/',
   '/index.html'
 ];
-
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
@@ -18,7 +15,6 @@ self.addEventListener('install', function(e) {
   );
   self.skipWaiting();
 });
-
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
@@ -30,10 +26,8 @@ self.addEventListener('activate', function(e) {
   );
   self.clients.claim();
 });
-
 self.addEventListener('fetch', function(e) {
   var url = e.request.url;
-
   if (
     url.indexOf('api.anthropic.com') !== -1 ||
     url.indexOf('buy.stripe.com') !== -1 ||
@@ -43,11 +37,13 @@ self.addEventListener('fetch', function(e) {
   ) {
     return;
   }
-
-  if (url.indexOf('.html') !== -1) {
+  // Never serve the HTML shell from cache, including bare "/" —
+  // always hit the network so deploys (like footer/link changes)
+  // show up immediately instead of being stuck on the first-install snapshot.
+  var path = url.replace(self.location.origin, '');
+  if (path === '/' || path === '' || path.indexOf('.html') !== -1) {
     return;
   }
-
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       return cached || fetch(e.request);
